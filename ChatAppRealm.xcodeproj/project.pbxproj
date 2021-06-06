@@ -3,16 +3,40 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		F285C31D266944CA00362C37 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C31C266944CA00362C37 /* AppDelegate.swift */; };
 		F285C31F266944CA00362C37 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C31E266944CA00362C37 /* SceneDelegate.swift */; };
 		F285C321266944CA00362C37 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C320266944CA00362C37 /* ViewController.swift */; };
-		F285C324266944CA00362C37 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F285C322266944CA00362C37 /* Main.storyboard */; };
 		F285C326266944CC00362C37 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F285C325266944CC00362C37 /* Assets.xcassets */; };
 		F285C329266944CC00362C37 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F285C327266944CC00362C37 /* LaunchScreen.storyboard */; };
+		F285C3312669451B00362C37 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C3302669451B00362C37 /* AppState.swift */; };
+		F285C3342669461800362C37 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = F285C3332669461800362C37 /* RealmSwift */; };
+		F285C3362669461800362C37 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = F285C3352669461800362C37 /* Realm */; };
+		F285C33A26695C1C00362C37 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C33926695C1C00362C37 /* User.swift */; };
+		F285C33C26695D1300362C37 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C33B26695D1300362C37 /* Photo.swift */; };
+		F285C33F26695D9300362C37 /* Conversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C33E26695D9300362C37 /* Conversation.swift */; };
+		F285C34126695EE800362C37 /* Member.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C34026695EE800362C37 /* Member.swift */; };
+		F285C34326695FA900362C37 /* Chatster.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C34226695FA900362C37 /* Chatster.swift */; };
+		F285C3452669606C00362C37 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C3442669606C00362C37 /* ChatMessage.swift */; };
+		F285C3472669613B00362C37 /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C3462669613B00362C37 /* UserPreferences.swift */; };
+		F285C3F4266B3CA900362C37 /* PhotoCaptureController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C3F2266B3CA800362C37 /* PhotoCaptureController.swift */; };
+		F285C3F5266B3CA900362C37 /* LocationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C3F3266B3CA900362C37 /* LocationHelper.swift */; };
+		F285C3F8266B3CD100362C37 /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C3F7266B3CD100362C37 /* UIImage+Extensions.swift */; };
+		F285C3FB266B3FE100362C37 /* CAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C3FA266B3FE100362C37 /* CAButton.swift */; };
+		F285C3FE266B42B400362C37 /* CATextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C3FD266B42B400362C37 /* CATextField.swift */; };
+		F285C400266BC81B00362C37 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C3FF266BC81B00362C37 /* LoginViewController.swift */; };
+		F285C402266BD2D800362C37 /* UIHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C401266BD2D800362C37 /* UIHelpers.swift */; };
+		F285C404266BD32400362C37 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C403266BD32400362C37 /* String+Extensions.swift */; };
+		F285C407266BD37100362C37 /* SnackBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C406266BD37100362C37 /* SnackBarView.swift */; };
+		F285C40B266BDD6F00362C37 /* CALabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C40A266BDD6F00362C37 /* CALabel.swift */; };
+		F285C40D266BDD7600362C37 /* CAImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C40C266BDD7600362C37 /* CAImageView.swift */; };
+		F285C40F266BDE6C00362C37 /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C40E266BDE6C00362C37 /* UIView+Extensions.swift */; };
+		F285C411266C216100362C37 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C410266C216100362C37 /* Constants.swift */; };
+		F285C413266C3F4700362C37 /* ThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C412266C3F4700362C37 /* ThumbnailView.swift */; };
+		F285C415266C49FE00362C37 /* AccountSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C414266C49FE00362C37 /* AccountSettingsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,10 +44,32 @@
 		F285C31C266944CA00362C37 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F285C31E266944CA00362C37 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		F285C320266944CA00362C37 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		F285C323266944CA00362C37 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F285C325266944CC00362C37 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F285C328266944CC00362C37 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F285C32A266944CC00362C37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F285C3302669451B00362C37 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		F285C33926695C1C00362C37 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		F285C33B26695D1300362C37 /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
+		F285C33E26695D9300362C37 /* Conversation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conversation.swift; sourceTree = "<group>"; };
+		F285C34026695EE800362C37 /* Member.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Member.swift; sourceTree = "<group>"; };
+		F285C34226695FA900362C37 /* Chatster.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chatster.swift; sourceTree = "<group>"; };
+		F285C3442669606C00362C37 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
+		F285C3462669613B00362C37 /* UserPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPreferences.swift; sourceTree = "<group>"; };
+		F285C3F2266B3CA800362C37 /* PhotoCaptureController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCaptureController.swift; sourceTree = "<group>"; };
+		F285C3F3266B3CA900362C37 /* LocationHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationHelper.swift; sourceTree = "<group>"; };
+		F285C3F7266B3CD100362C37 /* UIImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extensions.swift"; sourceTree = "<group>"; };
+		F285C3FA266B3FE100362C37 /* CAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAButton.swift; sourceTree = "<group>"; };
+		F285C3FD266B42B400362C37 /* CATextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CATextField.swift; sourceTree = "<group>"; };
+		F285C3FF266BC81B00362C37 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		F285C401266BD2D800362C37 /* UIHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHelpers.swift; sourceTree = "<group>"; };
+		F285C403266BD32400362C37 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
+		F285C406266BD37100362C37 /* SnackBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnackBarView.swift; sourceTree = "<group>"; };
+		F285C40A266BDD6F00362C37 /* CALabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CALabel.swift; sourceTree = "<group>"; };
+		F285C40C266BDD7600362C37 /* CAImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAImageView.swift; sourceTree = "<group>"; };
+		F285C40E266BDE6C00362C37 /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
+		F285C410266C216100362C37 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		F285C412266C3F4700362C37 /* ThumbnailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailView.swift; sourceTree = "<group>"; };
+		F285C414266C49FE00362C37 /* AccountSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +77,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F285C3362669461800362C37 /* Realm in Frameworks */,
+				F285C3342669461800362C37 /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -56,15 +104,133 @@
 		F285C31B266944CA00362C37 /* ChatAppRealm */ = {
 			isa = PBXGroup;
 			children = (
-				F285C31C266944CA00362C37 /* AppDelegate.swift */,
-				F285C31E266944CA00362C37 /* SceneDelegate.swift */,
-				F285C320266944CA00362C37 /* ViewController.swift */,
-				F285C322266944CA00362C37 /* Main.storyboard */,
-				F285C325266944CC00362C37 /* Assets.xcassets */,
-				F285C327266944CC00362C37 /* LaunchScreen.storyboard */,
+				F285C3F1266B3C9B00362C37 /* Helpers */,
+				F285C3EF266B3A0A00362C37 /* Managers */,
+				F285C3F6266B3CC400362C37 /* Extensions */,
+				F285C33D26695D8000362C37 /* Models */,
+				F285C3ED266B39D900362C37 /* Custom Views */,
+				F285C3F0266B3C7700362C37 /* Screens */,
+				F285C3EE266B39E800362C37 /* Support */,
 				F285C32A266944CC00362C37 /* Info.plist */,
 			);
 			path = ChatAppRealm;
+			sourceTree = "<group>";
+		};
+		F285C33D26695D8000362C37 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				F285C33926695C1C00362C37 /* User.swift */,
+				F285C3462669613B00362C37 /* UserPreferences.swift */,
+				F285C33B26695D1300362C37 /* Photo.swift */,
+				F285C33E26695D9300362C37 /* Conversation.swift */,
+				F285C34026695EE800362C37 /* Member.swift */,
+				F285C34226695FA900362C37 /* Chatster.swift */,
+				F285C3442669606C00362C37 /* ChatMessage.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		F285C3ED266B39D900362C37 /* Custom Views */ = {
+			isa = PBXGroup;
+			children = (
+				F285C409266BDD6400362C37 /* Image Views */,
+				F285C408266BDD5700362C37 /* Labels */,
+				F285C405266BD34F00362C37 /* Support Views */,
+				F285C3FC266B42A900362C37 /* TextFields */,
+				F285C3F9266B3FCF00362C37 /* Buttons */,
+			);
+			path = "Custom Views";
+			sourceTree = "<group>";
+		};
+		F285C3EE266B39E800362C37 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				F285C31C266944CA00362C37 /* AppDelegate.swift */,
+				F285C31E266944CA00362C37 /* SceneDelegate.swift */,
+				F285C325266944CC00362C37 /* Assets.xcassets */,
+				F285C327266944CC00362C37 /* LaunchScreen.storyboard */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		F285C3EF266B3A0A00362C37 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				F285C3302669451B00362C37 /* AppState.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		F285C3F0266B3C7700362C37 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				F285C320266944CA00362C37 /* ViewController.swift */,
+				F285C3FF266BC81B00362C37 /* LoginViewController.swift */,
+				F285C414266C49FE00362C37 /* AccountSettingsViewController.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		F285C3F1266B3C9B00362C37 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				F285C3F3266B3CA900362C37 /* LocationHelper.swift */,
+				F285C3F2266B3CA800362C37 /* PhotoCaptureController.swift */,
+				F285C401266BD2D800362C37 /* UIHelpers.swift */,
+				F285C410266C216100362C37 /* Constants.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		F285C3F6266B3CC400362C37 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				F285C3F7266B3CD100362C37 /* UIImage+Extensions.swift */,
+				F285C403266BD32400362C37 /* String+Extensions.swift */,
+				F285C40E266BDE6C00362C37 /* UIView+Extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		F285C3F9266B3FCF00362C37 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				F285C3FA266B3FE100362C37 /* CAButton.swift */,
+			);
+			path = Buttons;
+			sourceTree = "<group>";
+		};
+		F285C3FC266B42A900362C37 /* TextFields */ = {
+			isa = PBXGroup;
+			children = (
+				F285C3FD266B42B400362C37 /* CATextField.swift */,
+			);
+			path = TextFields;
+			sourceTree = "<group>";
+		};
+		F285C405266BD34F00362C37 /* Support Views */ = {
+			isa = PBXGroup;
+			children = (
+				F285C406266BD37100362C37 /* SnackBarView.swift */,
+			);
+			path = "Support Views";
+			sourceTree = "<group>";
+		};
+		F285C408266BDD5700362C37 /* Labels */ = {
+			isa = PBXGroup;
+			children = (
+				F285C40A266BDD6F00362C37 /* CALabel.swift */,
+			);
+			path = Labels;
+			sourceTree = "<group>";
+		};
+		F285C409266BDD6400362C37 /* Image Views */ = {
+			isa = PBXGroup;
+			children = (
+				F285C40C266BDD7600362C37 /* CAImageView.swift */,
+				F285C412266C3F4700362C37 /* ThumbnailView.swift */,
+			);
+			path = "Image Views";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -83,6 +249,10 @@
 			dependencies = (
 			);
 			name = ChatAppRealm;
+			packageProductDependencies = (
+				F285C3332669461800362C37 /* RealmSwift */,
+				F285C3352669461800362C37 /* Realm */,
+			);
 			productName = ChatAppRealm;
 			productReference = F285C319266944CA00362C37 /* ChatAppRealm.app */;
 			productType = "com.apple.product-type.application";
@@ -110,6 +280,9 @@
 				Base,
 			);
 			mainGroup = F285C310266944CA00362C37;
+			packageReferences = (
+				F285C3322669461800362C37 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
+			);
 			productRefGroup = F285C31A266944CA00362C37 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -126,7 +299,6 @@
 			files = (
 				F285C329266944CC00362C37 /* LaunchScreen.storyboard in Resources */,
 				F285C326266944CC00362C37 /* Assets.xcassets in Resources */,
-				F285C324266944CA00362C37 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,23 +309,38 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F285C40D266BDD7600362C37 /* CAImageView.swift in Sources */,
+				F285C33F26695D9300362C37 /* Conversation.swift in Sources */,
+				F285C3F4266B3CA900362C37 /* PhotoCaptureController.swift in Sources */,
+				F285C3472669613B00362C37 /* UserPreferences.swift in Sources */,
+				F285C402266BD2D800362C37 /* UIHelpers.swift in Sources */,
+				F285C3F8266B3CD100362C37 /* UIImage+Extensions.swift in Sources */,
+				F285C407266BD37100362C37 /* SnackBarView.swift in Sources */,
+				F285C40F266BDE6C00362C37 /* UIView+Extensions.swift in Sources */,
+				F285C34326695FA900362C37 /* Chatster.swift in Sources */,
+				F285C33C26695D1300362C37 /* Photo.swift in Sources */,
 				F285C321266944CA00362C37 /* ViewController.swift in Sources */,
+				F285C3452669606C00362C37 /* ChatMessage.swift in Sources */,
+				F285C3F5266B3CA900362C37 /* LocationHelper.swift in Sources */,
+				F285C415266C49FE00362C37 /* AccountSettingsViewController.swift in Sources */,
+				F285C3FE266B42B400362C37 /* CATextField.swift in Sources */,
+				F285C3FB266B3FE100362C37 /* CAButton.swift in Sources */,
+				F285C34126695EE800362C37 /* Member.swift in Sources */,
+				F285C40B266BDD6F00362C37 /* CALabel.swift in Sources */,
+				F285C404266BD32400362C37 /* String+Extensions.swift in Sources */,
+				F285C33A26695C1C00362C37 /* User.swift in Sources */,
+				F285C400266BC81B00362C37 /* LoginViewController.swift in Sources */,
+				F285C3312669451B00362C37 /* AppState.swift in Sources */,
 				F285C31D266944CA00362C37 /* AppDelegate.swift in Sources */,
+				F285C413266C3F4700362C37 /* ThumbnailView.swift in Sources */,
 				F285C31F266944CA00362C37 /* SceneDelegate.swift in Sources */,
+				F285C411266C216100362C37 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		F285C322266944CA00362C37 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				F285C323266944CA00362C37 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		F285C327266944CC00362C37 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -341,6 +528,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F285C3322669461800362C37 /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-cocoa.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.7.6;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F285C3332669461800362C37 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F285C3322669461800362C37 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			productName = RealmSwift;
+		};
+		F285C3352669461800362C37 /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F285C3322669461800362C37 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			productName = Realm;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F285C311266944CA00362C37 /* Project object */;
 }

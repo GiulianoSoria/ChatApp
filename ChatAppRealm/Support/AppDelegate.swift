@@ -5,15 +5,15 @@
 //  Created by Giuliano Soria Pazos on 2021-06-03.
 //
 
+import RealmSwift
 import UIKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
-
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
+
     return true
   }
 
