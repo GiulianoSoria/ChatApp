@@ -56,7 +56,7 @@ class SnackBarView: UIView {
     if let image = image {
       imageView.contentMode = .scaleAspectFit
       imageView.layer.cornerRadius = 0
-      imageView.widthAnchor.constraint(equalToConstant: 20).isActive = true
+      imageView.widthAnchor.constraint(equalToConstant: 25).isActive = true
       imageView.image = image
       stackView.addArrangedSubview(imageView)
     } else {

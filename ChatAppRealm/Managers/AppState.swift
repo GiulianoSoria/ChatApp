@@ -50,7 +50,7 @@ class AppState {
     initUserRealmPublisher()
   }
   
-  func initLoginPublisher() {
+  public func initLoginPublisher() {
     loginPublisher
       .receive(on: DispatchQueue.main)
       .flatMap { user -> RealmPublishers.AsyncOpenPublisher in
@@ -64,30 +64,30 @@ class AppState {
       .store(in: &subscribers)
   }
   
-  func initUserRealmPublisher() {
+  public func initUserRealmPublisher() {
     userRealmPublisher
       .sink { result in
         if case let .failure(error) = result {
           self.error = "Failed to log in and open user realm: \(error.localizedDescription)"
         }
-      } receiveValue: { realm in
-        print("User Realm file location: \(realm.configuration.fileURL!.path)")
-        self.user = realm.objects(User.self).first
+      } receiveValue: { userRealm in
+        print("User Realm file location: \(userRealm.configuration.fileURL!.path)")
+        self.user = userRealm.objects(User.self).first
         
         do {
-          try realm.write {
+          try userRealm.write {
             self.user?.presenceState = .onLine
           }
         } catch {
           self.error = "Unable to open Realm write transaction"
         }
         self.shouldIndicateActivity = false
-        NotificationCenter.default.post(name: self.updateUserProfile, object: nil)
+        NotificationCenter.default.post(name: self.updateUserProfile, object: userRealm)
       }
       .store(in: &subscribers)
   }
   
-  func initLogoutPublisher() {
+  public func initLogoutPublisher() {
     logoutPublisher
       .receive(on: DispatchQueue.main)
       .sink { _ in

@@ -21,6 +21,12 @@ class ThumbnailView: CAImageView {
     configure()
   }
   
+  convenience init(photo: Photo) {
+    self.init(frame:. zero)
+    configure()
+    self.set(photo: photo)
+  }
+  
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
@@ -30,9 +36,6 @@ class ThumbnailView: CAImageView {
       let imageData = photo.picture {
       image = UIImage(data: imageData)
     }
-    
-    let tap = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
-    addGestureRecognizer(tap)
   }
   
   @objc func imageTapped() {
@@ -44,5 +47,8 @@ class ThumbnailView: CAImageView {
     layer.cornerCurve = .circular
     layer.backgroundColor = .none
     isUserInteractionEnabled = true
+    
+    let tap = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
+    addGestureRecognizer(tap)
   }
 }

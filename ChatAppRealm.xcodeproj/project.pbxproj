@@ -37,6 +37,16 @@
 		F285C411266C216100362C37 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C410266C216100362C37 /* Constants.swift */; };
 		F285C413266C3F4700362C37 /* ThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C412266C3F4700362C37 /* ThumbnailView.swift */; };
 		F285C415266C49FE00362C37 /* AccountSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C414266C49FE00362C37 /* AccountSettingsViewController.swift */; };
+		F285C418266C936A00362C37 /* ConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C417266C936A00362C37 /* ConversationCell.swift */; };
+		F285C41B266C951A00362C37 /* ConversationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C41A266C951A00362C37 /* ConversationsView.swift */; };
+		F285C41D266D273E00362C37 /* AvatarsGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C41C266D273D00362C37 /* AvatarsGridView.swift */; };
+		F285C41F266D29AD00362C37 /* AvatarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C41E266D29AD00362C37 /* AvatarCell.swift */; };
+		F285C421266D43CF00362C37 /* ChatroomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C420266D43CF00362C37 /* ChatroomViewController.swift */; };
+		F285C423266D458D00362C37 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C422266D458D00362C37 /* MessageCell.swift */; };
+		F285C425266D499900362C37 /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C424266D499800362C37 /* Date+Extensions.swift */; };
+		F285C427266D957E00362C37 /* MessageComposerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C426266D957E00362C37 /* MessageComposerView.swift */; };
+		F285C42A266D97CC00362C37 /* CATextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C429266D97CC00362C37 /* CATextView.swift */; };
+		F285C42C266D9E5800362C37 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C42B266D9E5800362C37 /* UIViewController+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,6 +80,16 @@
 		F285C410266C216100362C37 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F285C412266C3F4700362C37 /* ThumbnailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailView.swift; sourceTree = "<group>"; };
 		F285C414266C49FE00362C37 /* AccountSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsViewController.swift; sourceTree = "<group>"; };
+		F285C417266C936A00362C37 /* ConversationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationCell.swift; sourceTree = "<group>"; };
+		F285C41A266C951A00362C37 /* ConversationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsView.swift; sourceTree = "<group>"; };
+		F285C41C266D273D00362C37 /* AvatarsGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarsGridView.swift; sourceTree = "<group>"; };
+		F285C41E266D29AD00362C37 /* AvatarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarCell.swift; sourceTree = "<group>"; };
+		F285C420266D43CF00362C37 /* ChatroomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatroomViewController.swift; sourceTree = "<group>"; };
+		F285C422266D458D00362C37 /* MessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
+		F285C424266D499800362C37 /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
+		F285C426266D957E00362C37 /* MessageComposerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageComposerView.swift; sourceTree = "<group>"; };
+		F285C429266D97CC00362C37 /* CATextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CATextView.swift; sourceTree = "<group>"; };
+		F285C42B266D9E5800362C37 /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +153,9 @@
 		F285C3ED266B39D900362C37 /* Custom Views */ = {
 			isa = PBXGroup;
 			children = (
+				F285C428266D97BD00362C37 /* Text Views */,
+				F285C419266C950E00362C37 /* Views */,
+				F285C416266C936000362C37 /* Cells */,
 				F285C409266BDD6400362C37 /* Image Views */,
 				F285C408266BDD5700362C37 /* Labels */,
 				F285C405266BD34F00362C37 /* Support Views */,
@@ -167,6 +190,7 @@
 				F285C320266944CA00362C37 /* ViewController.swift */,
 				F285C3FF266BC81B00362C37 /* LoginViewController.swift */,
 				F285C414266C49FE00362C37 /* AccountSettingsViewController.swift */,
+				F285C420266D43CF00362C37 /* ChatroomViewController.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -188,6 +212,8 @@
 				F285C3F7266B3CD100362C37 /* UIImage+Extensions.swift */,
 				F285C403266BD32400362C37 /* String+Extensions.swift */,
 				F285C40E266BDE6C00362C37 /* UIView+Extensions.swift */,
+				F285C424266D499800362C37 /* Date+Extensions.swift */,
+				F285C42B266D9E5800362C37 /* UIViewController+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -231,6 +257,34 @@
 				F285C412266C3F4700362C37 /* ThumbnailView.swift */,
 			);
 			path = "Image Views";
+			sourceTree = "<group>";
+		};
+		F285C416266C936000362C37 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				F285C417266C936A00362C37 /* ConversationCell.swift */,
+				F285C41E266D29AD00362C37 /* AvatarCell.swift */,
+				F285C422266D458D00362C37 /* MessageCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		F285C419266C950E00362C37 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				F285C41A266C951A00362C37 /* ConversationsView.swift */,
+				F285C41C266D273D00362C37 /* AvatarsGridView.swift */,
+				F285C426266D957E00362C37 /* MessageComposerView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		F285C428266D97BD00362C37 /* Text Views */ = {
+			isa = PBXGroup;
+			children = (
+				F285C429266D97CC00362C37 /* CATextView.swift */,
+			);
+			path = "Text Views";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -313,26 +367,36 @@
 				F285C33F26695D9300362C37 /* Conversation.swift in Sources */,
 				F285C3F4266B3CA900362C37 /* PhotoCaptureController.swift in Sources */,
 				F285C3472669613B00362C37 /* UserPreferences.swift in Sources */,
+				F285C42C266D9E5800362C37 /* UIViewController+Extensions.swift in Sources */,
+				F285C41F266D29AD00362C37 /* AvatarCell.swift in Sources */,
 				F285C402266BD2D800362C37 /* UIHelpers.swift in Sources */,
 				F285C3F8266B3CD100362C37 /* UIImage+Extensions.swift in Sources */,
 				F285C407266BD37100362C37 /* SnackBarView.swift in Sources */,
 				F285C40F266BDE6C00362C37 /* UIView+Extensions.swift in Sources */,
+				F285C41D266D273E00362C37 /* AvatarsGridView.swift in Sources */,
 				F285C34326695FA900362C37 /* Chatster.swift in Sources */,
 				F285C33C26695D1300362C37 /* Photo.swift in Sources */,
 				F285C321266944CA00362C37 /* ViewController.swift in Sources */,
+				F285C41B266C951A00362C37 /* ConversationsView.swift in Sources */,
 				F285C3452669606C00362C37 /* ChatMessage.swift in Sources */,
 				F285C3F5266B3CA900362C37 /* LocationHelper.swift in Sources */,
 				F285C415266C49FE00362C37 /* AccountSettingsViewController.swift in Sources */,
+				F285C423266D458D00362C37 /* MessageCell.swift in Sources */,
 				F285C3FE266B42B400362C37 /* CATextField.swift in Sources */,
 				F285C3FB266B3FE100362C37 /* CAButton.swift in Sources */,
 				F285C34126695EE800362C37 /* Member.swift in Sources */,
+				F285C418266C936A00362C37 /* ConversationCell.swift in Sources */,
+				F285C42A266D97CC00362C37 /* CATextView.swift in Sources */,
 				F285C40B266BDD6F00362C37 /* CALabel.swift in Sources */,
+				F285C425266D499900362C37 /* Date+Extensions.swift in Sources */,
 				F285C404266BD32400362C37 /* String+Extensions.swift in Sources */,
 				F285C33A26695C1C00362C37 /* User.swift in Sources */,
 				F285C400266BC81B00362C37 /* LoginViewController.swift in Sources */,
 				F285C3312669451B00362C37 /* AppState.swift in Sources */,
+				F285C427266D957E00362C37 /* MessageComposerView.swift in Sources */,
 				F285C31D266944CA00362C37 /* AppDelegate.swift in Sources */,
 				F285C413266C3F4700362C37 /* ThumbnailView.swift in Sources */,
+				F285C421266D43CF00362C37 /* ChatroomViewController.swift in Sources */,
 				F285C31F266944CA00362C37 /* SceneDelegate.swift in Sources */,
 				F285C411266C216100362C37 /* Constants.swift in Sources */,
 			);

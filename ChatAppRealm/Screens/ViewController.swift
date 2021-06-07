@@ -5,17 +5,24 @@
 //  Created by Giuliano Soria Pazos on 2021-06-03.
 //
 
+import RealmSwift
 import UIKit
 
 class ViewController: UIViewController {
   
   private var state: AppState!
+  private var userRealm: Realm!
   var shouldRemindOnlineUser = false
   var onlineUserReminderHours = 8
   
   let updateUserProfile = Notification.Name(NotificationKeys.updateUserProfile)
   
   private var showingProfileView = false
+  
+  enum Section { case conversations }
+  
+  var collectionView: UICollectionView!
+  var dataSource: UICollectionViewDiffableDataSource<Section, Conversation>!
   
   init(state: AppState) {
     super.init(nibName: nil, bundle: nil)
@@ -44,25 +51,20 @@ class ViewController: UIViewController {
   
   private func checkUserState() {
     if state.loggedIn {
-      if (state.user != nil) && state.user!.isProfileSet || showingProfileView {
-        // Show setup profile view
+      if (state.user != nil) && !state.user!.isProfileSet || showingProfileView {
         createAvatarButton()
         showAccountSettingsScreen()
       } else {
         // Show conversations list
         createAvatarButton()
+        configureCollectionView()
       }
     } else {
-      // Show login screen
-      let loginVC = LoginViewController(state: state)
-      let navController = UINavigationController(rootViewController: loginVC)
-      navController.modalPresentationStyle = .fullScreen
-      navController.modalTransitionStyle = .crossDissolve
-      self.show(navController, sender: self)
+      showLoginScreen()
     }
   }
   
-  func createAvatarButton() {
+  private func createAvatarButton() {
     if
       let photo = state.user?.userPreferences?.avatarImage {
       let imageView = ThumbnailView(frame: .zero)
@@ -76,45 +78,29 @@ class ViewController: UIViewController {
     }
   }
   
-  func showAccountSettingsScreen() {
-    let destVC = AccountSettingsViewController(user: state.user!)
-    let navController = UINavigationController(rootViewController: destVC)
-    navController.isModalInPresentation = true
+  private func configureCollectionView() {
+    if
+      let conversationsList = state.user?.conversations {
+      let collectionView = ConversationsView(state: state, conversations: Array(conversationsList))
+      collectionView.delegate = self
+      view.addSubview(collectionView)
+      collectionView.pinToEdges(of: view)
+    }
+  }
+  
+  private func showLoginScreen() {
+    let loginVC = LoginViewController(state: state)
+    let navController = UINavigationController(rootViewController: loginVC)
+    navController.modalPresentationStyle = .fullScreen
+    navController.modalTransitionStyle = .crossDissolve
     self.show(navController, sender: self)
   }
   
-  func addNotification(timeInHours: Int) {
-    let center = UNUserNotificationCenter.current()
-    
-    let addRequest = { [self] in
-      let content = UNMutableNotificationContent()
-      content.title = "Still logged in"
-      content.subtitle = "You have been offline in the background for " + "\(onlineUserReminderHours) \(onlineUserReminderHours == 1 ? "hour" : "hours")"
-      content.sound = .default
-      
-      let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(onlineUserReminderHours * 3600), repeats: false)
-      let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-      
-      center.add(request)
-    }
-    
-    center.getNotificationSettings { settings in
-      if settings.authorizationStatus == .authorized {
-        addRequest()
-      } else {
-        center.requestAuthorization(options: [.alert, .badge, .sound]) { success, _ in
-          if success {
-            addRequest()
-          }
-        }
-      }
-    }
-  }
-  
-  func clearNotifications() {
-    let center = UNUserNotificationCenter.current()
-    center.removeAllDeliveredNotifications()
-    center.removeAllPendingNotificationRequests()
+  private func showAccountSettingsScreen() {
+    let destVC = AccountSettingsViewController(state: state, userRealm: userRealm)
+    let navController = UINavigationController(rootViewController: destVC)
+    navController.isModalInPresentation = true
+    self.show(navController, sender: self)
   }
   
   private func createObservers() {
@@ -129,6 +115,10 @@ class ViewController: UIViewController {
   @objc private func handleNotifications(_ notification: Notification) {
     switch notification.name {
     case updateUserProfile:
+      if
+        let realm = notification.object as? Realm {
+        userRealm = realm
+      }
       checkUserState()
     default:
       break
@@ -139,5 +129,13 @@ class ViewController: UIViewController {
 extension ViewController: ThumbnailViewDelegate {
   func thumbnailTapped() {
     showAccountSettingsScreen()
+  }
+}
+
+extension ViewController: ConversationsViewDelegate {
+  func pushConversationViewController(_ conversation: Conversation, chatsters: Results<Chatster>) {
+    let destVC = ChatroomViewController(state: state, conversation: conversation, chatsters: chatsters)
+    
+    self.navigationController?.pushViewController(destVC, animated: true)
   }
 }

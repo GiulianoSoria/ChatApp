@@ -18,7 +18,7 @@ class LoginViewController: UIViewController {
   
   lazy var checkboxButton: CAButton = {
     let button = CAButton()
-    button.setImage(UIImage(systemName: "checkmark.square"), for: .normal)
+    button.setImage(SFSymbols.checkbox, for: .normal)
     button.setTitle("Register New User", for: .normal)
     button.setTitleColor(.label, for: .normal)
     button.tintColor = .label
@@ -28,7 +28,7 @@ class LoginViewController: UIViewController {
   
   var newUser: Bool = true {
     didSet {
-      checkboxButton.setImage(newUser ? UIImage(systemName: "checkmark.square") : UIImage(systemName: "square"), for: .normal)
+      checkboxButton.setImage(newUser ? SFSymbols.checkbox : SFSymbols.square, for: .normal)
       checkboxButton.setTitleColor(newUser ? .label : .secondaryLabel, for: .normal)
       checkboxButton.tintColor = newUser ? .label : .secondaryLabel
     }
@@ -109,7 +109,7 @@ class LoginViewController: UIViewController {
       let email = emailField.text, !email.isEmpty,
       let password = passwordField.text, !password.isEmpty else {
       UIHelpers.autoDismissableSnackBar(title: "Provide a valid email and password",
-                                        image: UIImage(systemName: "exclamationmark.circle")!,
+                                        image: SFSymbols.alertCircle,
                                         backgroundColor: .systemYellow,
                                         textColor: .black,
                                         view: self.view)
@@ -128,7 +128,7 @@ class LoginViewController: UIViewController {
         case .failure(let error):
           self.state.error = error.localizedDescription
           UIHelpers.autoDismissableSnackBar(title: error.localizedDescription.capitalized,
-                                            image: UIImage(systemName: "xmark.circle")!,
+                                            image: SFSymbols.crossCircle,
                                             backgroundColor: .systemRed,
                                             view: self.view)
         case .finished:
@@ -147,7 +147,7 @@ class LoginViewController: UIViewController {
       let email = emailField.text, !email.isEmpty,
       let password = passwordField.text, !password.isEmpty else {
       UIHelpers.autoDismissableSnackBar(title: "Provide a valid email and password",
-                                        image: UIImage(systemName: "exclamationmark.circle")!,
+                                        image: SFSymbols.alertCircle,
                                         backgroundColor: .systemYellow,
                                         textColor: .black,
                                         view: self.view)
@@ -166,7 +166,7 @@ class LoginViewController: UIViewController {
         case .failure(let error):
           self.state.error = error.localizedDescription
           UIHelpers.autoDismissableSnackBar(title: error.localizedDescription.capitalized,
-                                            image: UIImage(systemName: "xmark.circle")!,
+                                            image: SFSymbols.crossCircle,
                                             backgroundColor: .systemRed,
                                             view: self.view)
         case .finished:

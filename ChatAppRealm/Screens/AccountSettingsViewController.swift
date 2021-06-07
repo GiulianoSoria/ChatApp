@@ -5,10 +5,16 @@
 //  Created by Giuliano Soria Pazos on 2021-06-05.
 //
 
+import RealmSwift
 import UIKit
 
 class AccountSettingsViewController: UIViewController {
-  private var user: User!
+  private var state: AppState!
+  private var userRealm: Realm!
+  
+  private let updateUserProfile = Notification.Name(NotificationKeys.updateUserProfile)
+  
+  private var displayName = ""
   private var photo: Photo!
   private var isPhotoAdded: Bool = false
   
@@ -17,9 +23,12 @@ class AccountSettingsViewController: UIViewController {
   private var collectionView: UICollectionView!
   private var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
   
-  init(user: User) {
+  init(state: AppState, userRealm: Realm) {
     super.init(nibName: nil, bundle: nil)
-    self.user = user
+    self.state = state
+    self.photo = state.user?.userPreferences?.avatarImage
+    self.displayName = state.user?.userPreferences?.displayName ?? ""
+    self.userRealm = userRealm
   }
   
   required init?(coder: NSCoder) {
@@ -50,7 +59,29 @@ class AccountSettingsViewController: UIViewController {
   }
   
   @objc private func saveButtonTapped() {
-    print(#function)
+    state.shouldIndicateActivity = true
+    do {
+      try userRealm.write {
+        state.user?.userPreferences?.displayName = displayName
+        if isPhotoAdded {
+          guard
+            let newPhoto = photo else {
+            print("Missing Photo")
+            state.shouldIndicateActivity = false
+            return
+          }
+          
+          state.user?.userPreferences?.avatarImage = newPhoto
+          let info = ["photo": newPhoto]
+          NotificationCenter.default.post(name: updateUserProfile, object: nil, userInfo: info)
+        }
+        state.user?.presenceState = .onLine
+      }
+      self.dismiss(animated: true)
+    } catch {
+      state.error = "Unable to open Realm write transaction"
+    }
+    state.shouldIndicateActivity = false
   }
   
   private func configureCollectionView() {
@@ -75,7 +106,7 @@ class AccountSettingsViewController: UIViewController {
       switch indexPath.section {
       case 0:
         if
-          let image = self.user.userPreferences?.avatarImage,
+          let image = self.photo,
           let imageData = image.picture {
           configuration.image = UIImage(data: imageData)
           configuration.imageProperties.maximumSize = CGSize(width: 100, height: 100)
@@ -127,14 +158,18 @@ class AccountSettingsViewController: UIViewController {
   private func applySnapshot() {
     var snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
     snapshot.appendSections([.avatar, .username])
-    snapshot.appendItems([user.userPreferences?.avatarImage], toSection: .avatar)
-    snapshot.appendItems([user.userName], toSection: .username)
+    snapshot.appendItems([photo], toSection: .avatar)
+    snapshot.appendItems([displayName], toSection: .username)
     
     dataSource.apply(snapshot)
   }
   
   private func updateSnapshot() {
-    let snapshot = dataSource.snapshot()    
+    var snapshot = dataSource.snapshot()
+    let section = snapshot.sectionIdentifiers[0]
+    snapshot.reloadSections([section])
+    
+    dataSource.apply(snapshot)
   }
 }
 
@@ -151,9 +186,11 @@ extension AccountSettingsViewController: UICollectionViewDelegateFlowLayout {
 extension AccountSettingsViewController: UICollectionViewDelegate {
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     if indexPath.section == 0 {
-      PhotoCaptureController.show(source: .photoLibrary) { controller, photo in
+      PhotoCaptureController.show(source: .photoLibrary) { [weak self] controller, photo in
+        guard let self = self else { return }
         self.photo = photo
         self.isPhotoAdded = true
+        self.updateSnapshot()
         controller.hide()
       }
     }
