@@ -11,6 +11,7 @@ import UIKit
 class MessageComposerView: UIView {
   private var state: AppState!
   private var conversationRealm: Realm!
+  private var conversation: Conversation!
   
   private var photo: Photo!
   private var location: [Double] = []
@@ -28,10 +29,11 @@ class MessageComposerView: UIView {
     }
   }
   
-  convenience init(state: AppState, conversationRealm: Realm) {
+  convenience init(state: AppState, conversationRealm: Realm, conversation: Conversation) {
     self.init(frame: .zero)
     self.state = state
     self.conversationRealm = conversationRealm
+    self.conversation = conversation
     layoutUI()
     configure()
   }
@@ -100,15 +102,10 @@ class MessageComposerView: UIView {
                               text: messageTextView.text,
                               image: photo,
                               location: location)
-    
+    message.conversationId = conversation.id
     do {
       try conversationRealm.write {
         conversationRealm.add(message)
-        UIHelpers.autoDismissableSnackBar(title: "Message Sent",
-                                          image: SFSymbols.sendMessage,
-                                          backgroundColor: .secondarySystemBackground,
-                                          textColor: .label,
-                                          view: self.superview ?? self)
         messageTextView.text = ""
       }
     } catch {

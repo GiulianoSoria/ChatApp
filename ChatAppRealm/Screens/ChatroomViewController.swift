@@ -106,7 +106,8 @@ class ChatroomViewController: UIViewController {
   
   private func configureMessageComposerView() {
     composerView = MessageComposerView(state: state,
-                                       conversationRealm: conversationRealm)
+                                       conversationRealm: conversationRealm,
+                                       conversation: conversation)
     view.addSubview(composerView)
     view.bringSubviewToFront(composerView)
     
@@ -118,10 +119,10 @@ class ChatroomViewController: UIViewController {
     ])
   }
   
-  private func scrollToBottom() {
+  private func scrollToBottom(animated: Bool) {
     collectionView.scrollToItem(at: IndexPath(item: messages.count - 1, section: 0),
                                 at: .bottom,
-                                animated: true)
+                                animated: animated)
   }
   
   private func fetchConversation(conversation: Conversation) {
@@ -140,7 +141,7 @@ class ChatroomViewController: UIViewController {
         self.messages = messages
         self.configureMessageComposerView()
         self.applySnapshot()
-        self.scrollToBottom()
+        self.scrollToBottom(animated: false)
         self.createObserver()
       }
       .store(in: &state.subscribers)
@@ -155,7 +156,7 @@ class ChatroomViewController: UIViewController {
       case .update(let messages, deletions: _, insertions: _, modifications: _):
         self.messages = messages
         self.applySnapshot()
-        self.scrollToBottom()
+        self.scrollToBottom(animated: true)
         break
       default:
         break
