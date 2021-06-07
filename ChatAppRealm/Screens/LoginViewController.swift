@@ -18,15 +18,15 @@ class LoginViewController: UIViewController {
   
   lazy var checkboxButton: CAButton = {
     let button = CAButton()
-    button.setImage(SFSymbols.checkbox, for: .normal)
+    button.setImage(SFSymbols.square, for: .normal)
     button.setTitle("Register New User", for: .normal)
-    button.setTitleColor(.label, for: .normal)
-    button.tintColor = .label
+    button.setTitleColor(.secondaryLabel, for: .normal)
+    button.tintColor = .secondaryLabel
     button.backgroundColor = .clear
     return button
   }()
   
-  var newUser: Bool = true {
+  var newUser: Bool = false {
     didSet {
       checkboxButton.setImage(newUser ? SFSymbols.checkbox : SFSymbols.square, for: .normal)
       checkboxButton.setTitleColor(newUser ? .label : .secondaryLabel, for: .normal)
@@ -74,7 +74,7 @@ class LoginViewController: UIViewController {
     passwordField.set(placeholder: "Password", showingSecureField: true)
     stackView.addArrangedSubview(passwordField)
     
-    callToActionButton.set(title: "Sign Up")
+    callToActionButton.set(title: "Log In")
     callToActionButton.addTarget(self, action: #selector(handleCallToActionButtonTapped), for: .touchUpInside)
     stackView.addArrangedSubview(callToActionButton)
     
@@ -94,13 +94,13 @@ class LoginViewController: UIViewController {
   
   private func showSnackBar(title: String) {
     UIHelpers.showSnackBar(title: title,
-                           backgroundColor: .secondarySystemBackground,
+                           backgroundColor: .systemBlue,
                            view: self.view)
   }
   
   private func dismissSnackBar(title: String) {
     UIHelpers.hideSnackBar(title: title,
-                           backgroundColor: .secondarySystemBackground,
+                           backgroundColor: .systemBlue,
                            view: self.view)
   }
   

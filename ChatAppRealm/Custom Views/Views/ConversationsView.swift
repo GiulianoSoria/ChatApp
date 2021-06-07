@@ -14,6 +14,7 @@ protocol ConversationsViewDelegate: AnyObject {
 
 class ConversationsView: UIView {
   private var state: AppState!
+  private var chatstersRealm: Realm!
   private var chatsters: Results<Chatster>!
   
   weak var delegate: ConversationsViewDelegate!
@@ -36,6 +37,7 @@ class ConversationsView: UIView {
     self.state = state
     self.conversations = conversations
     fetchChatsters()
+    configureView()
     configureCollectionView()
     configureDataSource()
   }
@@ -44,7 +46,7 @@ class ConversationsView: UIView {
     fatalError("init(coder:) has not been implemented")
   }
   
-  private func configure() {
+  private func configureView() {
     backgroundColor = .systemBackground
   }
   
@@ -83,6 +85,7 @@ class ConversationsView: UIView {
       
       cell.set(state: self.state,
                conversation: conversation,
+               chatstersRealm: self.chatstersRealm,
                chatsters: self.chatsters)
       
       return cell
@@ -99,7 +102,7 @@ class ConversationsView: UIView {
   
   private func fetchChatsters() {
     UIHelpers.showSnackBar(title: "Fetching Conversations",
-                           backgroundColor: .secondarySystemBackground,
+                           backgroundColor: .systemBlue,
                            view: self)
     let config = state.app.currentUser!.configuration(partitionValue: "all-users=all-the-users")
     Realm.asyncOpen(configuration: config)
@@ -107,17 +110,18 @@ class ConversationsView: UIView {
         switch completion {
         case .failure(let error):
           UIHelpers.hideSnackBar(title: "Fetching Conversations",
-                                 backgroundColor: .secondarySystemBackground,
+                                 backgroundColor: .systemBlue,
                                  view: self)
           print(error.localizedDescription)
         case .finished:
           break
         }
       } receiveValue: { realm in
+        self.chatstersRealm = realm
         self.chatsters = realm.objects(Chatster.self)
         self.applySnapshot()
         UIHelpers.hideSnackBar(title: "Fetching Conversations",
-                               backgroundColor: .secondarySystemBackground,
+                               backgroundColor: .systemBlue,
                                view: self)
       }
       .store(in: &state.subscribers)

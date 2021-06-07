@@ -8,9 +8,15 @@
 import RealmSwift
 import UIKit
 
+protocol AccountsSettingsViewControllerDelegate: AnyObject {
+  func showLoginViewController()
+}
+
 class AccountSettingsViewController: UIViewController {
   private var state: AppState!
   private var userRealm: Realm!
+  
+  weak var delegate: AccountsSettingsViewControllerDelegate!
   
   private let updateUserProfile = Notification.Name(NotificationKeys.updateUserProfile)
   
@@ -18,7 +24,7 @@ class AccountSettingsViewController: UIViewController {
   private var photo: Photo!
   private var isPhotoAdded: Bool = false
   
-  private enum Section { case avatar, username }
+  private enum Section { case avatar, username, logOut }
   
   private var collectionView: UICollectionView!
   private var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
@@ -84,6 +90,32 @@ class AccountSettingsViewController: UIViewController {
     state.shouldIndicateActivity = false
   }
   
+  private func logOut() {
+    state.shouldIndicateActivity = true
+    do {
+      try userRealm.write {
+        state.user?.presenceState = .offLine
+      }
+      self.dismiss(animated: true)
+    } catch {
+      state.error = "Unable to open Realm write transaction"
+    }
+    
+    state.app.currentUser?.logOut()
+      .receive(on: DispatchQueue.main)
+      .sink(receiveCompletion: { _ in
+      }, receiveValue: { [weak self] value in
+        guard let self = self else { return }
+        self.state.shouldIndicateActivity = false
+        self.state.logoutPublisher.send(value)
+        
+        self.dismiss(animated: true) {
+          self.delegate.showLoginViewController()
+        }
+      })
+      .store(in: &state.subscribers)
+  }
+  
   private func configureCollectionView() {
     var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
     configuration.backgroundColor = .systemBackground
@@ -117,13 +149,17 @@ class AccountSettingsViewController: UIViewController {
         guard
           let username = item as? String  else { return }
         configuration.text = username
+      case 2:
+        configuration.text = "Log Out"
+        configuration.image = SFSymbols.signOut
+        cell.tintColor = .label
       default:
         break
       }
       
       cell.contentConfiguration = configuration
       cell.backgroundConfiguration = UIBackgroundConfiguration.listGroupedCell()
-      cell.backgroundColor = indexPath.section == 0 ? .systemBackground : .secondarySystemBackground
+      cell.backgroundColor = indexPath.section == 0 ? .systemBackground : (indexPath.section == 1 ? .secondarySystemBackground : .systemRed)
     }
     
     let headerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionHeader) { headerView, elementKind, indexPath in
@@ -157,9 +193,10 @@ class AccountSettingsViewController: UIViewController {
   
   private func applySnapshot() {
     var snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
-    snapshot.appendSections([.avatar, .username])
+    snapshot.appendSections([.avatar, .username, .logOut])
     snapshot.appendItems([photo], toSection: .avatar)
     snapshot.appendItems([displayName], toSection: .username)
+    snapshot.appendItems(["Log Out"], toSection: .logOut)
     
     dataSource.apply(snapshot)
   }
@@ -185,7 +222,8 @@ extension AccountSettingsViewController: UICollectionViewDelegateFlowLayout {
 
 extension AccountSettingsViewController: UICollectionViewDelegate {
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    if indexPath.section == 0 {
+    switch indexPath.section {
+    case 1:
       PhotoCaptureController.show(source: .photoLibrary) { [weak self] controller, photo in
         guard let self = self else { return }
         self.photo = photo
@@ -193,6 +231,11 @@ extension AccountSettingsViewController: UICollectionViewDelegate {
         self.updateSnapshot()
         controller.hide()
       }
+    case 2:
+      logOut()
+        
+    default:
+      break
     }
   }
 }

@@ -15,6 +15,7 @@ struct SFSymbols {
   static let camera = UIImage(systemName: "camera")
   static let gallery = UIImage(systemName: "photo")
   static let sendMessage = UIImage(systemName: "paperplane.circle.fill")
+  static let signOut = UIImage(systemName: "person.crop.circle.badge.xmark")
 }
 
 struct NotificationKeys {

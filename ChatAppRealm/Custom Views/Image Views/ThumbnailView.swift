@@ -21,21 +21,22 @@ class ThumbnailView: CAImageView {
     configure()
   }
   
-  convenience init(photo: Photo) {
+  convenience init(photo: Photo, cornerRadius: CGFloat) {
     self.init(frame:. zero)
     configure()
-    self.set(photo: photo)
+    self.set(photo: photo, cornerRadius: cornerRadius)
   }
   
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
   
-  public func set(photo: Photo) {
+  public func set(photo: Photo, cornerRadius: CGFloat) {
     if
       let imageData = photo.picture {
       image = UIImage(data: imageData)
     }
+    layer.cornerRadius = cornerRadius
   }
   
   @objc func imageTapped() {
@@ -43,7 +44,6 @@ class ThumbnailView: CAImageView {
   }
   
   private func configure() {
-    layer.cornerRadius = 20
     layer.cornerCurve = .circular
     layer.backgroundColor = .none
     isUserInteractionEnabled = true

@@ -36,6 +36,7 @@ class SnackBarView: UIView {
     layer.cornerRadius = 20
     layer.cornerCurve = .circular
     layer.masksToBounds = true
+    tag = -1
     
     addSubview(stackView)
     stackView.translatesAutoresizingMaskIntoConstraints = false

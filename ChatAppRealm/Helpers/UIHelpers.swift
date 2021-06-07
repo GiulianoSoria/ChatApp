@@ -49,7 +49,7 @@ struct UIHelpers {
       if
         let snackBar = UIApplication.shared.windows
           .first(where: { $0.isKeyWindow })?.subviews
-          .first(where: { $0.backgroundColor == .secondarySystemBackground }) {
+          .first(where: { $0.tag == -1 }) {
         UIView.animate(withDuration: 0.5, animations: {
           snackBar.frame = CGRect(x: (view.frame.size.width - snackBar.frame.width)/2,
                                   y: -40,

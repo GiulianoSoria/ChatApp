@@ -9,17 +9,19 @@ import RealmSwift
 import UIKit
 
 class ConversationCell: UICollectionViewCell {
-  static let reuseID = "ConversationCell"
+  public static let reuseID = "ConversationCell"
   
-  var state: AppState!
-  var chatsters: [Chatster] = []
+  private var state: AppState!
+  private var chatstersRealm: Realm!
+  private var chatstersRealmNotificationToken: NotificationToken!
+  private var chatsters: Results<Chatster>!
   
-  var chatroomLabel = CALabel(textAlignment: .left, fontSize: 16, weight: .semibold, textColor: .label)
-  var avatarsView: AvatarsGridView!
+  private var chatroomLabel = CALabel(textAlignment: .left, fontSize: 16, weight: .semibold, textColor: .label)
+  private var avatarsView: AvatarsGridView!
   
-  var separatorView = UIView()
+  private var separatorView = UIView()
   
-  let padding: CGFloat = 10
+  private let padding: CGFloat = 10
   
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -31,21 +33,30 @@ class ConversationCell: UICollectionViewCell {
     fatalError("init(coder:) has not been implemented")
   }
   
-  public func set(state: AppState, conversation: Conversation, chatsters: Results<Chatster>) {
+  public func set(state: AppState,
+                  conversation: Conversation,
+                  chatstersRealm: Realm,
+                  chatsters: Results<Chatster>) {
     self.state = state
+    self.chatstersRealm = chatstersRealm
+
+    
+    conversation.members.forEach {
+      self.chatsters = chatsters.filter("userName = %@", $0.userName)
+    }
+
     chatroomLabel.text = conversation.displayName
-    self.chatsters = Array(chatsters)
-    let chatstersInConversation = conversation.members.map({ $0.userName })
-    self.chatsters.removeAll(where: { !chatstersInConversation.contains($0.userName) })
     configureAvatarsView()
+    observeChatstersRealm()
   }
   
   private func configureAvatarsView() {
-    avatarsView = AvatarsGridView(chatsters: self.chatsters)
+    avatarsView = AvatarsGridView(chatsters: Array(self.chatsters))
+    if contentView.contains(avatarsView) { avatarsView.removeFromSuperview() }
     contentView.addSubview(avatarsView)
     
     NSLayoutConstraint.activate([
-      avatarsView.topAnchor.constraint(equalTo: chatroomLabel.topAnchor),
+      avatarsView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
       avatarsView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 2*padding),
       avatarsView.widthAnchor.constraint(equalToConstant: chatsters.count < 4 ? CGFloat(chatsters.count * 50) : CGFloat(3 * 50)),
       avatarsView.heightAnchor.constraint(equalToConstant: 40),
@@ -59,10 +70,6 @@ class ConversationCell: UICollectionViewCell {
   
   private func configure() {
     contentView.addSubview(chatroomLabel)
-    
-    NSLayoutConstraint.activate([
-      
-    ])
   }
   
   private func configureSeparatorView() {
@@ -76,5 +83,20 @@ class ConversationCell: UICollectionViewCell {
       separatorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding),
       separatorView.heightAnchor.constraint(equalToConstant: 0.5)
     ])
+  }
+  
+  private func observeChatstersRealm() {
+    chatstersRealmNotificationToken = chatsters.thaw()?.observe { [weak self] result in
+      guard let self = self else { return }
+      switch result {
+      case .error(let error):
+        print(error.localizedDescription)
+      case .update(let chatsters, deletions: _, insertions: _, modifications: _):
+        self.chatsters = chatsters
+        self.configureAvatarsView()
+      default:
+        break
+      }
+    }
   }
 }

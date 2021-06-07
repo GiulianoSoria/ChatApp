@@ -45,7 +45,7 @@ class CAButton: UIButton {
     
     layer.cornerRadius = 10
     layer.cornerCurve = .circular
-    backgroundColor = .systemPink
+    backgroundColor = .systemBlue
     titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
   }
 }

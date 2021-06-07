@@ -60,7 +60,7 @@ class AvatarsGridView: UIView {
       guard
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AvatarCell.reuseID,
                                                       for: indexPath) as? AvatarCell else { return nil }
-      cell.set(chatster: chatster, online: chatster.presenceState == .onLine ? true : false)
+      cell.set(chatster: chatster, cornerRadius: 20, online: chatster.presenceState == .onLine ? true : false)
       
       return cell
     })

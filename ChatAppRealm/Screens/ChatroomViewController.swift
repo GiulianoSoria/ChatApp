@@ -47,7 +47,6 @@ class ChatroomViewController: UIViewController {
     configureViewController()
     configureCollectionView()
     configureDataSource()
-    hideKeyboardWhenTappedAround()
     createKeyboardAppearanceNotification()
   }
   
@@ -61,6 +60,7 @@ class ChatroomViewController: UIViewController {
     view.addSubview(collectionView)
     collectionView.pinToEdges(of: view)
     collectionView.backgroundColor = .systemBackground
+    collectionView.keyboardDismissMode = .onDrag
 
     collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: tabBarHeight, right: 0)
     collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: tabBarHeight, right: 0)
@@ -135,7 +135,8 @@ class ChatroomViewController: UIViewController {
         case .finished:
           break
         }
-      } receiveValue: { realm in
+      } receiveValue: { [weak self] realm in
+        guard let self = self else { return }
         self.conversationRealm = realm
         let messages = realm.objects(ChatMessage.self).sorted(byKeyPath: "timestamp", ascending: true)
         self.messages = messages
@@ -162,8 +163,6 @@ class ChatroomViewController: UIViewController {
         break
       }
     }
-    
-    
   }
   
   private func closeConversation() {

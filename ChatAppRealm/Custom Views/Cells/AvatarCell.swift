@@ -24,11 +24,11 @@ class AvatarCell: UICollectionViewCell {
     fatalError("init(coder:) has not been implemented")
   }
   
-  public func set(chatster: Chatster, online: Bool) {
+  public func set(chatster: Chatster, cornerRadius: CGFloat, online: Bool) {
     self.chatster = chatster
     if let photo = chatster.avatarImage {
       avatarView.delegate = self
-      avatarView.set(photo: photo)
+      avatarView.set(photo: photo, cornerRadius: cornerRadius)
     }
     configureStatusView(online: online)
   }

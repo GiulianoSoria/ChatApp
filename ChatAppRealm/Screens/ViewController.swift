@@ -44,7 +44,7 @@ class ViewController: UIViewController {
     configureViewController()
   }
   
-  func configureViewController() {
+  private func configureViewController() {
     title = "ChatAppRealm"
     view.backgroundColor = .systemBackground
   }
@@ -53,10 +53,11 @@ class ViewController: UIViewController {
     if state.loggedIn {
       if (state.user != nil) && !state.user!.isProfileSet || showingProfileView {
         createAvatarButton()
+        createAddConversationButton()
         showAccountSettingsScreen()
       } else {
-        // Show conversations list
         createAvatarButton()
+        createAddConversationButton()
         configureCollectionView()
       }
     } else {
@@ -69,13 +70,22 @@ class ViewController: UIViewController {
       let photo = state.user?.userPreferences?.avatarImage {
       let imageView = ThumbnailView(frame: .zero)
       imageView.delegate = self
-      imageView.set(photo: photo)
-      imageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
-      imageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
+      imageView.set(photo: photo, cornerRadius: 15)
+      imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
+      imageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
       let avatarButton = UIBarButtonItem(customView: imageView)
       avatarButton.isEnabled = true
-      navigationItem.setRightBarButton(avatarButton, animated: true)
+      navigationItem.setLeftBarButton(avatarButton, animated: true)
     }
+  }
+  
+  private func createAddConversationButton() {
+    let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
+    navigationItem.rightBarButtonItem = addButton
+  }
+  
+  @objc private func addButtonTapped() {
+    print(#function)
   }
   
   private func configureCollectionView() {
@@ -88,7 +98,7 @@ class ViewController: UIViewController {
     }
   }
   
-  private func showLoginScreen() {
+  internal func showLoginScreen() {
     let loginVC = LoginViewController(state: state)
     let navController = UINavigationController(rootViewController: loginVC)
     navController.modalPresentationStyle = .fullScreen
@@ -98,6 +108,7 @@ class ViewController: UIViewController {
   
   private func showAccountSettingsScreen() {
     let destVC = AccountSettingsViewController(state: state, userRealm: userRealm)
+    destVC.delegate = self
     let navController = UINavigationController(rootViewController: destVC)
     navController.isModalInPresentation = true
     self.show(navController, sender: self)
@@ -134,8 +145,17 @@ extension ViewController: ThumbnailViewDelegate {
 
 extension ViewController: ConversationsViewDelegate {
   func pushConversationViewController(_ conversation: Conversation, chatsters: Results<Chatster>) {
-    let destVC = ChatroomViewController(state: state, conversation: conversation, chatsters: chatsters)
+    let destVC = ChatroomViewController(state: state,
+                                        conversation: conversation,
+                                        chatsters: chatsters)
     
     self.navigationController?.pushViewController(destVC, animated: true)
+  }
+}
+
+extension ViewController: AccountsSettingsViewControllerDelegate {
+  func showLoginViewController() {
+    view.subviews.forEach { $0.removeFromSuperview() }
+    self.showLoginScreen()
   }
 }
