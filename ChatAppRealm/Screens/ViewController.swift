@@ -9,9 +9,11 @@ import RealmSwift
 import UIKit
 
 class ViewController: UIViewController {
-  
   private var state: AppState!
   private var userRealm: Realm!
+  private var users: Results<User>!
+  private var userConversationsNotificationToken: NotificationToken!
+  
   var shouldRemindOnlineUser = false
   var onlineUserReminderHours = 8
   
@@ -89,13 +91,10 @@ class ViewController: UIViewController {
   }
   
   private func configureCollectionView() {
-    if
-      let conversationsList = state.user?.conversations {
-      let collectionView = ConversationsView(state: state, conversations: Array(conversationsList))
-      collectionView.delegate = self
-      view.addSubview(collectionView)
-      collectionView.pinToEdges(of: view)
-    }
+    let collectionView = ConversationsView(state: state)
+    collectionView.delegate = self
+    view.addSubview(collectionView)
+    collectionView.pinToEdges(of: view)
   }
   
   internal func showLoginScreen() {
@@ -146,6 +145,7 @@ extension ViewController: ThumbnailViewDelegate {
 extension ViewController: ConversationsViewDelegate {
   func pushConversationViewController(_ conversation: Conversation, chatsters: Results<Chatster>) {
     let destVC = ChatroomViewController(state: state,
+                                        userRealm: userRealm,
                                         conversation: conversation,
                                         chatsters: chatsters)
     

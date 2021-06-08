@@ -10,6 +10,7 @@ import UIKit
 
 class ChatroomViewController: UIViewController {
   private var state: AppState!
+  private var userRealm: Realm!
   private var conversationRealm: Realm!
   private var conversation: Conversation!
   private var chatsters: [Chatster] = []
@@ -26,9 +27,10 @@ class ChatroomViewController: UIViewController {
   private var composerView: MessageComposerView!
   
   
-  init(state: AppState, conversation: Conversation, chatsters: Results<Chatster>) {
+  init(state: AppState, userRealm: Realm, conversation: Conversation, chatsters: Results<Chatster>) {
     super.init(nibName: nil, bundle: nil)
     self.state = state
+    self.userRealm = userRealm
     self.conversation = conversation
     self.chatsters.append(contentsOf: chatsters)
     self.fetchConversation(conversation: conversation)
@@ -40,6 +42,16 @@ class ChatroomViewController: UIViewController {
   
   deinit {
     closeConversation()
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    clearUnreadMessages()
+  }
+  
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    clearUnreadMessages()
   }
   
   override func viewDidLoad() {
@@ -61,7 +73,7 @@ class ChatroomViewController: UIViewController {
     collectionView.pinToEdges(of: view)
     collectionView.backgroundColor = .systemBackground
     collectionView.keyboardDismissMode = .onDrag
-
+    
     collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: tabBarHeight, right: 0)
     collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: tabBarHeight, right: 0)
     
@@ -138,8 +150,7 @@ class ChatroomViewController: UIViewController {
       } receiveValue: { [weak self] realm in
         guard let self = self else { return }
         self.conversationRealm = realm
-        let messages = realm.objects(ChatMessage.self).sorted(byKeyPath: "timestamp", ascending: true)
-        self.messages = messages
+        self.messages = realm.objects(ChatMessage.self).sorted(byKeyPath: "timestamp", ascending: true)
         self.configureMessageComposerView()
         self.applySnapshot()
         self.scrollToBottom(animated: false)
@@ -149,7 +160,7 @@ class ChatroomViewController: UIViewController {
   }
   
   private func createObserver() {
-     realmChatNotificationToken = messages.thaw()?.observe { [weak self] changes in
+    realmChatNotificationToken = messages.thaw()?.observe { [weak self] changes in
       guard let self = self else { return }
       switch changes {
       case .error(let error):
@@ -172,6 +183,18 @@ class ChatroomViewController: UIViewController {
     }
   }
   
+  private func clearUnreadMessages() {
+    if let conversation = state.user?.conversations.first(where: { $0.id == conversation.id }) {
+      do {
+        try userRealm.write {
+          conversation.unreadCount = 0
+        }
+      } catch {
+        print("Unable to clear chat unread count")
+      }
+    }
+  }
+  
   private func createKeyboardAppearanceNotification() {
     let notifications = [UIResponder.keyboardWillChangeFrameNotification, UIResponder.keyboardWillHideNotification]
     notifications.forEach { NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: $0, object: nil) }
@@ -186,7 +209,7 @@ class ChatroomViewController: UIViewController {
     let bottomInset = -keyboardRect.height + bottomSafeAreaInset
     let items = [view]
     
-    if notification.name == UIResponder.keyboardWillShowNotification ||  notification.name == UIResponder.keyboardWillChangeFrameNotification {
+    if notification.name == UIResponder.keyboardWillShowNotification || notification.name == UIResponder.keyboardWillChangeFrameNotification {
       items.forEach { $0?.frame.origin.y = bottomInset }
     } else {
       items.forEach { $0?.frame.origin.y = 0 }

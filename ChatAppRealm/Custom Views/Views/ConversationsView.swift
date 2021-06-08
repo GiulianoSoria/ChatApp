@@ -15,28 +15,29 @@ protocol ConversationsViewDelegate: AnyObject {
 class ConversationsView: UIView {
   private var state: AppState!
   private var chatstersRealm: Realm!
+  private var conversations: Results<Conversation>!
   private var chatsters: Results<Chatster>!
+  private var users: Results<User>!
+  private var user: User!
+  private var userConversationsNotificationToken: NotificationToken!
   
   weak var delegate: ConversationsViewDelegate!
-  
-  enum Section { case conversations }
-  
-  private var collectionView: UICollectionView!
-  private var dataSource: UICollectionViewDiffableDataSource<Section, Conversation>!
-  
-  private var user: User!
-  private var conversations: [Conversation] = []
   
   private var sortDescriptor = [
     SortDescriptor(keyPath: "unreadCount", ascending: false),
     SortDescriptor(keyPath: "displayName", ascending: true)
   ]
   
-  init(state: AppState, conversations: [Conversation]) {
+  enum Section { case conversations }
+  
+  private var collectionView: UICollectionView!
+  private var dataSource: UICollectionViewDiffableDataSource<Section, Conversation>!
+  
+  
+  init(state: AppState) {
     super.init(frame: .zero)
     self.state = state
-    self.conversations = conversations
-    fetchChatsters()
+    fetchUsers()
     configureView()
     configureCollectionView()
     configureDataSource()
@@ -95,36 +96,67 @@ class ConversationsView: UIView {
   private func applySnapshot() {
     var snapshot = NSDiffableDataSourceSnapshot<Section, Conversation>()
     snapshot.appendSections([.conversations])
-    snapshot.appendItems(conversations)
+    snapshot.appendItems(Array(conversations))
     
     dataSource.apply(snapshot)
   }
   
+  public func reloadCollectionView() {
+    var snapshot = self.dataSource.snapshot()
+    snapshot.deleteAllItems()
+    
+    snapshot.appendSections([.conversations])
+    let conversations = Array(self.conversations.sorted(by: sortDescriptor))
+    snapshot.appendItems(conversations)
+    
+    self.dataSource.apply(snapshot)
+  }
+  
   private func fetchChatsters() {
-    UIHelpers.showSnackBar(title: "Fetching Conversations",
-                           backgroundColor: .systemBlue,
-                           view: self)
     let config = state.app.currentUser!.configuration(partitionValue: "all-users=all-the-users")
     Realm.asyncOpen(configuration: config)
       .sink { completion in
         switch completion {
         case .failure(let error):
-          UIHelpers.hideSnackBar(title: "Fetching Conversations",
-                                 backgroundColor: .systemBlue,
-                                 view: self)
           print(error.localizedDescription)
         case .finished:
           break
         }
-      } receiveValue: { realm in
+      } receiveValue: { [weak self] realm in
+        guard let self = self else { return }
         self.chatstersRealm = realm
         self.chatsters = realm.objects(Chatster.self)
         self.applySnapshot()
-        UIHelpers.hideSnackBar(title: "Fetching Conversations",
-                               backgroundColor: .systemBlue,
-                               view: self)
       }
       .store(in: &state.subscribers)
+  }
+  
+  private func fetchUsers() {
+    let config = state.app.currentUser!.configuration(partitionValue: "user=\(state.user?._id ?? "")")
+    Realm.asyncOpen(configuration: config)
+      .sink { _ in
+      } receiveValue: { [weak self] realm in
+        guard let self = self else { return }
+        self.users = realm.objects(User.self)
+        self.conversations = self.users[0].conversations.sorted(by: self.sortDescriptor)
+        self.fetchChatsters()
+        self.observeUserConversations()
+      }
+      .store(in: &state.subscribers)
+  }
+  
+  private func observeUserConversations() {
+    userConversationsNotificationToken = users.thaw()?.observe { result in
+      switch result {
+      case .error(let error):
+        print(error.localizedDescription)
+      case .update(let users, deletions: _, insertions: _, modifications: _):
+        self.users = users
+        self.reloadCollectionView()
+      default:
+        break
+      }
+    }
   }
 }
 

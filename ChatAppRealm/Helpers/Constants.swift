@@ -8,14 +8,15 @@
 import UIKit
 
 struct SFSymbols {
-  static let checkbox = UIImage(systemName: "checkmark.square")
-  static let square = UIImage(systemName: "square")
-  static let crossCircle = UIImage(systemName: "xmark.circle")
-  static let alertCircle = UIImage(systemName: "exclamationmark.circle")
-  static let camera = UIImage(systemName: "camera")
-  static let gallery = UIImage(systemName: "photo")
-  static let sendMessage = UIImage(systemName: "paperplane.circle.fill")
-  static let signOut = UIImage(systemName: "person.crop.circle.badge.xmark")
+  static let checkbox          = UIImage(systemName: "checkmark.square")
+  static let square            = UIImage(systemName: "square")
+  static let crossCircle       = UIImage(systemName: "xmark.circle")
+  static let alertCircle       = UIImage(systemName: "exclamationmark.circle")
+  static let camera            = UIImage(systemName: "camera")
+  static let gallery           = UIImage(systemName: "photo")
+  static let sendMessage       = UIImage(systemName: "paperplane.circle.fill")
+  static let signOut           = UIImage(systemName: "person.crop.circle.badge.xmark")
+  static let chevronRight      = UIImage(systemName: "chevron.right")
 }
 
 struct NotificationKeys {
