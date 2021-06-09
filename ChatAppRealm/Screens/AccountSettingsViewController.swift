@@ -112,9 +112,10 @@ class AccountSettingsViewController: UIViewController {
       switch indexPath.section {
       case 0:
         if
-          let image = self.photo,
-          let imageData = image.picture {
-          configuration.image = UIImage(data: imageData)
+          let image = self.photo {
+          let imageView = ThumbnailView(photo: image,
+                                        cornerRadius: 50)
+          configuration.image = imageView.image
           configuration.imageProperties.maximumSize = CGSize(width: 100, height: 100)
           configuration.imageProperties.cornerRadius = 50
           configuration.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 20, leading: self.view.frame.width/2 - 70, bottom: 20, trailing: 0)

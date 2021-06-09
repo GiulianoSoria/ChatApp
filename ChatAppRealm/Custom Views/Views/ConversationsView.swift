@@ -10,6 +10,7 @@ import UIKit
 
 protocol ConversationsViewDelegate: AnyObject {
   func pushConversationViewController(_ conversation: Conversation, chatsters: Results<Chatster>)
+  func sendChatsters(_ chatsers: Results<Chatster>)
 }
 
 class ConversationsView: UIView {
@@ -126,6 +127,7 @@ class ConversationsView: UIView {
         guard let self = self else { return }
         self.chatstersRealm = realm
         self.chatsters = realm.objects(Chatster.self)
+        self.delegate.sendChatsters(self.chatsters)
         self.applySnapshot()
       }
       .store(in: &state.subscribers)

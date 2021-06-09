@@ -13,6 +13,7 @@ class ViewController: UIViewController {
   private var userRealm: Realm!
   private var users: Results<User>!
   private var userConversationsNotificationToken: NotificationToken!
+  private var chatsters: Results<Chatster>!
   
   var shouldRemindOnlineUser = false
   var onlineUserReminderHours = 8
@@ -72,7 +73,8 @@ class ViewController: UIViewController {
       let photo = state.user?.userPreferences?.avatarImage {
       let imageView = ThumbnailView(frame: .zero)
       imageView.delegate = self
-      imageView.set(photo: photo, cornerRadius: 15)
+      imageView.set(photo: photo,
+                    cornerRadius: 15)
       imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
       imageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
       let avatarButton = UIBarButtonItem(customView: imageView)
@@ -87,7 +89,10 @@ class ViewController: UIViewController {
   }
   
   @objc private func addButtonTapped() {
-    print(#function)
+    let destVC = ChatroomCreationViewController(chatsters: Array(self.chatsters))
+    destVC.isModalInPresentation = true
+    let navController = UINavigationController(rootViewController: destVC)
+    present(navController, animated: true)
   }
   
   private func configureCollectionView() {
@@ -143,6 +148,10 @@ extension ViewController: ThumbnailViewDelegate {
 }
 
 extension ViewController: ConversationsViewDelegate {
+  func sendChatsters(_ chatsers: Results<Chatster>) {
+    self.chatsters = chatsers
+  }
+  
   func pushConversationViewController(_ conversation: Conversation, chatsters: Results<Chatster>) {
     let destVC = ChatroomViewController(state: state,
                                         userRealm: userRealm,

@@ -41,6 +41,7 @@ class ChatroomViewController: UIViewController {
   }
   
   deinit {
+    updateLastSeenAt()
     closeConversation()
   }
   
@@ -192,6 +193,16 @@ class ChatroomViewController: UIViewController {
       } catch {
         print("Unable to clear chat unread count")
       }
+    }
+  }
+  
+  private func updateLastSeenAt() {
+    do {
+      try userRealm.write({
+        state.user?.lastSeenAt = Date()
+      })
+    } catch {
+      print("Unable to update user's last seen at date.")
     }
   }
   

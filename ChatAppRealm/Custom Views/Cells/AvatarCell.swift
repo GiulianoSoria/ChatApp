@@ -33,7 +33,8 @@ class AvatarCell: UICollectionViewCell {
     self.chatster = chatster
     if let photo = chatster.avatarImage {
       avatarView.delegate = self
-      avatarView.set(photo: photo, cornerRadius: cornerRadius)
+      avatarView.set(photo: photo,
+                     cornerRadius: cornerRadius)
     }
     configureStatusView(online: online)
   }

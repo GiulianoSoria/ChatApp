@@ -82,9 +82,16 @@ class LoginViewController: UIViewController {
     ])
     
     emailField.set(placeholder: "Username/Email", showingSecureField: false)
+    emailField.delegate = self
+    emailField.tag = 0
+    emailField.returnKeyType = .next
+    emailField.becomeFirstResponder()
     stackView.addArrangedSubview(emailField)
     
     passwordField.set(placeholder: "Password", showingSecureField: true)
+    passwordField.delegate = self
+    passwordField.tag = 1
+    passwordField.returnKeyType = .done
     stackView.addArrangedSubview(passwordField)
     
     callToActionButton.set(title: "Log In")
@@ -216,5 +223,19 @@ class LoginViewController: UIViewController {
   
   func pushProfileScreen() {
     self.dismiss(animated: true)
+  }
+}
+
+extension LoginViewController: UITextFieldDelegate {
+  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    if
+      let nextTextField = textField.superview?.viewWithTag(textField.tag + 1) as? UITextField {
+      nextTextField.becomeFirstResponder()
+    } else {
+      textField.resignFirstResponder()
+      handleCallToActionButtonTapped()
+    }
+    
+    return false
   }
 }

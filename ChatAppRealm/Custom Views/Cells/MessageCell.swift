@@ -102,7 +102,8 @@ class MessageCell: UICollectionViewCell {
   
   private func configureAvatarView(photo: Photo) {
     avatarView.delegate = self
-    avatarView.set(photo: photo, cornerRadius: 10)
+    avatarView.set(photo: photo,
+                   cornerRadius: 10)
     contentView.addSubview(avatarView)
     avatarView.layer.cornerCurve = .circular
     

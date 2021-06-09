@@ -84,9 +84,10 @@ class AvatarsGridView: UIView {
   public func reloadCollectionView(with chatsters: Results<Chatster>) {
     var snapshot = self.dataSource.snapshot()
     snapshot.reloadSections([.main])
-    snapshot.reloadItems(getChatstersToReload(oldChatsters: self.chatsters,
-                                              newChatsters: chatsters))
-    
+    let chatstersToReload = getChatstersToReload(oldChatsters: self.chatsters,
+                                                 newChatsters: chatsters)
+    snapshot.reloadItems(chatstersToReload)
+
     self.dataSource.apply(snapshot, animatingDifferences: true)
   }
   
@@ -111,6 +112,14 @@ class AvatarsGridView: UIView {
     
     self.chatsters = newChatsters
     return array
+  }
+  
+  private func showSnackBar(username: String, presence: String, imageData: Data) {
+    UIHelpers.autoDismissableSnackBar(title: "\(username) is \(presence)",
+                                      image: UIImage(data: imageData),
+                                      backgroundColor: .systemBlue,
+                                      textColor: .label,
+                                      view: self.superview ?? self)
   }
   
   private func observeChatstersRealm() {
