@@ -26,6 +26,18 @@ class LoginViewController: UIViewController {
     return button
   }()
   
+  var isLoggingIn: Bool = false {
+    didSet {
+      if #available(iOS 15.0, *) {
+        callToActionButton.setNeedsUpdateConfiguration()
+      }
+      
+      emailField.isEnabled = !isLoggingIn
+      passwordField.isEnabled = !isLoggingIn
+      callToActionButton.isEnabled = !isLoggingIn
+    }
+  }
+  
   var newUser: Bool = false {
     didSet {
       checkboxButton.setImage(newUser ? SFSymbols.checkbox : SFSymbols.square, for: .normal)
@@ -47,6 +59,7 @@ class LoginViewController: UIViewController {
     super.viewDidLoad()
     configureViewController()
     configureStackView()
+    hideKeyboardWhenTappedAround()
   }
   
   private func configureViewController() {
@@ -84,6 +97,16 @@ class LoginViewController: UIViewController {
   
   @objc private func handleCallToActionButtonTapped() {
     state.shouldIndicateActivity = true
+    
+    if #available(iOS 15.0, *) {
+      callToActionButton.configurationUpdateHandler = { [weak self] button in
+        guard let self = self else { return }
+        var config = button.configuration
+        config?.showsActivityIndicator = self.isLoggingIn
+        button.configuration = config
+      }
+    }
+    
     newUser ? signup() : login()
   }
   
@@ -108,6 +131,7 @@ class LoginViewController: UIViewController {
     guard
       let email = emailField.text, !email.isEmpty,
       let password = passwordField.text, !password.isEmpty else {
+      self.isLoggingIn = false
       UIHelpers.autoDismissableSnackBar(title: "Provide a valid email and password",
                                         image: SFSymbols.alertCircle,
                                         backgroundColor: .systemYellow,
@@ -118,15 +142,18 @@ class LoginViewController: UIViewController {
     }
     
     state.error = nil
+    self.isLoggingIn = true
     showSnackBar(title: "Creating Account")
     state.app.emailPasswordAuth.registerUser(email: email, password: password)
       .receive(on: DispatchQueue.main)
       .sink { completion in
         self.state.shouldIndicateActivity = false
+        self.isLoggingIn = false
         self.dismissSnackBar(title: "Creating Account")
         switch completion {
         case .failure(let error):
           self.state.error = error.localizedDescription
+          self.isLoggingIn = false
           UIHelpers.autoDismissableSnackBar(title: error.localizedDescription.capitalized,
                                             image: SFSymbols.crossCircle,
                                             backgroundColor: .systemRed,
@@ -136,6 +163,7 @@ class LoginViewController: UIViewController {
         }
       } receiveValue: { value in
         self.state.error = nil
+        self.isLoggingIn = false
         self.dismissSnackBar(title: "Creating Account")
         self.login()
       }
@@ -146,6 +174,7 @@ class LoginViewController: UIViewController {
     guard
       let email = emailField.text, !email.isEmpty,
       let password = passwordField.text, !password.isEmpty else {
+        self.isLoggingIn = false
       UIHelpers.autoDismissableSnackBar(title: "Provide a valid email and password",
                                         image: SFSymbols.alertCircle,
                                         backgroundColor: .systemYellow,
@@ -156,15 +185,18 @@ class LoginViewController: UIViewController {
     }
     
     state.error = nil
+    self.isLoggingIn = true
     showSnackBar(title: "Logging in")
     state.app.login(credentials: .emailPassword(email: email, password: password))
       .receive(on: DispatchQueue.main)
       .sink { completion in
         self.state.shouldIndicateActivity = false
+        self.isLoggingIn = false
         self.dismissSnackBar(title: "Logging in")
         switch completion {
         case .failure(let error):
           self.state.error = error.localizedDescription
+          self.isLoggingIn = false
           UIHelpers.autoDismissableSnackBar(title: error.localizedDescription.capitalized,
                                             image: SFSymbols.crossCircle,
                                             backgroundColor: .systemRed,
@@ -174,6 +206,7 @@ class LoginViewController: UIViewController {
         }
       } receiveValue: { user in
         self.state.error = nil
+        self.isLoggingIn = false
         self.dismissSnackBar(title: "Logging in")
         self.state.loginPublisher.send(user)
         self.pushProfileScreen()

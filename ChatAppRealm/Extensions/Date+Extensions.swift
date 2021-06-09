@@ -10,7 +10,14 @@ import Foundation
 extension Date {
   func convertToMonthDayYearFormat() -> String {
     let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "MMM dd, yy @ HH:mm:ss"
+    dateFormatter.dateFormat = "MMM dd, yy"
+    
+    return dateFormatter.string(from: self)
+  }
+  
+  func convertToHourMinutsFormat() -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "HH:mm"
     
     return dateFormatter.string(from: self)
   }

@@ -5,21 +5,28 @@
 //  Created by Giuliano Soria Pazos on 2021-06-06.
 //
 
+import RealmSwift
 import UIKit
 
 class AvatarsGridView: UIView {
+  private var chatstersRealmNotificationToken: NotificationToken!
+  private var conversation: Conversation!
+  private var chatsters: Results<Chatster>!
+  private var chatstersArray: [Chatster] = []
   
   enum Section { case main }
   
-  var collectionView: UICollectionView!
-  var dataSource: UICollectionViewDiffableDataSource<Section, Chatster>!
+  private var collectionView: UICollectionView!
+  private var dataSource: UICollectionViewDiffableDataSource<Section, Chatster>!
   
-  var chatsters: [Chatster] = []
-  
-  convenience init(chatsters: [Chatster]) {
+  convenience init(conversation: Conversation, chatsters: Results<Chatster>) {
     self.init(frame: .zero)
     self.chatsters = chatsters
+    self.conversation = conversation
+    self.chatstersArray = getChatsters(chatsters)
+    
     configure()
+    observeChatstersRealm()
     configureCollectionView()
     configureDataSource()
     applySnapshot()
@@ -69,8 +76,54 @@ class AvatarsGridView: UIView {
   private func applySnapshot() {
     var snapshot = NSDiffableDataSourceSnapshot<Section, Chatster>()
     snapshot.appendSections([.main])
-    snapshot.appendItems(chatsters)
+    snapshot.appendItems(chatstersArray)
     
     dataSource.apply(snapshot)
+  }
+  
+  public func reloadCollectionView(with chatsters: Results<Chatster>) {
+    var snapshot = self.dataSource.snapshot()
+    snapshot.reloadSections([.main])
+    snapshot.reloadItems(getChatstersToReload(oldChatsters: self.chatsters,
+                                              newChatsters: chatsters))
+    
+    self.dataSource.apply(snapshot, animatingDifferences: true)
+  }
+  
+  private func getChatsters(_ chatsters: Results<Chatster>) -> [Chatster] {
+    var array = Array(chatsters)
+    let names = conversation.members.map({ $0.userName })
+    array.removeAll(where: { !names.contains($0.userName) })
+    return array
+  }
+  
+  private func getChatstersToReload(oldChatsters: Results<Chatster>,
+                                    newChatsters: Results<Chatster>) -> [Chatster] {
+    var index = 0
+    var array: [Chatster] = []
+    
+    while index < oldChatsters.count {
+      if oldChatsters[index] != newChatsters[index] {
+        array.append(oldChatsters[index])
+      }
+      index += 1
+    }
+    
+    self.chatsters = newChatsters
+    return array
+  }
+  
+  private func observeChatstersRealm() {
+    chatstersRealmNotificationToken = chatsters.thaw()?.observe { [weak self] result in
+      guard let self = self else { return }
+      switch result {
+      case .error(let error):
+        print(error.localizedDescription)
+      case .update(let chatsters, deletions: _, insertions: _, modifications: _):
+        self.reloadCollectionView(with: chatsters)
+      default:
+        break
+      }
+    }
   }
 }

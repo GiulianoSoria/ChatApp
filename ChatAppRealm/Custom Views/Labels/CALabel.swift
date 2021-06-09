@@ -28,7 +28,7 @@ class CALabel: UILabel {
     self.fontSize = fontSize
     self.weight = weight
     self.textAlignment = textAlignment
-    self.font = UIFont.systemFont(ofSize: fontSize, weight: weight)
+    self.font = UIFont.rounded(ofSize: fontSize, weight: weight)
     self.textColor = textColor
   }
   
@@ -36,7 +36,7 @@ class CALabel: UILabel {
     self.fontSize = fontSize
     self.weight = fontWeight
     self.textAlignment = textAlignment
-    self.font = UIFont.systemFont(ofSize: fontSize, weight: weight)
+    self.font = UIFont.rounded(ofSize: fontSize, weight: weight)
     self.textColor = textColor
   }
   

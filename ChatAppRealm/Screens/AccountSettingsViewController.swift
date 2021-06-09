@@ -90,32 +90,6 @@ class AccountSettingsViewController: UIViewController {
     state.shouldIndicateActivity = false
   }
   
-  private func logOut() {
-    state.shouldIndicateActivity = true
-    do {
-      try userRealm.write {
-        state.user?.presenceState = .offLine
-      }
-      self.dismiss(animated: true)
-    } catch {
-      state.error = "Unable to open Realm write transaction"
-    }
-    
-    state.app.currentUser?.logOut()
-      .receive(on: DispatchQueue.main)
-      .sink(receiveCompletion: { _ in
-      }, receiveValue: { [weak self] value in
-        guard let self = self else { return }
-        self.state.shouldIndicateActivity = false
-        self.state.logoutPublisher.send(value)
-        
-        self.dismiss(animated: true) {
-          self.delegate.showLoginViewController()
-        }
-      })
-      .store(in: &state.subscribers)
-  }
-  
   private func configureCollectionView() {
     var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
     configuration.backgroundColor = .systemBackground
@@ -150,8 +124,11 @@ class AccountSettingsViewController: UIViewController {
           let username = item as? String  else { return }
         configuration.text = username
       case 2:
+        
         configuration.text = "Log Out"
+        configuration.textProperties.font = UIFont.rounded(ofSize: 16, weight: .semibold)
         configuration.image = SFSymbols.signOut
+        configuration.imageProperties.preferredSymbolConfiguration = .init(pointSize: 20, weight: .semibold)
         cell.tintColor = .label
       default:
         break
@@ -173,7 +150,7 @@ class AccountSettingsViewController: UIViewController {
         break
       }
       
-      configuration.textProperties.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
+      configuration.textProperties.font = UIFont.rounded(ofSize: 13, weight: .semibold)
       
       headerView.contentConfiguration = configuration
     }
@@ -207,6 +184,32 @@ class AccountSettingsViewController: UIViewController {
     snapshot.reloadSections([section])
     
     dataSource.apply(snapshot)
+  }
+  
+  private func logOut() {
+    state.shouldIndicateActivity = true
+    do {
+      try userRealm.write {
+        state.user?.presenceState = .offLine
+      }
+      self.dismiss(animated: true)
+    } catch {
+      state.error = "Unable to open Realm write transaction"
+    }
+    
+    state.app.currentUser?.logOut()
+      .receive(on: DispatchQueue.main)
+      .sink(receiveCompletion: { _ in
+      }, receiveValue: { [weak self] value in
+        guard let self = self else { return }
+        self.state.shouldIndicateActivity = false
+        self.state.logoutPublisher.send(value)
+        
+        self.dismiss(animated: true) {
+          self.delegate.showLoginViewController()
+        }
+      })
+      .store(in: &state.subscribers)
   }
 }
 

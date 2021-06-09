@@ -109,7 +109,7 @@ class ConversationsView: UIView {
     let conversations = Array(self.conversations.sorted(by: sortDescriptor))
     snapshot.appendItems(conversations)
     
-    self.dataSource.apply(snapshot)
+    self.dataSource.apply(snapshot, animatingDifferences: true)
   }
   
   private func fetchChatsters() {

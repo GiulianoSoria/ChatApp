@@ -33,19 +33,35 @@ class CAButton: UIButton {
                   inactiveImage: UIImage? = nil,
                   title: String? = nil,
                   active: Bool = true) {
-    setImage(active ? activeImage : inactiveImage, for: .normal)
-    setTitle(title, for: .normal)
+    
+    if #available(iOS 15.0, *) {
+      var configuration = UIButton.Configuration.filled()
+      configuration.title = title
+      configuration.buttonSize = .large
+      configuration.cornerStyle = .medium
+      
+      configuration.image = active ? activeImage : inactiveImage
+      configuration.imagePlacement = .leading
+      self.configuration = configuration
+      self.configuration?.baseBackgroundColor = .systemBlue
+    } else {
+      // Fallback on earlier versions
+      titleLabel?.font = UIFont.rounded(ofSize: 16, weight: .semibold)
+    }
     layer.opacity = active ? Dimensions.activeOpacity : Dimensions.inactiveOpacity
   }
   
   private func configure() {
     translatesAutoresizingMaskIntoConstraints = false
     
-    setTitleColor(.label, for: .normal)
-    
-    layer.cornerRadius = 10
-    layer.cornerCurve = .circular
-    backgroundColor = .systemBlue
-    titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+    if #available(iOS 15.0, *) {
+      
+    } else {
+      setTitleColor(.label, for: .normal)
+      
+      layer.cornerRadius = 10
+      layer.cornerCurve = .circular
+      backgroundColor = .systemBlue
+    }
   }
 }

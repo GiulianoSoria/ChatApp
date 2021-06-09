@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F2363A5826700B7400331312 /* UIFont+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2363A5726700B7400331312 /* UIFont+Extensions.swift */; };
 		F285C31D266944CA00362C37 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C31C266944CA00362C37 /* AppDelegate.swift */; };
 		F285C31F266944CA00362C37 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C31E266944CA00362C37 /* SceneDelegate.swift */; };
 		F285C321266944CA00362C37 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C320266944CA00362C37 /* ViewController.swift */; };
@@ -50,6 +51,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F2363A5726700B7400331312 /* UIFont+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extensions.swift"; sourceTree = "<group>"; };
 		F285C319266944CA00362C37 /* ChatAppRealm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatAppRealm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F285C31C266944CA00362C37 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F285C31E266944CA00362C37 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -214,6 +216,7 @@
 				F285C40E266BDE6C00362C37 /* UIView+Extensions.swift */,
 				F285C424266D499800362C37 /* Date+Extensions.swift */,
 				F285C42B266D9E5800362C37 /* UIViewController+Extensions.swift */,
+				F2363A5726700B7400331312 /* UIFont+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -379,6 +382,7 @@
 				F285C321266944CA00362C37 /* ViewController.swift in Sources */,
 				F285C41B266C951A00362C37 /* ConversationsView.swift in Sources */,
 				F285C3452669606C00362C37 /* ChatMessage.swift in Sources */,
+				F2363A5826700B7400331312 /* UIFont+Extensions.swift in Sources */,
 				F285C3F5266B3CA900362C37 /* LocationHelper.swift in Sources */,
 				F285C415266C49FE00362C37 /* AccountSettingsViewController.swift in Sources */,
 				F285C423266D458D00362C37 /* MessageCell.swift in Sources */,

@@ -14,7 +14,9 @@ class ConversationCell: UICollectionViewCell {
   private var state: AppState!
   private var chatstersRealm: Realm!
   private var chatstersRealmNotificationToken: NotificationToken!
+  private var conversation: Conversation!
   private var chatsters: Results<Chatster>!
+  private var chatstersArray: [Chatster] = []
   
   private var chatroomLabel = CALabel(textAlignment: .left, fontSize: 16, weight: .semibold, textColor: .label)
   private var avatarsView: AvatarsGridView!
@@ -48,6 +50,7 @@ class ConversationCell: UICollectionViewCell {
                   chatstersRealm: Realm,
                   chatsters: Results<Chatster>) {
     self.state = state
+    self.conversation = conversation
     self.chatstersRealm = chatstersRealm
     self.unreadCount = conversation.unreadCount
     
@@ -56,8 +59,8 @@ class ConversationCell: UICollectionViewCell {
     }
 
     chatroomLabel.text = conversation.displayName
-    configureAvatarsView()
-    observeChatstersRealm()
+    
+    configureAvatarsView(chatsters: chatsters)
     
     if self.unreadCount > 0 {
       configureUnreadCountView()
@@ -66,9 +69,9 @@ class ConversationCell: UICollectionViewCell {
     }
   }
   
-  private func configureAvatarsView() {
-    avatarsView = AvatarsGridView(chatsters: Array(self.chatsters))
-    if contentView.contains(avatarsView) { avatarsView.removeFromSuperview() }
+  private func configureAvatarsView(chatsters: Results<Chatster>) {
+    avatarsView = AvatarsGridView(conversation: conversation,
+                                  chatsters: chatsters)
     contentView.addSubview(avatarsView)
     
     NSLayoutConstraint.activate([
@@ -132,20 +135,5 @@ class ConversationCell: UICollectionViewCell {
       chevronView.widthAnchor.constraint(equalToConstant: 15),
       chevronView.heightAnchor.constraint(equalTo: chevronView.widthAnchor)
     ])
-  }
-  
-  private func observeChatstersRealm() {
-    chatstersRealmNotificationToken = chatsters.thaw()?.observe { [weak self] result in
-      guard let self = self else { return }
-      switch result {
-      case .error(let error):
-        print(error.localizedDescription)
-      case .update(let chatsters, deletions: _, insertions: _, modifications: _):
-        self.chatsters = chatsters
-        self.configureAvatarsView()
-      default:
-        break
-      }
-    }
   }
 }

@@ -30,7 +30,7 @@ class CATextView: UITextView {
     translatesAutoresizingMaskIntoConstraints = true
     adjustsFontForContentSizeCategory = true
     autocapitalizationType = .sentences
-    font = UIFont.systemFont(ofSize: 14, weight: .regular)
+    font = UIFont.rounded(ofSize: 14, weight: .regular)
     dataDetectorTypes = .all
     returnKeyType = .default
   }

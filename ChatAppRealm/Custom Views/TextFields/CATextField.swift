@@ -28,7 +28,7 @@ class CATextField: UITextField {
   private func configure() {
     translatesAutoresizingMaskIntoConstraints = false
     
-    font = UIFont.systemFont(ofSize: 16, weight: .regular)
+    font = UIFont.rounded(ofSize: 16, weight: .regular)
     borderStyle = .roundedRect
     backgroundColor = .secondarySystemBackground
   }

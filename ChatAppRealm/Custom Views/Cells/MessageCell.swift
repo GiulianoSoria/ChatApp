@@ -70,7 +70,8 @@ class MessageCell: UICollectionViewCell {
     authorLabel.text = isMyMessage ? "" : message.author
     
     timeLabel.set(textAlignment: .right, fontSize: 12, fontWeight: .regular, textColor: .secondaryLabel)
-    timeLabel.text = message.timestamp.convertToMonthDayYearFormat()
+    let isLessThanADay = message.timestamp.timeIntervalSinceNow > -60 * 60 * 24
+    timeLabel.text = isLessThanADay ? message.timestamp.convertToHourMinutsFormat() : message.timestamp.convertToMonthDayYearFormat()
     
     textLabel.set(textAlignment: .left, fontSize: 14, fontWeight: .regular, textColor: .label)
     textLabel.text = message.text
