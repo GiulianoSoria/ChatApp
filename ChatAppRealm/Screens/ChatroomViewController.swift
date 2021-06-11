@@ -126,8 +126,8 @@ class ChatroomViewController: UIViewController {
     
     NSLayoutConstraint.activate([
       composerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-      composerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-      composerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+      composerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+      composerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
       composerView.heightAnchor.constraint(greaterThanOrEqualToConstant: tabBarHeight)
     ])
   }
@@ -212,11 +212,13 @@ class ChatroomViewController: UIViewController {
   }
   
   @objc private func adjustForKeyboard(_ notification: NSNotification) {
-    guard let keyboardRect = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+    guard
+      let keyboardRect = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+      let keyWindow = keyWindow else {
       return
     }
     
-    let bottomSafeAreaInset = keyWindow?.safeAreaInsets.bottom ?? 34
+    let bottomSafeAreaInset = keyWindow.safeAreaInsets.bottom
     let bottomInset = -keyboardRect.height + bottomSafeAreaInset
     let items = [view]
     

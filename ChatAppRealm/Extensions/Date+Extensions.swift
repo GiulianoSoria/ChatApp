@@ -15,6 +15,13 @@ extension Date {
     return dateFormatter.string(from: self)
   }
   
+  func convertToFullDateFormat() -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "MMM dd, yy @ HH:mm"
+    
+    return dateFormatter.string(from: self)
+  }
+  
   func convertToHourMinutsFormat() -> String {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "HH:mm"

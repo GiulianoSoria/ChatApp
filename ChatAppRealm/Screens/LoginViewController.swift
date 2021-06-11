@@ -16,6 +16,8 @@ class LoginViewController: UIViewController {
   var passwordField = CATextField()
   var callToActionButton = CAButton()
   
+  private let keyWindow = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first
+  
   lazy var checkboxButton: CAButton = {
     let button = CAButton()
     button.setImage(SFSymbols.square, for: .normal)
@@ -59,6 +61,7 @@ class LoginViewController: UIViewController {
     super.viewDidLoad()
     configureViewController()
     configureStackView()
+    createKeyboardAppearanceNotification()
     hideKeyboardWhenTappedAround()
   }
   
@@ -223,6 +226,41 @@ class LoginViewController: UIViewController {
   
   func pushProfileScreen() {
     self.dismiss(animated: true)
+  }
+  
+  private func createKeyboardAppearanceNotification() {
+    let notifications = [UIResponder.keyboardWillChangeFrameNotification, UIResponder.keyboardWillHideNotification]
+    notifications.forEach { NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: $0, object: nil) }
+  }
+  
+  @objc private func adjustForKeyboard(_ notification: NSNotification) {
+    guard
+      let keyboardRect = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+      return
+    }
+    
+    let stackViewMaxY = stackView.frame.maxY
+    let bottomSafeAreaInset = keyWindow?.safeAreaInsets.bottom ?? 34
+    let keyboardMinY = view.frame.height - keyboardRect.height
+    let bottomInset: CGFloat
+    
+    if keyboardMinY < stackViewMaxY {
+      bottomInset = stackViewMaxY - bottomSafeAreaInset - (view.frame.height - keyboardRect.height)
+    } else {
+      bottomInset = 0
+    }
+    
+    let items = [view]
+    
+    if notification.name == UIResponder.keyboardWillShowNotification || notification.name == UIResponder.keyboardWillChangeFrameNotification {
+      items.forEach { view in
+        UIView.animate(withDuration: 0.5) {
+          view?.frame.origin.y = bottomInset
+        }
+      }
+    } else {
+      items.forEach { $0?.frame.origin.y = 0 }
+    }
   }
 }
 

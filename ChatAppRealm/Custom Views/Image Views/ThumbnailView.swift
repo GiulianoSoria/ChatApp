@@ -21,7 +21,7 @@ class ThumbnailView: CAImageView {
     configure()
   }
   
-  convenience init(photo: Photo, cornerRadius: CGFloat) {
+  convenience init(photo: Photo? = nil, cornerRadius: CGFloat) {
     self.init(frame:. zero)
     configure()
     self.set(photo: photo, cornerRadius: cornerRadius)
@@ -31,10 +31,15 @@ class ThumbnailView: CAImageView {
     fatalError("init(coder:) has not been implemented")
   }
   
-  public func set(photo: Photo, cornerRadius: CGFloat) {
+  public func set(photo: Photo? = nil, cornerRadius: CGFloat) {
     if
+      let photo = photo,
       let imageData = photo.picture {
       image = UIImage(data: imageData)
+    } else {
+      let configuration = UIImage.SymbolConfiguration(pointSize: 150)
+      image = UIImage(systemName: "person.crop.circle",
+                      withConfiguration: configuration)
     }
     layer.cornerRadius = cornerRadius
   }

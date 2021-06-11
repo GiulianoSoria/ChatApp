@@ -8,11 +8,17 @@
 import RealmSwift
 import UIKit
 
+protocol AvatarsGridViewDelegate: AnyObject {
+  func showChatsterViewController(chatster: Chatster)
+}
+
 class AvatarsGridView: UIView {
   private var chatstersRealmNotificationToken: NotificationToken!
   private var conversation: Conversation!
   private var chatsters: Results<Chatster>!
   private var chatstersArray: [Chatster] = []
+  
+  weak var delegate: AvatarsGridViewDelegate!
   
   enum Section { case main }
   
@@ -41,9 +47,11 @@ class AvatarsGridView: UIView {
     collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
     addSubview(collectionView)
     collectionView.pinToEdges(of: self)
-    collectionView.backgroundColor = .systemBackground
+    collectionView.backgroundColor = .secondarySystemBackground
+    collectionView.showsHorizontalScrollIndicator = false
     
     collectionView.register(AvatarCell.self, forCellWithReuseIdentifier: AvatarCell.reuseID)
+//    collectionView.delegate = self
   }
   
   private func createLayout() -> UICollectionViewCompositionalLayout {
@@ -54,7 +62,7 @@ class AvatarsGridView: UIView {
     let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
     
     let section = NSCollectionLayoutSection(group: group)
-    section.orthogonalScrollingBehavior = .continuous
+    section.orthogonalScrollingBehavior = .continuousGroupLeadingBoundary
     section.interGroupSpacing = 10
     
     let layout = UICollectionViewCompositionalLayout(section: section)
@@ -68,6 +76,7 @@ class AvatarsGridView: UIView {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AvatarCell.reuseID,
                                                       for: indexPath) as? AvatarCell else { return nil }
       cell.set(chatster: chatster, cornerRadius: 20, online: chatster.presenceState == .onLine ? true : false)
+      cell.delegate = self
       
       return cell
     })
@@ -114,14 +123,6 @@ class AvatarsGridView: UIView {
     return array
   }
   
-  private func showSnackBar(username: String, presence: String, imageData: Data) {
-    UIHelpers.autoDismissableSnackBar(title: "\(username) is \(presence)",
-                                      image: UIImage(data: imageData),
-                                      backgroundColor: .systemBlue,
-                                      textColor: .label,
-                                      view: self.superview ?? self)
-  }
-  
   private func observeChatstersRealm() {
     chatstersRealmNotificationToken = chatsters.thaw()?.observe { [weak self] result in
       guard let self = self else { return }
@@ -134,5 +135,11 @@ class AvatarsGridView: UIView {
         break
       }
     }
+  }
+}
+
+extension AvatarsGridView: AvatarCellDelegate {
+  func showChatsterViewController(chatster: Chatster) {
+    delegate.showChatsterViewController(chatster: chatster)
   }
 }

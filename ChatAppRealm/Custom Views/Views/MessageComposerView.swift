@@ -157,17 +157,17 @@ class MessageComposerView: UIView {
       cameraButton.heightAnchor.constraint(equalToConstant: 25),
       
       galleryButton.topAnchor.constraint(equalTo: messageTextView.topAnchor),
-      galleryButton.leadingAnchor.constraint(equalTo: cameraButton.trailingAnchor, constant: 10),
+      galleryButton.leadingAnchor.constraint(equalTo: cameraButton.trailingAnchor, constant: padding/2),
       galleryButton.widthAnchor.constraint(equalToConstant: 30),
       galleryButton.heightAnchor.constraint(equalToConstant: 25),
       
-      messageTextView.topAnchor.constraint(equalTo: topAnchor, constant: 10),
-      messageTextView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -10),
+      messageTextView.topAnchor.constraint(equalTo: topAnchor, constant: padding/2),
+      messageTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -40),
       messageTextView.leadingAnchor.constraint(equalTo: galleryButton.trailingAnchor, constant: padding),
-      messageTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding - 10 - 30),
+      messageTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding - 40),
       messageTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: 30),
       
-      sendButton.topAnchor.constraint(equalTo: topAnchor, constant: 10),
+      sendButton.topAnchor.constraint(equalTo: topAnchor, constant: padding/2),
       sendButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding),
       sendButton.heightAnchor.constraint(equalToConstant: 30),
       sendButton.widthAnchor.constraint(equalTo: sendButton.heightAnchor)

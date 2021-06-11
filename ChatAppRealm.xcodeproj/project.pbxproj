@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		F2363A5826700B7400331312 /* UIFont+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2363A5726700B7400331312 /* UIFont+Extensions.swift */; };
 		F2363A5A26705B3400331312 /* ChatroomCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2363A5926705B3400331312 /* ChatroomCreationViewController.swift */; };
+		F2363A5C2673D0DB00331312 /* ChatsterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2363A5B2673D0DA00331312 /* ChatsterViewController.swift */; };
 		F285C31D266944CA00362C37 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C31C266944CA00362C37 /* AppDelegate.swift */; };
 		F285C31F266944CA00362C37 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C31E266944CA00362C37 /* SceneDelegate.swift */; };
 		F285C321266944CA00362C37 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C320266944CA00362C37 /* ViewController.swift */; };
@@ -54,6 +55,7 @@
 /* Begin PBXFileReference section */
 		F2363A5726700B7400331312 /* UIFont+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extensions.swift"; sourceTree = "<group>"; };
 		F2363A5926705B3400331312 /* ChatroomCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatroomCreationViewController.swift; sourceTree = "<group>"; };
+		F2363A5B2673D0DA00331312 /* ChatsterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsterViewController.swift; sourceTree = "<group>"; };
 		F285C319266944CA00362C37 /* ChatAppRealm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatAppRealm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F285C31C266944CA00362C37 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F285C31E266944CA00362C37 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -196,6 +198,7 @@
 				F285C414266C49FE00362C37 /* AccountSettingsViewController.swift */,
 				F285C420266D43CF00362C37 /* ChatroomViewController.swift */,
 				F2363A5926705B3400331312 /* ChatroomCreationViewController.swift */,
+				F2363A5B2673D0DA00331312 /* ChatsterViewController.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -372,6 +375,7 @@
 				F285C40D266BDD7600362C37 /* CAImageView.swift in Sources */,
 				F285C33F26695D9300362C37 /* Conversation.swift in Sources */,
 				F285C3F4266B3CA900362C37 /* PhotoCaptureController.swift in Sources */,
+				F2363A5C2673D0DB00331312 /* ChatsterViewController.swift in Sources */,
 				F285C3472669613B00362C37 /* UserPreferences.swift in Sources */,
 				F285C42C266D9E5800362C37 /* UIViewController+Extensions.swift in Sources */,
 				F285C41F266D29AD00362C37 /* AvatarCell.swift in Sources */,

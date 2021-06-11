@@ -28,6 +28,7 @@ class AccountSettingsViewController: UIViewController {
   
   private var collectionView: UICollectionView!
   private var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
+  private var textField: CATextField!
   
   init(state: AppState, userRealm: Realm) {
     super.init(nibName: nil, bundle: nil)
@@ -53,10 +54,16 @@ class AccountSettingsViewController: UIViewController {
     title = "Account Settings"
     view.backgroundColor = .systemBackground
     
-    let closeButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(closeButtonTapped))
+    let closeButton = UIBarButtonItem(barButtonSystemItem: .close,
+                                      target: self,
+                                      action: #selector(closeButtonTapped))
+    closeButton.isEnabled = state.user?.userPreferences?.displayName != "" && state.user?.userPreferences?.avatarImage != nil
     navigationItem.leftBarButtonItem = closeButton
     
-    let saveButton = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveButtonTapped))
+    let saveButton = UIBarButtonItem(title: "Save",
+                                     style: .done,
+                                     target: self,
+                                     action: #selector(saveButtonTapped))
     navigationItem.rightBarButtonItem = saveButton
   }
   
@@ -72,14 +79,16 @@ class AccountSettingsViewController: UIViewController {
         if isPhotoAdded {
           guard
             let newPhoto = photo else {
-            print("Missing Photo")
-            state.shouldIndicateActivity = false
-            return
-          }
+              print("Missing Photo")
+              state.shouldIndicateActivity = false
+              return
+            }
           
           state.user?.userPreferences?.avatarImage = newPhoto
           let info = ["photo": newPhoto]
-          NotificationCenter.default.post(name: updateUserProfile, object: nil, userInfo: info)
+          NotificationCenter.default.post(name: updateUserProfile,
+                                          object: nil,
+                                          userInfo: info)
         }
         state.user?.presenceState = .onLine
       }
@@ -101,6 +110,7 @@ class AccountSettingsViewController: UIViewController {
     view.addSubview(collectionView)
     collectionView.pinToEdges(of: view)
     collectionView.backgroundColor = .systemBackground
+    collectionView.keyboardDismissMode = .onDrag
     collectionView.delegate = self
   }
   
@@ -111,21 +121,24 @@ class AccountSettingsViewController: UIViewController {
       
       switch indexPath.section {
       case 0:
+        let imageView: ThumbnailView!
         if
           let image = self.photo {
-          let imageView = ThumbnailView(photo: image,
-                                        cornerRadius: 50)
-          configuration.image = imageView.image
-          configuration.imageProperties.maximumSize = CGSize(width: 100, height: 100)
-          configuration.imageProperties.cornerRadius = 50
-          configuration.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 20, leading: self.view.frame.width/2 - 70, bottom: 20, trailing: 0)
+          imageView = ThumbnailView(photo: image,
+                                    cornerRadius: 50)
+        } else {
+          imageView = ThumbnailView(cornerRadius: 50)
         }
-      case 1:
-        guard
-          let username = item as? String  else { return }
-        configuration.text = username
-      case 2:
+        imageView.delegate = self
         
+        configuration.image = imageView.image
+        configuration.imageProperties.maximumSize = CGSize(width: 100, height: 100)
+        configuration.imageProperties.cornerRadius = 50
+        configuration.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 20, leading: self.view.frame.width/2 - 70, bottom: 20, trailing: 0)
+        cell.accessories = []
+      case 1:
+        cell.accessories = [.customView(configuration: self.configureTextField(in: cell))]
+      case 2:
         configuration.text = "Log Out"
         configuration.textProperties.font = UIFont.rounded(ofSize: 16, weight: .semibold)
         configuration.image = SFSymbols.signOut
@@ -146,7 +159,7 @@ class AccountSettingsViewController: UIViewController {
       case 0:
         configuration.text = "Avatar Image"
       case 1:
-        configuration.text = "Username"
+        configuration.text = "Display Name"
       default:
         break
       }
@@ -173,7 +186,7 @@ class AccountSettingsViewController: UIViewController {
     var snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
     snapshot.appendSections([.avatar, .username, .logOut])
     snapshot.appendItems([photo], toSection: .avatar)
-    snapshot.appendItems([displayName], toSection: .username)
+    snapshot.appendItems([""], toSection: .username)
     snapshot.appendItems(["Log Out"], toSection: .logOut)
     
     dataSource.apply(snapshot)
@@ -187,13 +200,48 @@ class AccountSettingsViewController: UIViewController {
     dataSource.apply(snapshot)
   }
   
+  private func configureTextField(in cell: UICollectionViewListCell) -> UICellAccessory.CustomViewConfiguration {
+    textField = CATextField(frame: .zero)
+    textField.translatesAutoresizingMaskIntoConstraints = true
+    textField.borderStyle = .none
+    textField.placeholder = "Enter display name"
+    textField.text = displayName
+    textField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+    
+    textField.frame = CGRect(x: 0,
+                             y: 0,
+                             width: cell.contentView.frame.width - 40,
+                             height: cell.contentView.frame.height)
+    
+    let placement = UICellAccessory.Placement.leading(displayed: .always,
+                                                      at: UICellAccessory.Placement.position(before: .disclosureIndicator()))
+    let width = UICellAccessory.LayoutDimension.actual
+    let configuration = UICellAccessory.CustomViewConfiguration(customView: textField,
+                                                                placement: placement,
+                                                                isHidden: false,
+                                                                reservedLayoutWidth: width,
+                                                                tintColor: .systemBlue,
+                                                                maintainsFixedSize: false)
+    
+    return configuration
+  }
+  
+  @objc private func textFieldDidChange(_ textField: UITextField) {
+    if
+      let text = textField.text {
+      displayName = text
+      navigationItem.leftBarButtonItem?.isEnabled = state.user?.userPreferences?.displayName != "" && state.user?.userPreferences?.avatarImage != nil
+    } else {
+      navigationItem.leftBarButtonItem?.isEnabled = false
+    }
+  }
+  
   private func logOut() {
     state.shouldIndicateActivity = true
     do {
       try userRealm.write {
         state.user?.presenceState = .offLine
       }
-      self.dismiss(animated: true)
     } catch {
       state.error = "Unable to open Realm write transaction"
     }
@@ -214,32 +262,28 @@ class AccountSettingsViewController: UIViewController {
   }
 }
 
-extension AccountSettingsViewController: UICollectionViewDelegateFlowLayout {
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-    if indexPath.section == 0 {
-      return CGSize(width: view.frame.width, height: 140)
-    } else {
-      return CGSize(width: view.frame.width, height: 40)
+extension AccountSettingsViewController: UICollectionViewDelegate {
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    switch indexPath.section {
+    case 0:
+      thumbnailTapped()
+    case 2:
+      logOut()
+    default:
+      break
     }
   }
 }
 
-extension AccountSettingsViewController: UICollectionViewDelegate {
-  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    switch indexPath.section {
-    case 1:
-      PhotoCaptureController.show(source: .photoLibrary) { [weak self] controller, photo in
-        guard let self = self else { return }
-        self.photo = photo
-        self.isPhotoAdded = true
-        self.updateSnapshot()
-        controller.hide()
-      }
-    case 2:
-      logOut()
-        
-    default:
-      break
+extension AccountSettingsViewController: ThumbnailViewDelegate {
+  func thumbnailTapped() {
+    PhotoCaptureController.show(source: .photoLibrary) { [weak self] controller, photo in
+      guard let self = self else { return }
+      self.photo = photo
+      self.isPhotoAdded = true
+      self.updateSnapshot()
+      self.textFieldDidChange(self.textField)
+      controller.hide()
     }
   }
 }

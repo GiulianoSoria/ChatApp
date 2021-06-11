@@ -10,16 +10,17 @@ import UIKit
 
 protocol ConversationsViewDelegate: AnyObject {
   func pushConversationViewController(_ conversation: Conversation, chatsters: Results<Chatster>)
-  func sendChatsters(_ chatsers: Results<Chatster>)
+  func showChatroomCreationViewController(for conversation: Conversation, chatsters: Results<Chatster>)
+  func showChatsterViewController(chatster: Chatster)
 }
 
 class ConversationsView: UIView {
   private var state: AppState!
+  private var userRealm: Realm!
   private var chatstersRealm: Realm!
   private var conversations: Results<Conversation>!
   private var chatsters: Results<Chatster>!
   private var users: Results<User>!
-  private var user: User!
   private var userConversationsNotificationToken: NotificationToken!
   
   weak var delegate: ConversationsViewDelegate!
@@ -35,9 +36,10 @@ class ConversationsView: UIView {
   private var dataSource: UICollectionViewDiffableDataSource<Section, Conversation>!
   
   
-  init(state: AppState) {
+  init(state: AppState, userRealm: Realm) {
     super.init(frame: .zero)
     self.state = state
+    self.userRealm = userRealm
     fetchUsers()
     configureView()
     configureCollectionView()
@@ -53,7 +55,43 @@ class ConversationsView: UIView {
   }
   
   private func configureCollectionView() {
-    collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+    var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+    configuration.backgroundColor = .systemBackground
+    configuration.leadingSwipeActionsConfigurationProvider = { indexPath -> UISwipeActionsConfiguration? in
+      let editActionHandler: UIContextualAction.Handler = { [weak self] action, view, completed in
+        guard let self = self else { return }
+        let conversation = self.conversations[indexPath.item]
+        self.delegate.showChatroomCreationViewController(for: conversation,
+                                                         chatsters: self.chatsters)
+        completed(true)
+      }
+      let editAction = UIContextualAction(style: .normal, title: "Edit", handler: editActionHandler)
+      editAction.backgroundColor = .systemBlue
+      editAction.image = SFSymbols.edit
+      let configuration = UISwipeActionsConfiguration(actions: [editAction])
+      
+      return configuration
+    }
+    
+    configuration.trailingSwipeActionsConfigurationProvider = { indexPath -> UISwipeActionsConfiguration? in
+      let leaveActionHandler: UIContextualAction.Handler = { [weak self] action, view, completed in
+        guard let self = self else { return }
+        let conversation = self.conversations[indexPath.item]
+        self.leaveConversation(conversation,
+                           indexPath: indexPath)
+        completed(true)
+      }
+      
+      let leaveAction = UIContextualAction(style: .destructive, title: "Leave", handler: leaveActionHandler)
+      leaveAction.image = SFSymbols.leave
+      let configuration = UISwipeActionsConfiguration(actions: [leaveAction])
+      
+      return configuration
+    }
+    
+    let layout = UICollectionViewCompositionalLayout.list(using: configuration)
+    
+    collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
     addSubview(collectionView)
     collectionView.pinToEdges(of: self)
     collectionView.backgroundColor = .systemBackground
@@ -89,6 +127,7 @@ class ConversationsView: UIView {
                conversation: conversation,
                chatstersRealm: self.chatstersRealm,
                chatsters: self.chatsters)
+      cell.delegate = self
       
       return cell
     }
@@ -127,7 +166,6 @@ class ConversationsView: UIView {
         guard let self = self else { return }
         self.chatstersRealm = realm
         self.chatsters = realm.objects(Chatster.self)
-        self.delegate.sendChatsters(self.chatsters)
         self.applySnapshot()
       }
       .store(in: &state.subscribers)
@@ -141,6 +179,7 @@ class ConversationsView: UIView {
         guard let self = self else { return }
         self.users = realm.objects(User.self)
         self.conversations = self.users[0].conversations.sorted(by: self.sortDescriptor)
+        self.conversations.forEach({ print($0.displayName) })
         self.fetchChatsters()
         self.observeUserConversations()
       }
@@ -148,7 +187,8 @@ class ConversationsView: UIView {
   }
   
   private func observeUserConversations() {
-    userConversationsNotificationToken = users.thaw()?.observe { result in
+    userConversationsNotificationToken = users.thaw()?.observe { [weak self] result in
+      guard let self = self else { return }
       switch result {
       case .error(let error):
         print(error.localizedDescription)
@@ -160,11 +200,41 @@ class ConversationsView: UIView {
       }
     }
   }
+  
+  private func leaveConversation(_ conversation: Conversation, indexPath: IndexPath) {
+    state.error = nil
+    state.shouldIndicateActivity = true
+    do {
+      try userRealm.write {
+        if
+          let conversationToDelete = state.user?.conversations.filter("id = %@", conversation.id).first {
+          print(conversationToDelete)
+          userRealm.delete(conversationToDelete)
+        }
+      }
+    } catch {
+      print("Unable to leave conversation")
+      state.shouldIndicateActivity = false
+      UIHelpers.autoDismissableSnackBar(title: "Unable to leave \(conversation.displayName)",
+                                        image: SFSymbols.crossCircle,
+                                        backgroundColor: .systemRed,
+                                        textColor: .white,
+                                        view: self.superview ?? self)
+    }
+    state.shouldIndicateActivity = false
+  }
 }
 
 extension ConversationsView: UICollectionViewDelegate {
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     let conversation = self.conversations[indexPath.item]
-    delegate.pushConversationViewController(conversation, chatsters: self.chatsters)
+    delegate.pushConversationViewController(conversation,
+                                            chatsters: self.chatsters)
+  }
+}
+
+extension ConversationsView: ConversationCellDelegate {
+  func showChatsterViewController(chatster: Chatster) {
+    delegate.showChatsterViewController(chatster: chatster)
   }
 }

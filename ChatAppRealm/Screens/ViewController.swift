@@ -59,6 +59,7 @@ class ViewController: UIViewController {
         createAddConversationButton()
         showAccountSettingsScreen()
       } else {
+        fetchUsers()
         createAvatarButton()
         createAddConversationButton()
         configureCollectionView()
@@ -84,19 +85,24 @@ class ViewController: UIViewController {
   }
   
   private func createAddConversationButton() {
-    let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
+    let addButton = UIBarButtonItem(barButtonSystemItem: .add,
+                                    target: self,
+                                    action: #selector(addButtonTapped))
     navigationItem.rightBarButtonItem = addButton
   }
   
   @objc private func addButtonTapped() {
-    let destVC = ChatroomCreationViewController(chatsters: Array(self.chatsters))
+    let destVC = ChatroomCreationViewController(state: state,
+                                                chatsters: chatsters,
+                                                userRealm: userRealm)
     destVC.isModalInPresentation = true
     let navController = UINavigationController(rootViewController: destVC)
     present(navController, animated: true)
   }
   
   private func configureCollectionView() {
-    let collectionView = ConversationsView(state: state)
+    let collectionView = ConversationsView(state: state,
+                                           userRealm: userRealm)
     collectionView.delegate = self
     view.addSubview(collectionView)
     collectionView.pinToEdges(of: view)
@@ -111,7 +117,8 @@ class ViewController: UIViewController {
   }
   
   private func showAccountSettingsScreen() {
-    let destVC = AccountSettingsViewController(state: state, userRealm: userRealm)
+    let destVC = AccountSettingsViewController(state: state,
+                                               userRealm: userRealm)
     destVC.delegate = self
     let navController = UINavigationController(rootViewController: destVC)
     navController.isModalInPresentation = true
@@ -139,6 +146,18 @@ class ViewController: UIViewController {
       break
     }
   }
+  
+  private func fetchUsers() {
+    let config = state.app.currentUser!.configuration(partitionValue: "all-users=all-the-users")
+    Realm.asyncOpen(configuration: config)
+      .sink { _ in
+      } receiveValue: { [weak self] realm in
+        guard let self = self else { return }
+        self.chatsters = realm.objects(Chatster.self)
+        print(self.chatsters.count)
+      }
+      .store(in: &state.subscribers)
+  }
 }
 
 extension ViewController: ThumbnailViewDelegate {
@@ -147,18 +166,37 @@ extension ViewController: ThumbnailViewDelegate {
   }
 }
 
-extension ViewController: ConversationsViewDelegate {
-  func sendChatsters(_ chatsers: Results<Chatster>) {
-    self.chatsters = chatsers
-  }
-  
-  func pushConversationViewController(_ conversation: Conversation, chatsters: Results<Chatster>) {
+extension ViewController: ConversationsViewDelegate {  
+  func pushConversationViewController(_ conversation: Conversation,
+                                      chatsters: Results<Chatster>) {
     let destVC = ChatroomViewController(state: state,
                                         userRealm: userRealm,
                                         conversation: conversation,
                                         chatsters: chatsters)
     
     self.navigationController?.pushViewController(destVC, animated: true)
+  }
+  
+  func showChatroomCreationViewController(for conversation: Conversation, chatsters: Results<Chatster>) {
+    let destVC = ChatroomCreationViewController(state: state,
+                                                chatsters: chatsters,
+                                                userRealm: userRealm)
+    let members = conversation.members.map({ $0.userName })
+    let chatstersInConversation = chatsters.filter({ members.contains($0.userName) })
+    destVC.selected = Array(chatstersInConversation)
+    destVC.conversation = conversation
+    destVC.textField.text = conversation.displayName
+    destVC.isUpdating = true
+    destVC.isModalInPresentation = true
+    let navController = UINavigationController(rootViewController: destVC)
+    present(navController, animated: true)
+  }
+  
+  func showChatsterViewController(chatster: Chatster) {
+    let destVC = ChatsterViewController(chatster: chatster)
+    let navController = UINavigationController(rootViewController: destVC)
+    
+    self.show(navController, sender: self)
   }
 }
 

@@ -7,8 +7,14 @@
 
 import UIKit
 
+protocol AvatarCellDelegate: AnyObject {
+  func showChatsterViewController(chatster: Chatster)
+}
+
 class AvatarCell: UICollectionViewCell {
   static let reuseID = "AvatarCell"
+  
+  weak var delegate: AvatarCellDelegate!
   
   var chatster: Chatster!
   
@@ -68,5 +74,7 @@ class AvatarCell: UICollectionViewCell {
 }
 
 extension AvatarCell: ThumbnailViewDelegate {
-  func thumbnailTapped() { }
+  func thumbnailTapped() {
+    delegate.showChatsterViewController(chatster: chatster)
+  }
 }
