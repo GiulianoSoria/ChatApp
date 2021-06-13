@@ -5,6 +5,7 @@
 //  Created by Giuliano Soria Pazos on 2021-06-08.
 //
 
+import Combine
 import RealmSwift
 import UIKit
 
@@ -71,10 +72,15 @@ class ChatroomCreationViewController: UIViewController {
       isDoneButtonEnabled = !conversation.displayName.isEmpty && !selected.isEmpty
     }
     
-    let closeButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(closeButtonTapped))
+    let closeButton = UIBarButtonItem(barButtonSystemItem: .close,
+                                      target: self,
+                                      action: #selector(closeButtonTapped))
     navigationItem.leftBarButtonItem = closeButton
     
-    doneButton = UIBarButtonItem(title: isUpdating ? "Update" : "Create", style: .done, target: self, action: #selector(doneButtonTapped))
+    doneButton = UIBarButtonItem(title: isUpdating ? "Update" : "Create",
+                                 style: .done,
+                                 target: self,
+                                 action: #selector(doneButtonTapped))
     doneButton.isEnabled = isDoneButtonEnabled
     navigationItem.rightBarButtonItem = doneButton
   }
@@ -92,7 +98,7 @@ class ChatroomCreationViewController: UIViewController {
     configuration.backgroundColor = .systemBackground
     configuration.headerMode = .supplementary
     configuration.trailingSwipeActionsConfigurationProvider = { indexPath -> UISwipeActionsConfiguration? in
-      if indexPath.section == 1 {
+      if indexPath.section == 1 && !self.isUpdating {
         let chatster = self.selected[indexPath.item]
         let deleteHandler: UIContextualAction.Handler = { action, view, completed in
           self.deleteButtonTapped(chatster: chatster)
@@ -323,43 +329,37 @@ class ChatroomCreationViewController: UIViewController {
       let membersUsernames = selected.map({ $0.userName })
       let membersUsernamesInConversation = conversation.members.map { $0.userName }
       let membersUsernamesToAdd = membersUsernames.filter({ !membersUsernamesInConversation.contains($0) })
+      print(membersUsernamesToAdd)
       
       //Find a way to update every user's copy of the conversation
-      let group = DispatchGroup()
-      group.enter()
-      do {
-        try conversation.realm?.write {
-          conversation.displayName = textField.text ?? "Chat"
-          conversation.members.append(objectsIn: membersUsernamesToAdd.map({ Member($0) }))
+      state.app.currentUser!.functions.chatNameChange([AnyBSON(stringLiteral: "update"),
+                                                       AnyBSON(stringLiteral: "conversation=\(conversation.id)"),
+                                                       AnyBSON(stringLiteral: textField.text ?? "Chat")])
+        .receive(on: DispatchQueue.main, options: .none)
+        .sink { [weak self] completion in
+          guard let self = self else { return }
+          switch completion {
+          case .failure(let error):
+            print(error.localizedDescription)
+            UIHelpers.hideSnackBar(title: "Updating conversation",
+                                   backgroundColor: .systemBlue,
+                                   view: self.view)
+            self.state.shouldIndicateActivity = false
+            self.doneButton.isEnabled = true
+          case .finished:
+            break
+          }
+        } receiveValue: { [weak self] result in
+          guard let self = self else { return }
+          UIHelpers.hideSnackBar(title: "Updating conversation",
+                                 backgroundColor: .systemBlue,
+                                 view: self.view)
+          print(result)
+          self.closeButtonTapped()
+          self.state.shouldIndicateActivity = false
+          self.doneButton.isEnabled = true
         }
-        group.leave()
-      } catch {
-        state.error = "Unable to open Realm write transaction"
-        group.leave()
-        return
-      }
-      
-//      group.enter()
-//      do {
-//        try userRealm.write {
-//          conversation.displayName = textField.text ?? "Chat"
-//          conversation.members.append(objectsIn: membersUsernamesToAdd.map({ Member($0) }))
-//        }
-//        group.leave()
-//      } catch {
-//        state.error = "Unable to open Realm write transaction"
-//        group.leave()
-//        return
-//      }
-      
-      group.notify(queue: .main) { [self] in
-        UIHelpers.hideSnackBar(title: "Updating conversation",
-                               backgroundColor: .systemBlue,
-                               view: self.view)
-        closeButtonTapped()
-        state.shouldIndicateActivity = false
-        doneButton.isEnabled = true
-      }
+        .store(in: &state.subscribers)
     }
   }
   
