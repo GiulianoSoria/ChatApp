@@ -27,7 +27,10 @@ class ChatroomCreationViewController: UIViewController {
     textField.translatesAutoresizingMaskIntoConstraints = true
     textField.borderStyle = .none
     textField.placeholder = "Start typing..."
+    textField.returnKeyType = .done
+    
     textField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+    textField.delegate = self
     return textField
   }()
   
@@ -354,8 +357,19 @@ class ChatroomCreationViewController: UIViewController {
           UIHelpers.hideSnackBar(title: "Updating conversation",
                                  backgroundColor: .systemBlue,
                                  view: self.view)
-          print(result)
-          self.closeButtonTapped()
+          if
+            let doc = result.documentValue,
+            let value = doc.values.first,
+            let completed = value?.boolValue, completed {
+            self.closeButtonTapped()
+          } else {
+            UIHelpers.autoDismissableSnackBar(title: "Error updating conversation title",
+                                              image: SFSymbols.crossCircle,
+                                              backgroundColor: .systemRed,
+                                              textColor: .white,
+                                              view: self.view)
+          }
+          
           self.state.shouldIndicateActivity = false
           self.doneButton.isEnabled = true
         }
@@ -391,5 +405,18 @@ extension ChatroomCreationViewController: UICollectionViewDelegate {
     default:
       break
     }
+  }
+}
+
+extension ChatroomCreationViewController: UITextFieldDelegate {
+  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    if
+      let text = textField.text,
+      !text.isEmpty {
+      doneButtonTapped()
+      return true
+    }
+    
+    return false
   }
 }
