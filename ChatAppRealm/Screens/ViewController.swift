@@ -59,10 +59,10 @@ class ViewController: UIViewController {
         createAddConversationButton()
         showAccountSettingsScreen()
       } else {
-        fetchUsers()
         createAvatarButton()
         createAddConversationButton()
         configureCollectionView()
+        fetchUsers()
       }
     } else {
       showLoginScreen()
@@ -154,7 +154,6 @@ class ViewController: UIViewController {
       } receiveValue: { [weak self] realm in
         guard let self = self else { return }
         self.chatsters = realm.objects(Chatster.self)
-        print(self.chatsters.count)
       }
       .store(in: &state.subscribers)
   }
