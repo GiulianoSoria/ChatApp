@@ -27,8 +27,12 @@ class MessageCell: UICollectionViewCell {
       containerView.backgroundColor = isMyMessage ? .systemBlue : .secondarySystemBackground
       containerViewLeadingAnchor.isActive = isMyMessage ? false : true
       containerViewTrailingAnchor.isActive = isMyMessage ? true : false
-      timeLabelLeadingAnchor.isActive = isMyMessage ? false : true
-      timeLabelTrailingAnchor.isActive = isMyMessage ? true: false
+      yourTimeLabelTrailingAnchor.isActive = isMyMessage ? false : true
+      myTimeLabelTrailingAnchor.isActive = isMyMessage ? true: false
+      !isMyMessage ? containerView.addSubview(authorLabel) : authorLabel.removeFromSuperview()
+      !isMyMessage ? NSLayoutConstraint.activate(authorLabelConstraints) : NSLayoutConstraint.deactivate(authorLabelConstraints)
+      myTextLabelTopAnchor.isActive = !isMyMessage ? false : true
+      yourTextLabelTopAnchor.isActive = !isMyMessage ? true : false
     }
   }
   
@@ -43,8 +47,12 @@ class MessageCell: UICollectionViewCell {
   private var containerViewTrailingAnchor: NSLayoutConstraint!
   private var containerViewHeightAnchor: NSLayoutConstraint!
   private var containerViewWidthAnchor: NSLayoutConstraint!
-  private var timeLabelLeadingAnchor: NSLayoutConstraint!
-  private var timeLabelTrailingAnchor: NSLayoutConstraint!
+  private var yourTimeLabelTrailingAnchor: NSLayoutConstraint!
+  private var myTimeLabelTrailingAnchor: NSLayoutConstraint!
+  
+  private var myTextLabelTopAnchor: NSLayoutConstraint!
+  private var yourTextLabelTopAnchor: NSLayoutConstraint!
+  private var authorLabelConstraints: [NSLayoutConstraint] = []
   
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -66,7 +74,7 @@ class MessageCell: UICollectionViewCell {
   public func set(chatster: Chatster? = nil, message: ChatMessage, isMyMessage: Bool, isMediaShown: Bool) {
     self.isMyMessage = isMyMessage
     self.isMediaShown = isMediaShown
-    authorLabel.set(textAlignment: .left, fontSize: 13, fontWeight: .regular, textColor: .secondaryLabel)
+    authorLabel.set(textAlignment: .left, fontSize: 13, fontWeight: .semibold, textColor: .secondaryLabel)
     authorLabel.text = isMyMessage ? "" : message.author
     
     timeLabel.set(textAlignment: .right, fontSize: 12, fontWeight: .regular, textColor: .secondaryLabel)
@@ -125,11 +133,20 @@ class MessageCell: UICollectionViewCell {
       timeLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 20),
       timeLabel.heightAnchor.constraint(equalToConstant: 14),
       
-      textLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: padding),
       textLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: padding),
       textLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -padding),
       textLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -padding)
     ])
+    
+    myTextLabelTopAnchor = textLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: padding)
+    yourTextLabelTopAnchor = textLabel.topAnchor.constraint(equalTo: authorLabel.bottomAnchor, constant: padding/2)
+    
+    authorLabelConstraints = [
+      authorLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: padding/2),
+      authorLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: padding),
+      authorLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -padding),
+      authorLabel.heightAnchor.constraint(equalToConstant: 14)
+    ]
   }
   
   private func configureContainerView() {
@@ -147,8 +164,8 @@ class MessageCell: UICollectionViewCell {
     containerViewTrailingAnchor = containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding)
     containerViewWidthAnchor = containerView.widthAnchor.constraint(equalToConstant: 250)
     containerViewHeightAnchor = containerView.heightAnchor.constraint(equalToConstant: 250)
-    timeLabelLeadingAnchor = timeLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: padding)
-    timeLabelTrailingAnchor = timeLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding)
+    yourTimeLabelTrailingAnchor = timeLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
+    myTimeLabelTrailingAnchor = timeLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding)
   }
 }
 

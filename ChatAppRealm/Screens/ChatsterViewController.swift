@@ -84,7 +84,7 @@ class ChatsterViewController: UIViewController {
       case 1:
         configuration.text = chatster.displayName
       case 2:
-        configuration.text = chatster.lastSeenAt?.convertToFullDateFormat()
+        configuration.text = chatster.lastSeenAt?.convertToFullDateFormat() ?? "N/A"
       default:
         break
       }

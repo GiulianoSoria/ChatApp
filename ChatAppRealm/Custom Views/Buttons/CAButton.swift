@@ -32,6 +32,7 @@ class CAButton: UIButton {
   public func set(activeImage: UIImage? = nil,
                   inactiveImage: UIImage? = nil,
                   title: String? = nil,
+                  backgroundColor: UIColor? = nil,
                   active: Bool = true) {
     
     if #available(iOS 15.0, *) {
@@ -42,11 +43,13 @@ class CAButton: UIButton {
       
       configuration.image = active ? activeImage : inactiveImage
       configuration.imagePlacement = .leading
+      configuration.imagePadding = 5
       self.configuration = configuration
-      self.configuration?.baseBackgroundColor = .systemBlue
+      self.configuration?.baseBackgroundColor = backgroundColor ?? .systemBlue
     } else {
       // Fallback on earlier versions
       titleLabel?.font = UIFont.rounded(ofSize: 16, weight: .semibold)
+      self.backgroundColor = backgroundColor ?? .systemBlue
     }
     layer.opacity = active ? Dimensions.activeOpacity : Dimensions.inactiveOpacity
   }

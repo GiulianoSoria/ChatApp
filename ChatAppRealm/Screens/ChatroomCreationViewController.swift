@@ -61,8 +61,11 @@ class ChatroomCreationViewController: UIViewController {
     configureViewController()
     configureCollectionView()
     configureDataSource()
-    if isUpdating { fetchConversationRealm(conversation: conversation) }
-    fetchChatsters()
+    if isUpdating {
+      fetchConversationRealm(conversation: conversation)
+    } else {
+      fetchChatsters()      
+    }
     applySnapshot()
   }
   
@@ -209,10 +212,15 @@ class ChatroomCreationViewController: UIViewController {
   
   private func applySnapshot(animatingDifferences: Bool = false) {
     var snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
-    snapshot.appendSections([.title, .selected, .all])
+    if isUpdating {
+      snapshot.appendSections([.title, .selected])
+    } else {
+      snapshot.appendSections([.title, .selected, .all])
+      snapshot.appendItems(all, toSection: .all)
+    }
+    
     snapshot.appendItems([""], toSection: .title)
     snapshot.appendItems(selected, toSection: .selected)
-    snapshot.appendItems(all, toSection: .all)
     
     dataSource.apply(snapshot, animatingDifferences: animatingDifferences)
   }
@@ -329,11 +337,6 @@ class ChatroomCreationViewController: UIViewController {
                              backgroundColor: .systemBlue,
                              view: self.view)
       
-      let membersUsernames = selected.map({ $0.userName })
-      let membersUsernamesInConversation = conversation.members.map { $0.userName }
-      let membersUsernamesToAdd = membersUsernames.filter({ !membersUsernamesInConversation.contains($0) })
-      
-      //Find a way to update every user's copy of the conversation
       state.app.currentUser!.functions.chatNameChange([AnyBSON(stringLiteral: "update"),
                                                        AnyBSON(stringLiteral: "conversation=\(conversation.id)"),
                                                        AnyBSON(stringLiteral: textField.text ?? "Chat")])
@@ -363,19 +366,13 @@ class ChatroomCreationViewController: UIViewController {
             let doc = result.documentValue,
             let value = doc.values.first,
             let completed = value?.boolValue, completed {
-            if
-//              !membersUsernamesToAdd.isEmpty {
-              let member = membersUsernamesToAdd.first {
-              self.updateChatMembers(conversation: conversation, member: member)
-            } else {
-              UIHelpers.hideSnackBar(title: "Updating conversation",
-                                     backgroundColor: .systemBlue,
-                                     view: self.view)
-              
-              self.closeButtonTapped()
-              self.state.shouldIndicateActivity = false
-              self.doneButton.isEnabled = true
-            }
+            UIHelpers.hideSnackBar(title: "Updating conversation",
+                                   backgroundColor: .systemBlue,
+                                   view: self.view)
+            
+            self.closeButtonTapped()
+            self.state.shouldIndicateActivity = false
+            self.doneButton.isEnabled = true
           } else {
             UIHelpers.hideSnackBar(title: "Updating conversation",
                                    backgroundColor: .systemBlue,
@@ -392,70 +389,6 @@ class ChatroomCreationViewController: UIViewController {
         }
         .store(in: &state.subscribers)
     }
-  }
-  
-  private func updateChatMembers(conversation: Conversation, member: String) {
-    state.app.currentUser!.functions.updateChatMembers([AnyBSON(stringLiteral: "update"),
-                                                        AnyBSON(stringLiteral: "conversation=\(conversation.id)"),
-                                                        AnyBSON(stringLiteral: member)])
-      .receive(on: DispatchQueue.main, options: .none)
-      .sink { [weak self] completion in
-        guard let self = self else { return }
-        switch completion {
-        case .failure(let error):
-          print(error.localizedDescription)
-          UIHelpers.hideSnackBar(title: "Updating conversation",
-                                 backgroundColor: .systemBlue,
-                                 view: self.view)
-          
-          UIHelpers.autoDismissableSnackBar(title: "Error updating conversation title",
-                                            image: SFSymbols.crossCircle,
-                                            backgroundColor: .systemRed,
-                                            textColor: .white,
-                                            view: self.view)
-          self.state.shouldIndicateActivity = false
-          self.doneButton.isEnabled = true
-        case .finished:
-          break
-        }
-      } receiveValue: { [weak self] result in
-        guard let self = self else { return }
-        UIHelpers.hideSnackBar(title: "Updating conversation",
-                               backgroundColor: .systemBlue,
-                               view: self.view)
-        if
-          let doc = result.documentValue,
-          let value = doc.values.first,
-          let completed = value?.boolValue, completed {
-          do {
-            try self.userRealm.write {
-              if
-                let conversation = self.state.user?.conversations.first(where: { $0.id == conversation.id }) {
-                conversation.members.append(Member(member))
-              }
-            }
-            self.closeButtonTapped()
-          } catch {
-            UIHelpers.autoDismissableSnackBar(title: "Error updating conversation title",
-                                              image: SFSymbols.crossCircle,
-                                              backgroundColor: .systemRed,
-                                              textColor: .white,
-                                              view: self.view)
-            self.state.shouldIndicateActivity = false
-            self.doneButton.isEnabled = true
-            return
-          }
-        } else {
-          UIHelpers.autoDismissableSnackBar(title: "Error updating conversation title",
-                                            image: SFSymbols.crossCircle,
-                                            backgroundColor: .systemRed,
-                                            textColor: .white,
-                                            view: self.view)
-        }
-        self.state.shouldIndicateActivity = false
-        self.doneButton.isEnabled = true
-      }
-      .store(in: &state.subscribers)
   }
   
   private func fetchConversationRealm(conversation: Conversation) {

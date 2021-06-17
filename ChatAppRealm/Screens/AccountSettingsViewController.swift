@@ -29,6 +29,7 @@ class AccountSettingsViewController: UIViewController {
   private var collectionView: UICollectionView!
   private var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
   private var textField: CATextField!
+  private var logOutButton: CAButton!
   
   init(state: AppState, userRealm: Realm) {
     super.init(nibName: nil, bundle: nil)
@@ -139,11 +140,7 @@ class AccountSettingsViewController: UIViewController {
       case 1:
         cell.accessories = [.customView(configuration: self.configureTextField(in: cell))]
       case 2:
-        configuration.text = "Log Out"
-        configuration.textProperties.font = UIFont.rounded(ofSize: 16, weight: .semibold)
-        configuration.image = SFSymbols.signOut
-        configuration.imageProperties.preferredSymbolConfiguration = .init(pointSize: 20, weight: .semibold)
-        cell.tintColor = .label
+        cell.accessories = [.customView(configuration: self.configureLogOutButton(in: cell))]
       default:
         break
       }
@@ -236,7 +233,36 @@ class AccountSettingsViewController: UIViewController {
     }
   }
   
-  private func logOut() {
+  private func configureLogOutButton(in cell: UICollectionViewListCell) -> UICellAccessory.CustomViewConfiguration {
+    logOutButton = CAButton()
+    logOutButton.translatesAutoresizingMaskIntoConstraints = true
+    logOutButton.frame = CGRect(x: 0,
+                                y: 0,
+                                width: cell.contentView.frame.width - 40,
+                                height: cell.contentView.frame.height)
+    logOutButton.set(activeImage: SFSymbols.signOut,
+                     inactiveImage: SFSymbols.signOut,
+                     title: "Log Out",
+                     backgroundColor: .systemRed,
+                     active: true)
+    logOutButton.titleLabel?.textAlignment = .center
+    logOutButton.titleLabel?.font = UIFont.rounded(ofSize: 16, weight: .semibold)
+    logOutButton.addTarget(self, action: #selector(logOut), for: .touchUpInside)
+    
+    let width = UICellAccessory.LayoutDimension.actual
+    let placement = UICellAccessory.Placement.leading(displayed: .always,
+                                                      at: UICellAccessory.Placement.position(before: .disclosureIndicator()))
+
+    let configuration = UICellAccessory.CustomViewConfiguration(customView: logOutButton,
+                                                                placement: placement,
+                                                                reservedLayoutWidth: width,
+                                                                tintColor: .white,
+                                                                maintainsFixedSize: true)
+    
+    return configuration
+  }
+  
+  @objc private func logOut() {
     state.shouldIndicateActivity = true
     do {
       try userRealm.write {
