@@ -219,7 +219,7 @@ class LoginViewController: UIViewController {
         self.isLoggingIn = false
         self.dismissSnackBar(title: "Logging in")
         self.state.loginPublisher.send(user)
-        self.pushProfileScreen()
+        self.savePreferences()
       }
       .store(in: &state.subscribers)
   }
@@ -260,6 +260,19 @@ class LoginViewController: UIViewController {
       }
     } else {
       items.forEach { $0?.frame.origin.y = 0 }
+    }
+  }
+  
+  private func savePreferences() {
+    let preference = Preferences(isUserLoggedIn: true)
+    PersistenceManager.shared.updatePreferences(preference: preference,
+                                                types: [.isuserLoggedIn]) { error in
+      if let error = error {
+        print(error.rawValue)
+      } else {
+        AppDelegate.isUserLoggedIn = true
+        self.pushProfileScreen()
+      }
     }
   }
 }

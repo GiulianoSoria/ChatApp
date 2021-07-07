@@ -7,6 +7,10 @@
 
 import UIKit
 
+struct Keys {
+  static let appKey             = "chatapp-jfsse"
+}
+
 struct SFSymbols {
   static let checkbox           = UIImage(systemName: "checkmark.square")
   static let square             = UIImage(systemName: "square")
@@ -21,6 +25,8 @@ struct SFSymbols {
   static let chevronRight       = UIImage(systemName: "chevron.right")
   static let plus               = UIImage(systemName: "plus.circle.fill")
   static let personCircle       = UIImage(systemName: "person.crop.circle")
+  static let map                = UIImage(systemName: "map")
+  static let more               = UIImage(systemName: "ellipsis")
   static let leave              = UIImage(systemName: "rectangle.portrait.and.arrow.right")
   static let edit               = UIImage(systemName: "rectangle.and.pencil.and.ellipsis")
   

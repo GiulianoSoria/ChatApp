@@ -10,9 +10,12 @@
 		F2363A5826700B7400331312 /* UIFont+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2363A5726700B7400331312 /* UIFont+Extensions.swift */; };
 		F2363A5A26705B3400331312 /* ChatroomCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2363A5926705B3400331312 /* ChatroomCreationViewController.swift */; };
 		F2363A5C2673D0DB00331312 /* ChatsterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2363A5B2673D0DA00331312 /* ChatsterViewController.swift */; };
+		F24C8E452694AEC500E09F3B /* CAMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F24C8E442694AEC500E09F3B /* CAMapView.swift */; };
+		F24C8E482695358900E09F3B /* CASplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F24C8E472695358900E09F3B /* CASplitViewController.swift */; };
+		F275A680267BBFDA004FB406 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F275A67F267BBFDA004FB406 /* MapViewController.swift */; };
 		F285C31D266944CA00362C37 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C31C266944CA00362C37 /* AppDelegate.swift */; };
 		F285C31F266944CA00362C37 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C31E266944CA00362C37 /* SceneDelegate.swift */; };
-		F285C321266944CA00362C37 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C320266944CA00362C37 /* ViewController.swift */; };
+		F285C321266944CA00362C37 /* ConversationsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C320266944CA00362C37 /* ConversationsListViewController.swift */; };
 		F285C326266944CC00362C37 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F285C325266944CC00362C37 /* Assets.xcassets */; };
 		F285C329266944CC00362C37 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F285C327266944CC00362C37 /* LaunchScreen.storyboard */; };
 		F285C3312669451B00362C37 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C3302669451B00362C37 /* AppState.swift */; };
@@ -50,16 +53,22 @@
 		F285C427266D957E00362C37 /* MessageComposerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C426266D957E00362C37 /* MessageComposerView.swift */; };
 		F285C42A266D97CC00362C37 /* CATextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C429266D97CC00362C37 /* CATextView.swift */; };
 		F285C42C266D9E5800362C37 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C42B266D9E5800362C37 /* UIViewController+Extensions.swift */; };
+		F29FC677267E472C006EAD7A /* PersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F29FC676267E472C006EAD7A /* PersistenceManager.swift */; };
+		F29FC67B267E47FE006EAD7A /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = F29FC67A267E47FE006EAD7A /* Preferences.swift */; };
+		F29FC67D267E4A5B006EAD7A /* CAError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F29FC67C267E4A5B006EAD7A /* CAError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		F2363A5726700B7400331312 /* UIFont+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extensions.swift"; sourceTree = "<group>"; };
 		F2363A5926705B3400331312 /* ChatroomCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatroomCreationViewController.swift; sourceTree = "<group>"; };
 		F2363A5B2673D0DA00331312 /* ChatsterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsterViewController.swift; sourceTree = "<group>"; };
+		F24C8E442694AEC500E09F3B /* CAMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAMapView.swift; sourceTree = "<group>"; };
+		F24C8E472695358900E09F3B /* CASplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CASplitViewController.swift; sourceTree = "<group>"; };
+		F275A67F267BBFDA004FB406 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		F285C319266944CA00362C37 /* ChatAppRealm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatAppRealm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F285C31C266944CA00362C37 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F285C31E266944CA00362C37 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		F285C320266944CA00362C37 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		F285C320266944CA00362C37 /* ConversationsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsListViewController.swift; sourceTree = "<group>"; };
 		F285C325266944CC00362C37 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F285C328266944CC00362C37 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F285C32A266944CC00362C37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -96,6 +105,9 @@
 		F285C426266D957E00362C37 /* MessageComposerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageComposerView.swift; sourceTree = "<group>"; };
 		F285C429266D97CC00362C37 /* CATextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CATextView.swift; sourceTree = "<group>"; };
 		F285C42B266D9E5800362C37 /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
+		F29FC676267E472C006EAD7A /* PersistenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceManager.swift; sourceTree = "<group>"; };
+		F29FC67A267E47FE006EAD7A /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
+		F29FC67C267E4A5B006EAD7A /* CAError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +123,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F24C8E462695357900E09F3B /* SplitViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				F24C8E472695358900E09F3B /* CASplitViewController.swift */,
+			);
+			path = SplitViewControllers;
+			sourceTree = "<group>";
+		};
 		F285C310266944CA00362C37 = {
 			isa = PBXGroup;
 			children = (
@@ -145,13 +165,8 @@
 		F285C33D26695D8000362C37 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				F285C33926695C1C00362C37 /* User.swift */,
-				F285C3462669613B00362C37 /* UserPreferences.swift */,
-				F285C33B26695D1300362C37 /* Photo.swift */,
-				F285C33E26695D9300362C37 /* Conversation.swift */,
-				F285C34026695EE800362C37 /* Member.swift */,
-				F285C34226695FA900362C37 /* Chatster.swift */,
-				F285C3442669606C00362C37 /* ChatMessage.swift */,
+				F29FC679267E4772006EAD7A /* User Defaults */,
+				F29FC678267E4768006EAD7A /* Realm */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -159,6 +174,7 @@
 		F285C3ED266B39D900362C37 /* Custom Views */ = {
 			isa = PBXGroup;
 			children = (
+				F24C8E462695357900E09F3B /* SplitViewControllers */,
 				F285C428266D97BD00362C37 /* Text Views */,
 				F285C419266C950E00362C37 /* Views */,
 				F285C416266C936000362C37 /* Cells */,
@@ -186,6 +202,7 @@
 			isa = PBXGroup;
 			children = (
 				F285C3302669451B00362C37 /* AppState.swift */,
+				F29FC676267E472C006EAD7A /* PersistenceManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -193,12 +210,13 @@
 		F285C3F0266B3C7700362C37 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				F285C320266944CA00362C37 /* ViewController.swift */,
+				F285C320266944CA00362C37 /* ConversationsListViewController.swift */,
 				F285C3FF266BC81B00362C37 /* LoginViewController.swift */,
 				F285C414266C49FE00362C37 /* AccountSettingsViewController.swift */,
 				F285C420266D43CF00362C37 /* ChatroomViewController.swift */,
 				F2363A5926705B3400331312 /* ChatroomCreationViewController.swift */,
 				F2363A5B2673D0DA00331312 /* ChatsterViewController.swift */,
+				F275A67F267BBFDA004FB406 /* MapViewController.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -210,6 +228,7 @@
 				F285C3F2266B3CA800362C37 /* PhotoCaptureController.swift */,
 				F285C401266BD2D800362C37 /* UIHelpers.swift */,
 				F285C410266C216100362C37 /* Constants.swift */,
+				F29FC67C267E4A5B006EAD7A /* CAError.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -247,6 +266,7 @@
 			isa = PBXGroup;
 			children = (
 				F285C406266BD37100362C37 /* SnackBarView.swift */,
+				F24C8E442694AEC500E09F3B /* CAMapView.swift */,
 			);
 			path = "Support Views";
 			sourceTree = "<group>";
@@ -294,6 +314,28 @@
 				F285C429266D97CC00362C37 /* CATextView.swift */,
 			);
 			path = "Text Views";
+			sourceTree = "<group>";
+		};
+		F29FC678267E4768006EAD7A /* Realm */ = {
+			isa = PBXGroup;
+			children = (
+				F285C33926695C1C00362C37 /* User.swift */,
+				F285C3462669613B00362C37 /* UserPreferences.swift */,
+				F285C33B26695D1300362C37 /* Photo.swift */,
+				F285C33E26695D9300362C37 /* Conversation.swift */,
+				F285C34026695EE800362C37 /* Member.swift */,
+				F285C34226695FA900362C37 /* Chatster.swift */,
+				F285C3442669606C00362C37 /* ChatMessage.swift */,
+			);
+			path = Realm;
+			sourceTree = "<group>";
+		};
+		F29FC679267E4772006EAD7A /* User Defaults */ = {
+			isa = PBXGroup;
+			children = (
+				F29FC67A267E47FE006EAD7A /* Preferences.swift */,
+			);
+			path = "User Defaults";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -374,27 +416,33 @@
 			files = (
 				F285C40D266BDD7600362C37 /* CAImageView.swift in Sources */,
 				F285C33F26695D9300362C37 /* Conversation.swift in Sources */,
+				F29FC677267E472C006EAD7A /* PersistenceManager.swift in Sources */,
 				F285C3F4266B3CA900362C37 /* PhotoCaptureController.swift in Sources */,
 				F2363A5C2673D0DB00331312 /* ChatsterViewController.swift in Sources */,
 				F285C3472669613B00362C37 /* UserPreferences.swift in Sources */,
 				F285C42C266D9E5800362C37 /* UIViewController+Extensions.swift in Sources */,
 				F285C41F266D29AD00362C37 /* AvatarCell.swift in Sources */,
+				F29FC67B267E47FE006EAD7A /* Preferences.swift in Sources */,
 				F285C402266BD2D800362C37 /* UIHelpers.swift in Sources */,
 				F285C3F8266B3CD100362C37 /* UIImage+Extensions.swift in Sources */,
 				F285C407266BD37100362C37 /* SnackBarView.swift in Sources */,
 				F285C40F266BDE6C00362C37 /* UIView+Extensions.swift in Sources */,
 				F285C41D266D273E00362C37 /* AvatarsGridView.swift in Sources */,
+				F24C8E482695358900E09F3B /* CASplitViewController.swift in Sources */,
 				F285C34326695FA900362C37 /* Chatster.swift in Sources */,
 				F285C33C26695D1300362C37 /* Photo.swift in Sources */,
-				F285C321266944CA00362C37 /* ViewController.swift in Sources */,
+				F285C321266944CA00362C37 /* ConversationsListViewController.swift in Sources */,
 				F285C41B266C951A00362C37 /* ConversationsView.swift in Sources */,
+				F29FC67D267E4A5B006EAD7A /* CAError.swift in Sources */,
 				F285C3452669606C00362C37 /* ChatMessage.swift in Sources */,
 				F2363A5826700B7400331312 /* UIFont+Extensions.swift in Sources */,
 				F285C3F5266B3CA900362C37 /* LocationHelper.swift in Sources */,
 				F285C415266C49FE00362C37 /* AccountSettingsViewController.swift in Sources */,
 				F285C423266D458D00362C37 /* MessageCell.swift in Sources */,
 				F285C3FE266B42B400362C37 /* CATextField.swift in Sources */,
+				F24C8E452694AEC500E09F3B /* CAMapView.swift in Sources */,
 				F285C3FB266B3FE100362C37 /* CAButton.swift in Sources */,
+				F275A680267BBFDA004FB406 /* MapViewController.swift in Sources */,
 				F285C34126695EE800362C37 /* Member.swift in Sources */,
 				F285C418266C936A00362C37 /* ConversationCell.swift in Sources */,
 				F285C42A266D97CC00362C37 /* CATextView.swift in Sources */,

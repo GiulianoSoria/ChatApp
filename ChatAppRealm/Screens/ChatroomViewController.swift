@@ -121,6 +121,7 @@ class ChatroomViewController: UIViewController {
     composerView = MessageComposerView(state: state,
                                        conversationRealm: conversationRealm,
                                        conversation: conversation)
+    composerView.chatroomViewController = self
     view.addSubview(composerView)
     view.bringSubviewToFront(composerView)
     

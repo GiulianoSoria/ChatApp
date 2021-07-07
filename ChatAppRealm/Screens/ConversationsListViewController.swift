@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  ConversationsListViewController.swift
 //  ChatAppRealm
 //
 //  Created by Giuliano Soria Pazos on 2021-06-03.
@@ -8,7 +8,7 @@
 import RealmSwift
 import UIKit
 
-class ViewController: UIViewController {
+class ConversationsListViewController: UIViewController {
   private var state: AppState!
   private var userRealm: Realm!
   private var users: Results<User>!
@@ -21,15 +21,17 @@ class ViewController: UIViewController {
   let updateUserProfile = Notification.Name(NotificationKeys.updateUserProfile)
   
   private var showingProfileView = false
+  public var isCompact: Bool = true
   
   enum Section { case conversations }
   
   var collectionView: UICollectionView!
   var dataSource: UICollectionViewDiffableDataSource<Section, Conversation>!
   
-  init(state: AppState) {
+  init(state: AppState, isCompact: Bool) {
     super.init(nibName: nil, bundle: nil)
     self.state = state
+    self.isCompact = isCompact
   }
   
   required init?(coder: NSCoder) {
@@ -53,16 +55,20 @@ class ViewController: UIViewController {
   }
   
   private func checkUserState() {
-    if state.loggedIn {
-      if (state.user != nil) && !state.user!.isProfileSet || showingProfileView {
-        createAvatarButton()
-        createAddConversationButton()
-        showAccountSettingsScreen()
+    if AppDelegate.isUserLoggedIn {
+      if state.loggedIn {
+        if (state.user != nil) && !state.user!.isProfileSet || showingProfileView {
+          createAvatarButton()
+          createAddConversationButton()
+          showAccountSettingsScreen()
+        } else {
+          createAvatarButton()
+          createAddConversationButton()
+          configureCollectionView()
+          fetchUsers()
+        }
       } else {
-        createAvatarButton()
-        createAddConversationButton()
-        configureCollectionView()
-        fetchUsers()
+        showLoginScreen()
       }
     } else {
       showLoginScreen()
@@ -88,6 +94,7 @@ class ViewController: UIViewController {
     let addButton = UIBarButtonItem(barButtonSystemItem: .add,
                                     target: self,
                                     action: #selector(addButtonTapped))
+    
     navigationItem.rightBarButtonItem = addButton
   }
   
@@ -102,7 +109,8 @@ class ViewController: UIViewController {
   
   private func configureCollectionView() {
     let collectionView = ConversationsView(state: state,
-                                           userRealm: userRealm)
+                                           userRealm: userRealm,
+                                           isCompact: isCompact)
     collectionView.delegate = self
     view.addSubview(collectionView)
     collectionView.pinToEdges(of: view)
@@ -159,13 +167,13 @@ class ViewController: UIViewController {
   }
 }
 
-extension ViewController: ThumbnailViewDelegate {
+extension ConversationsListViewController: ThumbnailViewDelegate {
   func thumbnailTapped() {
     showAccountSettingsScreen()
   }
 }
 
-extension ViewController: ConversationsViewDelegate {  
+extension ConversationsListViewController: ConversationsViewDelegate {  
   func pushConversationViewController(_ conversation: Conversation,
                                       chatsters: Results<Chatster>) {
     let destVC = ChatroomViewController(state: state,
@@ -199,7 +207,7 @@ extension ViewController: ConversationsViewDelegate {
   }
 }
 
-extension ViewController: AccountsSettingsViewControllerDelegate {
+extension ConversationsListViewController: AccountsSettingsViewControllerDelegate {
   func showLoginViewController() {
     view.subviews.forEach { $0.removeFromSuperview() }
     self.showLoginScreen()

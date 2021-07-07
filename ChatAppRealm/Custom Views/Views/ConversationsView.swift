@@ -35,11 +35,13 @@ class ConversationsView: UIView {
   private var collectionView: UICollectionView!
   private var dataSource: UICollectionViewDiffableDataSource<Section, Conversation>!
   
+  public var isCompact: Bool = true
   
-  init(state: AppState, userRealm: Realm) {
+  init(state: AppState, userRealm: Realm, isCompact: Bool) {
     super.init(frame: .zero)
     self.state = state
     self.userRealm = userRealm
+    self.isCompact = isCompact
     fetchUsers()
     configureView()
     configureCollectionView()
@@ -55,7 +57,7 @@ class ConversationsView: UIView {
   }
   
   private func configureCollectionView() {
-    var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+    var configuration = UICollectionLayoutListConfiguration(appearance: isCompact ? .insetGrouped : .sidebarPlain)
     configuration.backgroundColor = .systemBackground
     configuration.leadingSwipeActionsConfigurationProvider = { indexPath -> UISwipeActionsConfiguration? in
       let editActionHandler: UIContextualAction.Handler = { [weak self] action, view, completed in
@@ -101,11 +103,14 @@ class ConversationsView: UIView {
   }
   
   private func createLayout() -> UICollectionViewCompositionalLayout {
-    let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+    let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                          heightDimension: .fractionalHeight(1))
     let item = NSCollectionLayoutItem(layoutSize: itemSize)
     
-    let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(70))
-    let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+    let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                           heightDimension: .estimated(70))
+    let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize,
+                                                 subitems: [item])
     
     let section = NSCollectionLayoutSection(group: group)
     
@@ -123,6 +128,8 @@ class ConversationsView: UIView {
         return nil
       }
       
+      cell.backgroundConfiguration = self.isCompact ? UIBackgroundConfiguration.listGroupedCell() : UIBackgroundConfiguration.listSidebarCell()
+      cell.backgroundColor = self.isCompact ? .secondarySystemBackground : .systemBackground
       cell.set(state: self.state,
                conversation: conversation,
                chatstersRealm: self.chatstersRealm,

@@ -44,7 +44,7 @@ class AppState {
   var loggedIn: Bool { app.currentUser != nil && user != nil && app.currentUser?.state == .loggedIn }
   
   init() {
-    _ = app.currentUser?.logOut()
+    if !AppDelegate.isUserLoggedIn { _ = app.currentUser?.logOut() }
     initLoginPublisher()
     initLogoutPublisher()
     initUserRealmPublisher()

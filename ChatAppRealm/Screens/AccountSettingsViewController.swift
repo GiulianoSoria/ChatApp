@@ -279,12 +279,24 @@ class AccountSettingsViewController: UIViewController {
         guard let self = self else { return }
         self.state.shouldIndicateActivity = false
         self.state.logoutPublisher.send(value)
-        
+        self.savePreferences()
+      })
+      .store(in: &state.subscribers)
+  }
+  
+  private func savePreferences() {
+    let preference = Preferences(isUserLoggedIn: false)
+    PersistenceManager.shared.updatePreferences(preference: preference,
+                                                types: [.isuserLoggedIn]) { error in
+      if let error = error {
+        print(error.rawValue)
+      } else {
+        AppDelegate.isUserLoggedIn = false
         self.dismiss(animated: true) {
           self.delegate.showLoginViewController()
         }
-      })
-      .store(in: &state.subscribers)
+      }
+    }
   }
 }
 

@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>ChatApp would like to access your location so you can share it with the person that you are talking with.</string>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>ChatApp would like to access your library so you can use your images throughout the app.</string>
 	<key>NSCameraUsageDescription</key>

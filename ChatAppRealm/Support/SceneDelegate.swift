@@ -10,7 +10,7 @@ import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
-  let app = RealmSwift.App(id: "chatapp-jfsse")
+  let app = RealmSwift.App(id: Keys.appKey)
   let state = AppState()
   
   var window: UIWindow?
@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     window = UIWindow(frame: windowScene.coordinateSpace.bounds)
     window?.windowScene = windowScene
     
-    window?.rootViewController = UINavigationController(rootViewController: ViewController(state: state))
+    window?.rootViewController = UINavigationController(rootViewController: ConversationsListViewController(state: state, isCompact: false))
     window?.makeKeyAndVisible()
   }
 

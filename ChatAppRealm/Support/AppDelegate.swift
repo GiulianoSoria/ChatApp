@@ -10,11 +10,37 @@ import UIKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
+  
+  public static var isUserLoggedIn: Bool = false
+  public static var isUserLocationShared: Bool = false
+  public static var isPushNotificationsEnabled: Bool = false
 
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    // Override point for customization after application launch.
-
+    retrieveUserDefaults()
+    
     return true
+  }
+  
+  func retrieveUserDefaults() {
+    PersistenceManager.shared.retrieveUserPreferences { result in
+      switch result {
+      case .failure(let error):
+        if
+          let view = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.rootViewController?.view {
+          UIHelpers.autoDismissableSnackBar(title: error.rawValue,
+                                            image: SFSymbols.crossCircle,
+                                            backgroundColor: .systemRed,
+                                            textColor: .white,
+                                            view: view)
+        } else {
+          print(error.rawValue)
+        }
+      case .success(let preferences):
+        AppDelegate.isUserLoggedIn = preferences.isUserLoggedIn ?? false
+        AppDelegate.isUserLocationShared = preferences.isUserLocationShared ?? false
+        AppDelegate.isPushNotificationsEnabled = preferences.isPushNotificationEnabled ?? false
+      }
+    }
   }
 
   // MARK: UISceneSession Lifecycle

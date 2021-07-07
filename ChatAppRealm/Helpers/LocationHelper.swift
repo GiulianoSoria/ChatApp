@@ -6,15 +6,17 @@
 //
 
 import CoreLocation
+import UIKit
 
-struct MyAnnotationItem: Identifiable {
+struct CAAnnotationItem: Identifiable {
   var coordinates: CLLocationCoordinate2D
   let id = UUID()
 }
 
 class LocationHelper: NSObject, ObservableObject {
   static let shared = LocationHelper()
-  static let DefaultLocation = CLLocationCoordinate2D(latitude: 51.506520923981554, longitude: -0.10689139236939127)
+  static let DefaultLocation = CLLocationCoordinate2D(latitude: 51.506520923981554,
+                                                      longitude: -0.10689139236939127)
   
   static var currentLocation: CLLocationCoordinate2D {
     guard let location = shared.locationManager.location else {
@@ -24,7 +26,7 @@ class LocationHelper: NSObject, ObservableObject {
     return location.coordinate
   }
   
-  private let locationManager = CLLocationManager()
+  public let locationManager = CLLocationManager()
   
   private override init() {
     super.init()
@@ -44,5 +46,22 @@ extension LocationHelper: CLLocationManagerDelegate {
   
   func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
     print("Location manager changed the status: \(status)")
+    let preference: Preferences!
+    switch status {
+    case .authorized:
+      preference = Preferences(isUserLocationShared: true)
+    default:
+      preference = Preferences(isUserLocationShared: false)
+    }
+    
+    PersistenceManager.shared.updatePreferences(preference: preference, types: [.isUserLocationShared]) { error in
+      if let error = error {
+        UIHelpers.autoDismissableSnackBar(title: error.rawValue,
+                                          image: SFSymbols.crossCircle,
+                                          backgroundColor: .systemRed,
+                                          textColor: .white,
+                                          view: UIApplication.shared.windows.first(where: { $0.isKeyWindow })!.rootViewController!.view)
+      }
+    }
   }
 }

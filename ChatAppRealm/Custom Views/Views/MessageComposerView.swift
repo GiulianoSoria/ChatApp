@@ -5,6 +5,7 @@
 //  Created by Giuliano Soria Pazos on 2020-09-19.
 //
 
+import MapKit
 import RealmSwift
 import UIKit
 
@@ -13,12 +14,15 @@ class MessageComposerView: UIView {
   private var conversationRealm: Realm!
   private var conversation: Conversation!
   
+  weak var chatroomViewController: ChatroomViewController!
+  
   private var photo: Photo!
+  private var mapView: CAMapView!
   private var location: [Double] = []
   private var isPhotoAdded: Bool = false
   
-  private var cameraButton = CAButton()
   private var galleryButton = CAButton()
+  private var moreButton = CAButton()
   private var messageTextView = CATextView()
   private var sendButton = CAButton()
   
@@ -48,15 +52,20 @@ class MessageComposerView: UIView {
     
     messageTextView.delegate = self
     
-    cameraButton.setBackgroundImage(SFSymbols.camera!, for: .normal)
-    cameraButton.tintColor = .systemBlue
-    galleryButton.setBackgroundImage(SFSymbols.gallery!, for: .normal)
+    moreButton.setBackgroundImage(SFSymbols.more, for: .normal)
+    moreButton.tintColor = .systemBlue
+    moreButton.menu = moreMenu()
+    moreButton.showsMenuAsPrimaryAction = true
+    
+//    cameraButton.setBackgroundImage(SFSymbols.camera, for: .normal)
+//    cameraButton.tintColor = .systemBlue
+    galleryButton.setBackgroundImage(SFSymbols.gallery, for: .normal)
     galleryButton.tintColor = .systemBlue
     
     sendButton.layer.cornerRadius = sendButton.frame.size.height / 2
     sendButton.setBackgroundImage(SFSymbols.sendMessage, for: .normal)
     
-    cameraButton.addTarget(self, action: #selector(cameraButtonTapped), for: .touchUpInside)
+//    cameraButton.addTarget(self, action: #selector(cameraButtonTapped), for: .touchUpInside)
     galleryButton.addTarget(self, action: #selector(galleryButtonTapped), for: .touchUpInside)
     sendButton.addTarget(self, action: #selector(sendMessage), for: .touchUpInside)
   }
@@ -68,20 +77,41 @@ class MessageComposerView: UIView {
       
       let textAttachment = NSTextAttachment()
       let originalRange = NSMakeRange(0, attributedString.length)
-      let attributes: [NSAttributedString.Key : Any] = [
-        NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14),
-        NSAttributedString.Key.foregroundColor: UIColor.label
-      ]
+      let attributes: [NSAttributedString.Key : Any] = [.font: UIFont.systemFont(ofSize: 14),
+                                                        .foregroundColor: UIColor.label]
       attributedString.setAttributes(attributes, range: originalRange)
       
       textAttachment.image = UIImage(data: imageData)
       
       let oldWidth = textAttachment.image!.size.width
       let scaleFactor = oldWidth / (messageTextView.frame.size.width - 10)
-      textAttachment.image = UIImage(cgImage: textAttachment.image!.cgImage!, scale: scaleFactor, orientation: .up)
+      textAttachment.image = UIImage(cgImage: textAttachment.image!.cgImage!,
+                                     scale: scaleFactor,
+                                     orientation: .up)
       attributedString.append(NSAttributedString(attachment: textAttachment))
       messageTextView.attributedText = attributedString
     }
+  }
+  
+  private func attachLocation(_ location: CLLocationCoordinate2D) {
+    var attributedString: NSMutableAttributedString!
+    attributedString = NSMutableAttributedString(string: self.messageTextView.text)
+    
+    let textAttachment = NSTextAttachment()
+    let originalRange = NSMakeRange(0, attributedString.length)
+    let attributes: [NSAttributedString.Key : Any] = [.font: UIFont.systemFont(ofSize: 14),
+                                                      .foregroundColor: UIColor.label]
+    attributedString.setAttributes(attributes, range: originalRange)
+    
+//    textAttachment.image = UIImage(data: <#T##Data#>)
+    
+    let oldWidth = textAttachment.image!.size.width
+    let scaleFactor = oldWidth / (messageTextView.frame.size.width - 10)
+    textAttachment.image = UIImage(cgImage: textAttachment.image!.cgImage!,
+                                   scale: scaleFactor,
+                                   orientation: .up)
+    attributedString.append(NSAttributedString(attachment: textAttachment))
+    messageTextView.attributedText = attributedString
   }
   
   @objc private func sendMessage() {
@@ -103,6 +133,7 @@ class MessageComposerView: UIView {
                               image: photo,
                               location: location)
     message.conversationId = conversation.id
+    
     do {
       try conversationRealm.write {
         conversationRealm.add(message)
@@ -118,14 +149,32 @@ class MessageComposerView: UIView {
     }
   }
   
-  @objc private func cameraButtonTapped() {
-    PhotoCaptureController.show(source: .camera) { [weak self] controller, photo in
+  private func moreMenu() -> UIMenu {
+    let cameraAction = UIAction(title: "Camera", image: SFSymbols.camera) { [weak self] _ in
       guard let self = self else { return }
-      self.photo = photo
-      self.isPhotoAdded = true
-      self.attachPhoto(self.photo)
-      controller.hide()
+      PhotoCaptureController.show(source: .camera) { [weak self] controller, photo in
+        guard let self = self else { return }
+        self.photo = photo
+        self.isPhotoAdded = true
+        self.attachPhoto(self.photo)
+        controller.hide()
+      }
     }
+    
+    let mapAction = UIAction(title: "Location", image: SFSymbols.map) { [weak self] _ in
+      guard let self = self else { return }
+      let destVC = MapViewController()
+      self.chatroomViewController.navigationController?.pushViewController(destVC, animated: true)
+      
+    }
+    
+    let menu = UIMenu(title: "More Options", options: .displayInline, children: [cameraAction, mapAction])
+    
+    return menu
+  }
+  
+  @objc private func cameraButtonTapped() {
+    
   }
   
   @objc private func galleryButtonTapped() {
@@ -139,7 +188,7 @@ class MessageComposerView: UIView {
   }
   
   private func layoutUI() {
-    let buttons = [cameraButton, galleryButton, sendButton]
+    let buttons = [moreButton, galleryButton, sendButton]
     buttons.forEach { button in
       button.backgroundColor = .clear
       addSubview(button)
@@ -151,13 +200,13 @@ class MessageComposerView: UIView {
     let padding: CGFloat = 20
     
     NSLayoutConstraint.activate([
-      cameraButton.topAnchor.constraint(equalTo: messageTextView.topAnchor),
-      cameraButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding),
-      cameraButton.widthAnchor.constraint(equalToConstant: 30),
-      cameraButton.heightAnchor.constraint(equalToConstant: 25),
+      moreButton.topAnchor.constraint(equalTo: messageTextView.topAnchor),
+      moreButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding),
+      moreButton.widthAnchor.constraint(equalToConstant: 30),
+      moreButton.heightAnchor.constraint(equalToConstant: 22),
       
       galleryButton.topAnchor.constraint(equalTo: messageTextView.topAnchor),
-      galleryButton.leadingAnchor.constraint(equalTo: cameraButton.trailingAnchor, constant: padding/2),
+      galleryButton.leadingAnchor.constraint(equalTo: moreButton.trailingAnchor, constant: padding/2),
       galleryButton.widthAnchor.constraint(equalToConstant: 30),
       galleryButton.heightAnchor.constraint(equalToConstant: 25),
       

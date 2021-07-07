@@ -37,13 +37,18 @@ class CAButton: UIButton {
     
     if #available(iOS 15.0, *) {
       var configuration = UIButton.Configuration.filled()
-      configuration.title = title
+//      configuration.title = title
       configuration.buttonSize = .large
       configuration.cornerStyle = .medium
       
       configuration.image = active ? activeImage : inactiveImage
       configuration.imagePlacement = .leading
       configuration.imagePadding = 5
+      
+      var container = AttributeContainer()
+      container.font = UIFont.rounded(ofSize: 16, weight: .semibold)
+      configuration.attributedTitle = AttributedString(title ?? "", attributes: container)
+      
       self.configuration = configuration
       self.configuration?.baseBackgroundColor = backgroundColor ?? .systemBlue
     } else {

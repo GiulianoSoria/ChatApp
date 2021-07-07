@@ -17,6 +17,7 @@ class MessageCell: UICollectionViewCell {
   
   var textLabel = CALabel()
   var imageView = CAImageView(frame: .zero)
+  var mapView: CAMapView!
   
   private var onReuse: () -> Void = {}
   
@@ -151,7 +152,7 @@ class MessageCell: UICollectionViewCell {
   
   private func configureContainerView() {
     containerView.translatesAutoresizingMaskIntoConstraints = false
-    containerView.layer.cornerRadius = 10
+    containerView.layer.cornerRadius = 15
     containerView.layer.cornerCurve = .continuous
     
     NSLayoutConstraint.activate([
