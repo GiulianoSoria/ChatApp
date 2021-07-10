@@ -30,7 +30,7 @@ class ConversationsView: UIView {
     SortDescriptor(keyPath: "displayName", ascending: true)
   ]
   
-  enum Section { case conversations }
+  private enum Section { case conversations }
   
   private var collectionView: UICollectionView!
   private var dataSource: UICollectionViewDiffableDataSource<Section, Conversation>!
@@ -57,7 +57,7 @@ class ConversationsView: UIView {
   }
   
   private func configureCollectionView() {
-    var configuration = UICollectionLayoutListConfiguration(appearance: isCompact ? .insetGrouped : .sidebarPlain)
+    var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
     configuration.backgroundColor = .systemBackground
     configuration.leadingSwipeActionsConfigurationProvider = { indexPath -> UISwipeActionsConfiguration? in
       let editActionHandler: UIContextualAction.Handler = { [weak self] action, view, completed in
@@ -67,7 +67,9 @@ class ConversationsView: UIView {
                                                          chatsters: self.chatsters)
         completed(true)
       }
-      let editAction = UIContextualAction(style: .normal, title: "Edit", handler: editActionHandler)
+      let editAction = UIContextualAction(style: .normal,
+                                          title: "Edit",
+                                          handler: editActionHandler)
       editAction.backgroundColor = .systemBlue
       editAction.image = SFSymbols.edit
       let configuration = UISwipeActionsConfiguration(actions: [editAction])
@@ -80,11 +82,13 @@ class ConversationsView: UIView {
         guard let self = self else { return }
         let conversation = self.conversations[indexPath.item]
         self.leaveConversation(conversation,
-                           indexPath: indexPath)
+                               indexPath: indexPath)
         completed(true)
       }
       
-      let leaveAction = UIContextualAction(style: .destructive, title: "Leave", handler: leaveActionHandler)
+      let leaveAction = UIContextualAction(style: .destructive,
+                                           title: "Leave",
+                                           handler: leaveActionHandler)
       leaveAction.image = SFSymbols.leave
       let configuration = UISwipeActionsConfiguration(actions: [leaveAction])
       
@@ -93,13 +97,15 @@ class ConversationsView: UIView {
     
     let layout = UICollectionViewCompositionalLayout.list(using: configuration)
     
-    collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+    collectionView = UICollectionView(frame: .zero,
+                                      collectionViewLayout: layout)
     addSubview(collectionView)
     collectionView.pinToEdges(of: self)
     collectionView.backgroundColor = .systemBackground
     collectionView.delegate = self
     
-    collectionView.register(ConversationCell.self, forCellWithReuseIdentifier: ConversationCell.reuseID)
+    collectionView.register(ConversationCell.self,
+                            forCellWithReuseIdentifier: ConversationCell.reuseID)
   }
   
   private func createLayout() -> UICollectionViewCompositionalLayout {
@@ -127,13 +133,12 @@ class ConversationsView: UIView {
                                                       for: indexPath) as? ConversationCell else {
         return nil
       }
-      
-      cell.backgroundConfiguration = self.isCompact ? UIBackgroundConfiguration.listGroupedCell() : UIBackgroundConfiguration.listSidebarCell()
-      cell.backgroundColor = self.isCompact ? .secondarySystemBackground : .systemBackground
+
       cell.set(state: self.state,
                conversation: conversation,
                chatstersRealm: self.chatstersRealm,
-               chatsters: self.chatsters)
+               chatsters: self.chatsters,
+               isCompact: self.isCompact)
       cell.delegate = self
       
       return cell

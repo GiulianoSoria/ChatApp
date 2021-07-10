@@ -75,17 +75,26 @@ class ChatroomViewController: UIViewController {
     collectionView.backgroundColor = .systemBackground
     collectionView.keyboardDismissMode = .onDrag
     
-    collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: tabBarHeight, right: 0)
-    collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: tabBarHeight, right: 0)
+    collectionView.contentInset = UIEdgeInsets(top: 0,
+                                               left: 0,
+                                               bottom: tabBarHeight,
+                                               right: 0)
+    collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0,
+                                                        left: 0,
+                                                        bottom: tabBarHeight,
+                                                        right: 0)
     
     collectionView.register(MessageCell.self, forCellWithReuseIdentifier: MessageCell.reuseID)
   }
   
   private func createLayout() -> UICollectionViewCompositionalLayout {
     let estimatedHeight = CGFloat(100)
-    let layoutSize = NSCollectionLayoutSize(widthDimension: .estimated(view.frame.width), heightDimension: .estimated(estimatedHeight))
+    let layoutSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                            heightDimension: .estimated(estimatedHeight))
     let item = NSCollectionLayoutItem(layoutSize: layoutSize)
-    let group = NSCollectionLayoutGroup.horizontal(layoutSize: layoutSize, subitem: item, count: 1)
+    let group = NSCollectionLayoutGroup.horizontal(layoutSize: layoutSize,
+                                                   subitem: item,
+                                                   count: 1)
     
     let section = NSCollectionLayoutSection(group: group)
     section.interGroupSpacing = 10
@@ -134,7 +143,8 @@ class ChatroomViewController: UIViewController {
   }
   
   private func scrollToBottom(animated: Bool) {
-    collectionView.scrollToItem(at: IndexPath(item: messages.count - 1, section: 0),
+    collectionView.scrollToItem(at: IndexPath(item: messages.count - 1,
+                                              section: 0),
                                 at: .bottom,
                                 animated: animated)
   }
@@ -152,7 +162,8 @@ class ChatroomViewController: UIViewController {
       } receiveValue: { [weak self] realm in
         guard let self = self else { return }
         self.conversationRealm = realm
-        self.messages = realm.objects(ChatMessage.self).sorted(byKeyPath: "timestamp", ascending: true)
+        self.messages = realm.objects(ChatMessage.self).sorted(byKeyPath: "timestamp",
+                                                               ascending: true)
         self.configureMessageComposerView()
         self.applySnapshot()
         self.scrollToBottom(animated: false)

@@ -9,25 +9,43 @@ import RealmSwift
 import UIKit
 
 class CASplitViewController: UISplitViewController {
+  private var state: AppState!
   
+  init(state: AppState) {
+    super.init(style: .doubleColumn)
+    self.state = state
+  }
+  
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    configureViewController()
   }
   
   private func configureViewController() {
     view.backgroundColor = .systemBackground
-//    setViewController(ConversationsListViewController(state: <#T##AppState#>,
-//                                     isCompact: <#T##Bool#>),
-//                      for: .primary)
-//    setViewController(ChatroomViewController(state: <#T##AppState#>,
-//                                             userRealm: <#T##Realm#>,
-//                                             conversation: <#T##Conversation#>,
-//                                             chatsters: <#T##Results<Chatster>#>),
-//                      for: .secondary)
+    primaryBackgroundStyle = .sidebar
+    preferredDisplayMode = .automatic
+    preferredSplitBehavior = .displace
+    
+    setViewController(createConversationsListViewController(isCompact: true),
+                      for: .compact)
+    setViewController(createConversationsListViewController(isCompact: false),
+                      for: .primary)
     
     maximumPrimaryColumnWidth = 400
     minimumPrimaryColumnWidth = 400
     
+    viewControllers = [createConversationsListViewController(isCompact: false), UIViewController()]
+  }
+  
+  private func createConversationsListViewController(isCompact: Bool) -> ConversationsListViewController {
+    let conversationsListVC = ConversationsListViewController(state: state,
+                                                              isCompact: isCompact)
+    
+    return conversationsListVC
   }
 }

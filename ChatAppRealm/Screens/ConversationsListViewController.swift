@@ -121,7 +121,8 @@ class ConversationsListViewController: UIViewController {
     let navController = UINavigationController(rootViewController: loginVC)
     navController.modalPresentationStyle = .fullScreen
     navController.modalTransitionStyle = .crossDissolve
-    self.show(navController, sender: self)
+    self.present(navController, animated: true)
+//    self.show(navController, sender: self)
   }
   
   private func showAccountSettingsScreen() {
@@ -130,7 +131,8 @@ class ConversationsListViewController: UIViewController {
     destVC.delegate = self
     let navController = UINavigationController(rootViewController: destVC)
     navController.isModalInPresentation = true
-    self.show(navController, sender: self)
+    self.present(navController, animated: true)
+//    self.show(navController, sender: self)
   }
   
   private func createObservers() {
@@ -173,7 +175,7 @@ extension ConversationsListViewController: ThumbnailViewDelegate {
   }
 }
 
-extension ConversationsListViewController: ConversationsViewDelegate {  
+extension ConversationsListViewController: ConversationsViewDelegate {
   func pushConversationViewController(_ conversation: Conversation,
                                       chatsters: Results<Chatster>) {
     let destVC = ChatroomViewController(state: state,
@@ -181,7 +183,16 @@ extension ConversationsListViewController: ConversationsViewDelegate {
                                         conversation: conversation,
                                         chatsters: chatsters)
     
-    self.navigationController?.pushViewController(destVC, animated: true)
+    if
+      let splitViewController = self.splitViewController {
+//      splitViewController.setViewController(destVC,
+//                                            for: .secondary)
+      splitViewController.showDetailViewController(destVC,
+                                                   sender: self)
+    } else {
+      self.navigationController?.pushViewController(destVC,
+                                                    animated: true)
+    }
   }
   
   func showChatroomCreationViewController(for conversation: Conversation, chatsters: Results<Chatster>) {
@@ -203,7 +214,8 @@ extension ConversationsListViewController: ConversationsViewDelegate {
     let destVC = ChatsterViewController(chatster: chatster)
     let navController = UINavigationController(rootViewController: destVC)
     
-    self.show(navController, sender: self)
+    self.present(navController, animated: true)
+//    self.show(navController, sender: self)
   }
 }
 

@@ -25,11 +25,14 @@ class AvatarsGridView: UIView {
   private var collectionView: UICollectionView!
   private var dataSource: UICollectionViewDiffableDataSource<Section, Chatster>!
   
-  convenience init(conversation: Conversation, chatsters: Results<Chatster>) {
+  private var isCompact: Bool = true
+  
+  convenience init(conversation: Conversation, chatsters: Results<Chatster>, isCompact: Bool) {
     self.init(frame: .zero)
     self.chatsters = chatsters
     self.conversation = conversation
     self.chatstersArray = getChatsters(chatsters)
+    self.isCompact = isCompact
     
     configure()
     observeChatstersRealm()
@@ -47,7 +50,7 @@ class AvatarsGridView: UIView {
     collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
     addSubview(collectionView)
     collectionView.pinToEdges(of: self)
-    collectionView.backgroundColor = .secondarySystemBackground
+    collectionView.backgroundColor = self.isCompact ? .secondarySystemBackground : .systemBackground
     collectionView.showsHorizontalScrollIndicator = false
     
     collectionView.register(AvatarCell.self, forCellWithReuseIdentifier: AvatarCell.reuseID)

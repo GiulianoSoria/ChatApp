@@ -133,7 +133,8 @@ class AccountSettingsViewController: UIViewController {
         imageView.delegate = self
         
         configuration.image = imageView.image
-        configuration.imageProperties.maximumSize = CGSize(width: 100, height: 100)
+        let width = DeviceType.isiPad ? 200 : 100
+        configuration.imageProperties.maximumSize = CGSize(width: width, height: width)
         configuration.imageProperties.cornerRadius = 50
         configuration.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 20, leading: self.view.frame.width/2 - 70, bottom: 20, trailing: 0)
         cell.accessories = []

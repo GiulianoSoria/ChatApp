@@ -32,6 +32,7 @@ class ConversationCell: UICollectionViewCell {
   
   private var chevronView = CAImageView(frame: .zero)
   
+  private var isCompact: Bool = true
   private let padding: CGFloat = 10
   
   private lazy var unreadCount = 0 {
@@ -53,11 +54,13 @@ class ConversationCell: UICollectionViewCell {
   public func set(state: AppState,
                   conversation: Conversation,
                   chatstersRealm: Realm,
-                  chatsters: Results<Chatster>) {
+                  chatsters: Results<Chatster>,
+                  isCompact: Bool) {
     self.state = state
     self.conversation = conversation
     self.chatstersRealm = chatstersRealm
     self.unreadCount = conversation.unreadCount
+    self.isCompact = isCompact
     
 //    conversation.members.forEach {
 //      self.chatsters = chatsters.filter("userName = %@", $0.userName)
@@ -72,11 +75,14 @@ class ConversationCell: UICollectionViewCell {
     } else if self.unreadCount == 0 && contentView.contains(unreadCountView) {
       unreadCountView.removeFromSuperview()
     }
+    
+    contentView.backgroundColor = self.isCompact ? .secondarySystemBackground : .systemBackground
   }
   
   private func configureAvatarsView(chatsters: Results<Chatster>) {
     avatarsView = AvatarsGridView(conversation: conversation,
-                                  chatsters: chatsters)
+                                  chatsters: chatsters,
+                                  isCompact: self.isCompact)
     avatarsView.delegate = self
     contentView.addSubview(avatarsView)
     
