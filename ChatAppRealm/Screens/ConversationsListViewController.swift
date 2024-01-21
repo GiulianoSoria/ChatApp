@@ -10,15 +10,13 @@ import UIKit
 
 class ConversationsListViewController: UIViewController {
   private var state: AppState!
-  private var userRealm: Realm!
+
   private var users: Results<User>!
   private var userConversationsNotificationToken: NotificationToken!
   private var chatsters: Results<Chatster>!
   
   var shouldRemindOnlineUser = false
   var onlineUserReminderHours = 8
-  
-  let updateUserProfile = Notification.Name(NotificationKeys.updateUserProfile)
   
   private var showingProfileView = false
   public var isCompact: Bool = true
@@ -28,7 +26,10 @@ class ConversationsListViewController: UIViewController {
   var collectionView: UICollectionView!
   var dataSource: UICollectionViewDiffableDataSource<Section, Conversation>!
   
-  init(state: AppState, isCompact: Bool) {
+	init(
+		state: AppState,
+		isCompact: Bool
+	) {
     super.init(nibName: nil, bundle: nil)
     self.state = state
     self.isCompact = isCompact
@@ -55,62 +56,69 @@ class ConversationsListViewController: UIViewController {
   }
   
   private func checkUserState() {
-    if AppDelegate.isUserLoggedIn {
-      if state.loggedIn {
-        if (state.user != nil) && !state.user!.isProfileSet || showingProfileView {
-          createAvatarButton()
-          createAddConversationButton()
-          showAccountSettingsScreen()
-        } else {
-          createAvatarButton()
-          createAddConversationButton()
-          configureCollectionView()
-          fetchUsers()
-        }
-      } else {
-        showLoginScreen()
-      }
-    } else {
-      showLoginScreen()
-    }
+		Task {
+			do {
+				let isUserLoggedIn = try PersistenceManager.shared.retrieveUserPreference(ofType: .isUserLoggedIn) as? Bool ?? false
+				if isUserLoggedIn, state.loggedIn {
+					if state.user == nil { try await state.automaticLogin() }
+					if (state.user != nil) && !state.user!.isProfileSet || showingProfileView {
+						createAvatarButton()
+						createAddConversationButton()
+						showAccountSettingsScreen()
+					} else {
+						createAvatarButton()
+						createAddConversationButton()
+						configureCollectionView()
+					}
+				} else {
+					showLoginScreen()
+				}
+			} catch {
+				showLoginScreen()
+			}
+		}
   }
   
   private func createAvatarButton() {
-    if
-      let photo = state.user?.userPreferences?.avatarImage {
-      let imageView = ThumbnailView(frame: .zero)
-      imageView.delegate = self
-      imageView.set(photo: photo,
-                    cornerRadius: 15)
-      imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
-      imageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
-      let avatarButton = UIBarButtonItem(customView: imageView)
-      avatarButton.isEnabled = true
-      navigationItem.setLeftBarButton(avatarButton, animated: true)
-    }
+		let photo = state.user?.userPreferences?.avatarImage
+		let imageView = ThumbnailView(
+			photo: photo,
+			cornerRadius: 15
+		)
+		imageView.delegate = self
+		imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
+		imageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
+		let avatarButton = UIBarButtonItem(customView: imageView)
+		avatarButton.isEnabled = true
+		navigationItem.setLeftBarButton(avatarButton, animated: true)
   }
   
   private func createAddConversationButton() {
-    let addButton = UIBarButtonItem(barButtonSystemItem: .add,
-                                    target: self,
-                                    action: #selector(addButtonTapped))
+    let addButton = UIBarButtonItem(
+			barButtonSystemItem: .add,
+			target: self,
+			action: #selector(addButtonTapped)
+		)
     
     navigationItem.rightBarButtonItem = addButton
   }
   
   @objc private func addButtonTapped() {
-    let destVC = ChatroomCreationViewController(state: state,
-                                                chatsters: chatsters,
-                                                userRealm: userRealm)
+    let destVC = ChatroomCreationViewController(
+			state: state,
+			userRealm: state.realm
+		)
     destVC.isModalInPresentation = true
     let navController = UINavigationController(rootViewController: destVC)
     present(navController, animated: true)
   }
   
   private func configureCollectionView() {
-    let collectionView = ConversationsView(state: state,
-                                           userRealm: userRealm,
-                                           isCompact: isCompact)
+    let collectionView = ConversationsView(
+			state: state,
+			userRealm: state.realm,
+			isCompact: isCompact
+		)
     collectionView.delegate = self
     view.addSubview(collectionView)
     collectionView.pinToEdges(of: view)
@@ -121,84 +129,90 @@ class ConversationsListViewController: UIViewController {
     let navController = UINavigationController(rootViewController: loginVC)
     navController.modalPresentationStyle = .fullScreen
     navController.modalTransitionStyle = .crossDissolve
-    self.present(navController, animated: true)
-//    self.show(navController, sender: self)
+    present(navController, animated: true)
   }
   
   private func showAccountSettingsScreen() {
-    let destVC = AccountSettingsViewController(state: state,
-                                               userRealm: userRealm)
+    let destVC = AccountSettingsViewController(
+			state: state,
+			userRealm: state.realm
+		)
     destVC.delegate = self
     let navController = UINavigationController(rootViewController: destVC)
     navController.isModalInPresentation = true
-    self.present(navController, animated: true)
-//    self.show(navController, sender: self)
+    present(navController, animated: true)
   }
   
   private func createObservers() {
-    let notifications = [updateUserProfile]
+		let notifications: [Notification.Name] = [.updateUserProfile]
     
-    notifications.forEach { NotificationCenter.default.addObserver(self,
-                                                                   selector: #selector(handleNotifications(_:)),
-                                                                   name: $0,
-                                                                   object: nil) }
+    notifications.forEach { NotificationCenter.default.addObserver(
+			self,
+			selector: #selector(handleNotifications(_:)),
+			name: $0,
+			object: nil
+		) }
   }
   
   @objc private func handleNotifications(_ notification: Notification) {
     switch notification.name {
-    case updateUserProfile:
-      if
-        let realm = notification.object as? Realm {
-        userRealm = realm
-      }
+		case .updateUserProfile:
+//      if
+//        let realm = notification.object as? Realm {
+//        userRealm = realm
+//      }
       checkUserState()
     default:
       break
     }
   }
-  
-  private func fetchUsers() {
-    let config = state.app.currentUser!.configuration(partitionValue: "all-users=all-the-users")
-    Realm.asyncOpen(configuration: config)
-      .sink { _ in
-      } receiveValue: { [weak self] realm in
-        guard let self = self else { return }
-        self.chatsters = realm.objects(Chatster.self)
-      }
-      .store(in: &state.subscribers)
-  }
 }
 
+// MARK: - Thumbnail View Delegate Methods
 extension ConversationsListViewController: ThumbnailViewDelegate {
   func thumbnailTapped() {
     showAccountSettingsScreen()
   }
 }
 
+// MARK: - Conversations View Delegate Methods
 extension ConversationsListViewController: ConversationsViewDelegate {
-  func pushConversationViewController(_ conversation: Conversation,
-                                      chatsters: Results<Chatster>) {
-    let destVC = ChatroomViewController(state: state,
-                                        userRealm: userRealm,
-                                        conversation: conversation,
-                                        chatsters: chatsters)
+  func pushConversationViewController(
+		_ conversation: Conversation,
+		chatsters: Results<Chatster>
+	) {
+    let destVC = ChatroomViewController(
+			state: state,
+			userRealm: state.realm,
+			conversation: conversation,
+			chatsters: chatsters
+		)
     
     if
       let splitViewController = self.splitViewController {
 //      splitViewController.setViewController(destVC,
 //                                            for: .secondary)
-      splitViewController.showDetailViewController(destVC,
-                                                   sender: self)
+      splitViewController.showDetailViewController(
+				destVC,
+				sender: self
+			)
     } else {
-      self.navigationController?.pushViewController(destVC,
-                                                    animated: true)
+      navigationController?.pushViewController(
+				destVC,
+				animated: true
+			)
     }
   }
   
-  func showChatroomCreationViewController(for conversation: Conversation, chatsters: Results<Chatster>) {
-    let destVC = ChatroomCreationViewController(state: state,
-                                                chatsters: chatsters,
-                                                userRealm: userRealm)
+  func showChatroomCreationViewController(
+		for conversation: Conversation,
+		chatsters: Results<Chatster>
+	) {
+    let destVC = ChatroomCreationViewController(
+			state: state,
+//			chatsters: chatsters,
+			userRealm: state.realm
+		)
     let members = conversation.members.map({ $0.userName })
     let chatstersInConversation = chatsters.filter({ members.contains($0.userName) })
     destVC.selected = Array(chatstersInConversation)
@@ -214,14 +228,14 @@ extension ConversationsListViewController: ConversationsViewDelegate {
     let destVC = ChatsterViewController(chatster: chatster)
     let navController = UINavigationController(rootViewController: destVC)
     
-    self.present(navController, animated: true)
-//    self.show(navController, sender: self)
+    present(navController, animated: true)
   }
 }
 
+// MARK: - Account Settings View Controller Delegate Methods
 extension ConversationsListViewController: AccountsSettingsViewControllerDelegate {
   func showLoginViewController() {
     view.subviews.forEach { $0.removeFromSuperview() }
-    self.showLoginScreen()
+    showLoginScreen()
   }
 }

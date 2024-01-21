@@ -17,9 +17,8 @@ protocol ConversationsViewDelegate: AnyObject {
 class ConversationsView: UIView {
   private var state: AppState!
   private var userRealm: Realm!
-  private var chatstersRealm: Realm!
+
   private var conversations: Results<Conversation>!
-  private var chatsters: Results<Chatster>!
   private var users: Results<User>!
   private var userConversationsNotificationToken: NotificationToken!
   
@@ -63,15 +62,17 @@ class ConversationsView: UIView {
       let editActionHandler: UIContextualAction.Handler = { [weak self] action, view, completed in
         guard let self = self else { return }
         let conversation = self.conversations[indexPath.item]
-        self.delegate.showChatroomCreationViewController(for: conversation,
-                                                         chatsters: self.chatsters)
+        self.delegate.showChatroomCreationViewController(
+					for: conversation,
+					chatsters: self.state.chatsters
+				)
         completed(true)
       }
       let editAction = UIContextualAction(style: .normal,
                                           title: "Edit",
                                           handler: editActionHandler)
       editAction.backgroundColor = .systemBlue
-      editAction.image = SFSymbols.edit
+      editAction.image = .edit
       let configuration = UISwipeActionsConfiguration(actions: [editAction])
       
       return configuration
@@ -89,7 +90,7 @@ class ConversationsView: UIView {
       let leaveAction = UIContextualAction(style: .destructive,
                                            title: "Leave",
                                            handler: leaveActionHandler)
-      leaveAction.image = SFSymbols.leave
+      leaveAction.image = .leave
       let configuration = UISwipeActionsConfiguration(actions: [leaveAction])
       
       return configuration
@@ -97,11 +98,19 @@ class ConversationsView: UIView {
     
     let layout = UICollectionViewCompositionalLayout.list(using: configuration)
     
-    collectionView = UICollectionView(frame: .zero,
-                                      collectionViewLayout: layout)
+		collectionView = .init(
+			frame: .zero,
+			collectionViewLayout: layout
+		)
     addSubview(collectionView)
     collectionView.pinToEdges(of: self)
     collectionView.backgroundColor = .systemBackground
+		collectionView.backgroundView = EmptyStateView(
+			message: "No conversations",
+			imageName: "bubble"
+		)
+		collectionView.backgroundView?.isHidden = true
+		
     collectionView.delegate = self
     
     collectionView.register(ConversationCell.self,
@@ -126,19 +135,23 @@ class ConversationsView: UIView {
   }
   
   private func configureDataSource() {
-    dataSource = UICollectionViewDiffableDataSource<Section, Conversation>(collectionView: collectionView) { [weak self] collectionView, indexPath, conversation in
+    dataSource = UICollectionViewDiffableDataSource<Section, Conversation>(
+			collectionView: collectionView
+		) { [weak self] collectionView, indexPath, conversation in
       guard
         let self = self,
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ConversationCell.reuseID,
-                                                      for: indexPath) as? ConversationCell else {
+        let cell = collectionView.dequeueReusableCell(
+					withReuseIdentifier: ConversationCell.reuseID,
+					for: indexPath
+				) as? ConversationCell else {
         return nil
       }
 
-      cell.set(state: self.state,
-               conversation: conversation,
-               chatstersRealm: self.chatstersRealm,
-               chatsters: self.chatsters,
-               isCompact: self.isCompact)
+      cell.set(
+				state: self.state,
+				conversation: conversation,
+				isCompact: self.isCompact
+			)
       cell.delegate = self
       
       return cell
@@ -164,42 +177,32 @@ class ConversationsView: UIView {
     self.dataSource.apply(snapshot, animatingDifferences: true)
   }
   
-  private func fetchChatsters() {
-    let config = state.app.currentUser!.configuration(partitionValue: "all-users=all-the-users")
-    Realm.asyncOpen(configuration: config)
-      .sink { completion in
-        switch completion {
-        case .failure(let error):
-          print(error.localizedDescription)
-        case .finished:
-          break
-        }
-      } receiveValue: { [weak self] realm in
-        guard let self = self else { return }
-        self.chatstersRealm = realm
-        self.chatsters = realm.objects(Chatster.self)
-        self.applySnapshot()
-      }
-      .store(in: &state.subscribers)
-  }
-  
   private func fetchUsers() {
-    let config = state.app.currentUser!.configuration(partitionValue: "user=\(state.user?._id ?? "")")
-    Realm.asyncOpen(configuration: config)
-      .sink { _ in
-      } receiveValue: { [weak self] realm in
-        guard let self = self else { return }
-        self.users = realm.objects(User.self)
-        self.conversations = self.users[0].conversations.sorted(by: self.sortDescriptor)
-        self.conversations.forEach({ print($0.displayName) })
-        self.fetchChatsters()
-        self.observeUserConversations()
-      }
-      .store(in: &state.subscribers)
+		Task {
+			do {
+				users = try await state.fetchUsers()
+				
+				if !users.isEmpty {
+					conversations = users.first?.conversations.sorted(by: sortDescriptor)
+					conversations.forEach({ print($0.displayName) })
+				}
+				
+				if conversations.isEmpty {
+					collectionView.backgroundView?.isHidden = false
+				} else {
+					applySnapshot()
+				}
+				observeUserConversations()
+			} catch {
+				print(error.localizedDescription)
+			}
+		}
   }
   
   private func observeUserConversations() {
-    userConversationsNotificationToken = users.thaw()?.observe { [weak self] result in
+    userConversationsNotificationToken = users
+			.thaw()?
+			.observe { [weak self] result in
       guard let self = self else { return }
       switch result {
       case .error(let error):
@@ -213,13 +216,18 @@ class ConversationsView: UIView {
     }
   }
   
-  private func leaveConversation(_ conversation: Conversation, indexPath: IndexPath) {
+  private func leaveConversation(
+		_ conversation: Conversation,
+		indexPath: IndexPath
+	) {
     state.error = nil
     state.shouldIndicateActivity = true
     do {
       try userRealm.write {
         if
-          let conversationToDelete = state.user?.conversations.filter("id = %@", conversation.id).first {
+          let conversationToDelete = state.user?
+						.conversations.filter("id = %@", conversation.id)
+						.first {
           print(conversationToDelete)
           userRealm.delete(conversationToDelete)
         }
@@ -227,21 +235,28 @@ class ConversationsView: UIView {
     } catch {
       print("Unable to leave conversation")
       state.shouldIndicateActivity = false
-      UIHelpers.autoDismissableSnackBar(title: "Unable to leave \(conversation.displayName)",
-                                        image: SFSymbols.crossCircle,
-                                        backgroundColor: .systemRed,
-                                        textColor: .white,
-                                        view: self.superview ?? self)
+      UIHelpers.autoDismissableSnackBar(
+				title: "Unable to leave \(conversation.displayName)",
+				image: .crossCircle,
+				backgroundColor: .systemRed,
+				textColor: .white,
+				view: self.superview ?? self
+			)
     }
     state.shouldIndicateActivity = false
   }
 }
 
 extension ConversationsView: UICollectionViewDelegate {
-  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    let conversation = self.conversations[indexPath.item]
-    delegate.pushConversationViewController(conversation,
-                                            chatsters: self.chatsters)
+  func collectionView(
+		_ collectionView: UICollectionView,
+		didSelectItemAt indexPath: IndexPath
+	) {
+    let conversation = conversations[indexPath.item]
+    delegate.pushConversationViewController(
+			conversation,
+			chatsters: state.chatsters
+		)
   }
 }
 

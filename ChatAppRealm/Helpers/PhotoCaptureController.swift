@@ -18,9 +18,11 @@ class PhotoCaptureController: UIImagePickerController {
   override var supportedInterfaceOrientations: UIInterfaceOrientationMask { .portrait }
   override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation { .portrait }
   
-  static func show(source: UIImagePickerController.SourceType,
-                   photoToEdit: Photo = Photo(),
-                   photoTaken: ((PhotoCaptureController, Photo) -> Void)? = nil) {
+  static func show(
+		source: UIImagePickerController.SourceType,
+		photoToEdit: Photo = Photo(),
+		photoTaken: ((PhotoCaptureController, Photo) -> Void)? = nil
+	) {
     let picker = PhotoCaptureController()
     picker.photo = photoToEdit
     picker.setup(source)
@@ -76,7 +78,10 @@ class PhotoCaptureController: UIImagePickerController {
 }
 
 extension PhotoCaptureController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-  func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+  func imagePickerController(
+		_ picker: UIImagePickerController,
+		didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]
+	) {
     guard
       let editedImage = info[.editedImage] as? UIImage,
       let result = compressImageIfNeeded(image: editedImage) else {

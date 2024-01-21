@@ -11,7 +11,7 @@ import UIKit
 class CASplitViewController: UISplitViewController {
   private var state: AppState!
   
-  init(state: AppState) {
+	init(state: AppState) {
     super.init(style: .doubleColumn)
     self.state = state
   }
@@ -42,10 +42,14 @@ class CASplitViewController: UISplitViewController {
     viewControllers = [createConversationsListViewController(isCompact: false), UIViewController()]
   }
   
-  private func createConversationsListViewController(isCompact: Bool) -> ConversationsListViewController {
-    let conversationsListVC = ConversationsListViewController(state: state,
-                                                              isCompact: isCompact)
+  private func createConversationsListViewController(isCompact: Bool) -> UINavigationController {
+    let conversationsListVC = ConversationsListViewController(
+			state: state,
+			isCompact: isCompact
+		)
     
-    return conversationsListVC
+    let navController = UINavigationController(rootViewController: conversationsListVC)
+    
+    return navController
   }
 }

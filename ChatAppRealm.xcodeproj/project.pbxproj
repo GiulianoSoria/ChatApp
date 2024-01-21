@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F206D80A2B5A04700060865F /* Notification.Name+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F206D8092B5A04700060865F /* Notification.Name+Extensions.swift */; };
 		F2363A5826700B7400331312 /* UIFont+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2363A5726700B7400331312 /* UIFont+Extensions.swift */; };
 		F2363A5A26705B3400331312 /* ChatroomCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2363A5926705B3400331312 /* ChatroomCreationViewController.swift */; };
 		F2363A5C2673D0DB00331312 /* ChatsterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2363A5B2673D0DA00331312 /* ChatsterViewController.swift */; };
@@ -19,8 +20,6 @@
 		F285C326266944CC00362C37 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F285C325266944CC00362C37 /* Assets.xcassets */; };
 		F285C329266944CC00362C37 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F285C327266944CC00362C37 /* LaunchScreen.storyboard */; };
 		F285C3312669451B00362C37 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C3302669451B00362C37 /* AppState.swift */; };
-		F285C3342669461800362C37 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = F285C3332669461800362C37 /* RealmSwift */; };
-		F285C3362669461800362C37 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = F285C3352669461800362C37 /* Realm */; };
 		F285C33A26695C1C00362C37 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C33926695C1C00362C37 /* User.swift */; };
 		F285C33C26695D1300362C37 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C33B26695D1300362C37 /* Photo.swift */; };
 		F285C33F26695D9300362C37 /* Conversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F285C33E26695D9300362C37 /* Conversation.swift */; };
@@ -56,9 +55,15 @@
 		F29FC677267E472C006EAD7A /* PersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F29FC676267E472C006EAD7A /* PersistenceManager.swift */; };
 		F29FC67B267E47FE006EAD7A /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = F29FC67A267E47FE006EAD7A /* Preferences.swift */; };
 		F29FC67D267E4A5B006EAD7A /* CAError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F29FC67C267E4A5B006EAD7A /* CAError.swift */; };
+		F2A7FA392B5AEB2200EEFB72 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = F2A7FA382B5AEB2200EEFB72 /* KeychainAccess */; };
+		F2A7FA3C2B5AEB3500EEFB72 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = F2A7FA3B2B5AEB3500EEFB72 /* Realm */; };
+		F2A7FA3E2B5AEB3500EEFB72 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = F2A7FA3D2B5AEB3500EEFB72 /* RealmSwift */; };
+		F2A7FA402B5AEB8200EEFB72 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A7FA3F2B5AEB8200EEFB72 /* KeychainManager.swift */; };
+		F2A7FA422B5C489800EEFB72 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A7FA412B5C489800EEFB72 /* EmptyStateView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F206D8092B5A04700060865F /* Notification.Name+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification.Name+Extensions.swift"; sourceTree = "<group>"; };
 		F2363A5726700B7400331312 /* UIFont+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extensions.swift"; sourceTree = "<group>"; };
 		F2363A5926705B3400331312 /* ChatroomCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatroomCreationViewController.swift; sourceTree = "<group>"; };
 		F2363A5B2673D0DA00331312 /* ChatsterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsterViewController.swift; sourceTree = "<group>"; };
@@ -108,6 +113,8 @@
 		F29FC676267E472C006EAD7A /* PersistenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceManager.swift; sourceTree = "<group>"; };
 		F29FC67A267E47FE006EAD7A /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		F29FC67C267E4A5B006EAD7A /* CAError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAError.swift; sourceTree = "<group>"; };
+		F2A7FA3F2B5AEB8200EEFB72 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
+		F2A7FA412B5C489800EEFB72 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,8 +122,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F285C3362669461800362C37 /* Realm in Frameworks */,
-				F285C3342669461800362C37 /* RealmSwift in Frameworks */,
+				F2A7FA3E2B5AEB3500EEFB72 /* RealmSwift in Frameworks */,
+				F2A7FA3C2B5AEB3500EEFB72 /* Realm in Frameworks */,
+				F2A7FA392B5AEB2200EEFB72 /* KeychainAccess in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,6 +211,7 @@
 			children = (
 				F285C3302669451B00362C37 /* AppState.swift */,
 				F29FC676267E472C006EAD7A /* PersistenceManager.swift */,
+				F2A7FA3F2B5AEB8200EEFB72 /* KeychainManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -242,6 +251,7 @@
 				F285C424266D499800362C37 /* Date+Extensions.swift */,
 				F285C42B266D9E5800362C37 /* UIViewController+Extensions.swift */,
 				F2363A5726700B7400331312 /* UIFont+Extensions.swift */,
+				F206D8092B5A04700060865F /* Notification.Name+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -267,6 +277,7 @@
 			children = (
 				F285C406266BD37100362C37 /* SnackBarView.swift */,
 				F24C8E442694AEC500E09F3B /* CAMapView.swift */,
+				F2A7FA412B5C489800EEFB72 /* EmptyStateView.swift */,
 			);
 			path = "Support Views";
 			sourceTree = "<group>";
@@ -355,8 +366,9 @@
 			);
 			name = ChatAppRealm;
 			packageProductDependencies = (
-				F285C3332669461800362C37 /* RealmSwift */,
-				F285C3352669461800362C37 /* Realm */,
+				F2A7FA382B5AEB2200EEFB72 /* KeychainAccess */,
+				F2A7FA3B2B5AEB3500EEFB72 /* Realm */,
+				F2A7FA3D2B5AEB3500EEFB72 /* RealmSwift */,
 			);
 			productName = ChatAppRealm;
 			productReference = F285C319266944CA00362C37 /* ChatAppRealm.app */;
@@ -368,8 +380,9 @@
 		F285C311266944CA00362C37 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1250;
+				LastUpgradeCheck = 1510;
 				TargetAttributes = {
 					F285C318266944CA00362C37 = {
 						CreatedOnToolsVersion = 12.5;
@@ -386,7 +399,8 @@
 			);
 			mainGroup = F285C310266944CA00362C37;
 			packageReferences = (
-				F285C3322669461800362C37 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
+				F2A7FA372B5AEB2200EEFB72 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+				F2A7FA3A2B5AEB3500EEFB72 /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = F285C31A266944CA00362C37 /* Products */;
 			projectDirPath = "";
@@ -428,6 +442,7 @@
 				F285C407266BD37100362C37 /* SnackBarView.swift in Sources */,
 				F285C40F266BDE6C00362C37 /* UIView+Extensions.swift in Sources */,
 				F285C41D266D273E00362C37 /* AvatarsGridView.swift in Sources */,
+				F2A7FA402B5AEB8200EEFB72 /* KeychainManager.swift in Sources */,
 				F24C8E482695358900E09F3B /* CASplitViewController.swift in Sources */,
 				F285C34326695FA900362C37 /* Chatster.swift in Sources */,
 				F285C33C26695D1300362C37 /* Photo.swift in Sources */,
@@ -450,10 +465,12 @@
 				F285C425266D499900362C37 /* Date+Extensions.swift in Sources */,
 				F285C404266BD32400362C37 /* String+Extensions.swift in Sources */,
 				F285C33A26695C1C00362C37 /* User.swift in Sources */,
+				F206D80A2B5A04700060865F /* Notification.Name+Extensions.swift in Sources */,
 				F285C400266BC81B00362C37 /* LoginViewController.swift in Sources */,
 				F2363A5A26705B3400331312 /* ChatroomCreationViewController.swift in Sources */,
 				F285C3312669451B00362C37 /* AppState.swift in Sources */,
 				F285C427266D957E00362C37 /* MessageComposerView.swift in Sources */,
+				F2A7FA422B5C489800EEFB72 /* EmptyStateView.swift in Sources */,
 				F285C31D266944CA00362C37 /* AppDelegate.swift in Sources */,
 				F285C413266C3F4700362C37 /* ThumbnailView.swift in Sources */,
 				F285C421266D43CF00362C37 /* ChatroomViewController.swift in Sources */,
@@ -513,6 +530,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -574,6 +592,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -654,26 +673,39 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		F285C3322669461800362C37 /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
+		F2A7FA372B5AEB2200EEFB72 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/realm/realm-cocoa.git";
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 10.7.6;
+				branch = master;
+				kind = branch;
+			};
+		};
+		F2A7FA3A2B5AEB3500EEFB72 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				branch = master;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		F285C3332669461800362C37 /* RealmSwift */ = {
+		F2A7FA382B5AEB2200EEFB72 /* KeychainAccess */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F285C3322669461800362C37 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
-			productName = RealmSwift;
+			package = F2A7FA372B5AEB2200EEFB72 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
 		};
-		F285C3352669461800362C37 /* Realm */ = {
+		F2A7FA3B2B5AEB3500EEFB72 /* Realm */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F285C3322669461800362C37 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			package = F2A7FA3A2B5AEB3500EEFB72 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = Realm;
+		};
+		F2A7FA3D2B5AEB3500EEFB72 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F2A7FA3A2B5AEB3500EEFB72 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

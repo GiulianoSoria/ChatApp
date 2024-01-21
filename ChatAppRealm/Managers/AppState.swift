@@ -9,21 +9,24 @@ import Combine
 import Foundation
 import RealmSwift
 
+@MainActor
 class AppState {
   public static let shared = AppState()
-  public let app = RealmSwift.App(id: "chatapp-jfsse")
+  public let app = RealmSwift.App(id: "chatapprealm-xqbxd")
+	
+	private let keychain = KeychainManager()
   
   public var error: String?
   public var busyCount = 0
   
   var user: User?
+	var realm: Realm!
+	var chatsters: Results<Chatster>!
   
-  var loginPublisher = PassthroughSubject<RealmSwift.User, Error>()
-  var logoutPublisher = PassthroughSubject<Void, Error>()
-  var userRealmPublisher = PassthroughSubject<Realm, Error>()
+//  var loginPublisher = PassthroughSubject<RealmSwift.User, Error>()
+//  var logoutPublisher = PassthroughSubject<Void, Error>()
+//  var userRealmPublisher = PassthroughSubject<Realm, Error>()
   var subscribers = Set<AnyCancellable>()
-  
-  let updateUserProfile = Notification.Name(NotificationKeys.updateUserProfile)
   
   var shouldIndicateActivity: Bool {
     get { return busyCount > 0 }
@@ -41,59 +44,163 @@ class AppState {
     }
   }
   
-  var loggedIn: Bool { app.currentUser != nil && user != nil && app.currentUser?.state == .loggedIn }
+  var loggedIn: Bool { app.currentUser != nil && app.currentUser?.state == .loggedIn }
   
-  init() {
-    if !AppDelegate.isUserLoggedIn { _ = app.currentUser?.logOut() }
-    initLoginPublisher()
-    initLogoutPublisher()
-    initUserRealmPublisher()
+	init() {
+		do {
+			let isUserLoggedIn = try PersistenceManager.shared.retrieveUserPreference(
+				ofType: .isUserLoggedIn
+			) as? Bool ?? false
+			
+			if !isUserLoggedIn {
+				Task {
+					try await logout()
+				}
+			}
+		} catch {
+			Task {
+				try await logout()
+			}
+		}
   }
-  
-  public func initLoginPublisher() {
-    loginPublisher
-      .receive(on: DispatchQueue.main)
-      .flatMap { user -> RealmPublishers.AsyncOpenPublisher in
-        self.shouldIndicateActivity = true
-        let realmConfig = user.configuration(partitionValue: "user=\(user.id)")
-        return Realm.asyncOpen(configuration: realmConfig)
-      }
-      .receive(on: DispatchQueue.main)
-      .map { return $0 }
-      .subscribe(userRealmPublisher)
-      .store(in: &subscribers)
-  }
-  
-  public func initUserRealmPublisher() {
-    userRealmPublisher
-      .sink { result in
-        if case let .failure(error) = result {
-          self.error = "Failed to log in and open user realm: \(error.localizedDescription)"
-        }
-      } receiveValue: { userRealm in
-        print("User Realm file location: \(userRealm.configuration.fileURL!.path)")
-        self.user = userRealm.objects(User.self).first
-        
-        do {
-          try userRealm.write {
-            self.user?.presenceState = .onLine
-          }
-        } catch {
-          self.error = "Unable to open Realm write transaction"
-        }
-        self.shouldIndicateActivity = false
-        NotificationCenter.default.post(name: self.updateUserProfile, object: userRealm)
-      }
-      .store(in: &subscribers)
-  }
-  
-  public func initLogoutPublisher() {
-    logoutPublisher
-      .receive(on: DispatchQueue.main)
-      .sink { _ in
-      } receiveValue: { _ in
-        self.user = nil
-      }
-      .store(in: &subscribers)
-  }
+	
+	@discardableResult
+	public func login(
+		email: String,
+		password: String
+	) async throws -> RealmSwift.User {
+		let user = try await app.login(
+			credentials: .emailPassword(
+				email: email,
+				password: password
+			)
+		)
+		
+		try keychain.saveItems([
+			(.email, email),
+			(.password, password)
+		])
+		
+		try await initializeUserRealm(forUser: user)
+		try await initializeChatsterRealm()
+		
+		return user
+	}
+	
+	public func automaticLogin() async throws {
+		guard let email = try keychain.getItem(withKey: .email),
+					let password = try keychain.getItem(withKey: .password) else {
+			throw NSError(domain: "com.gcsoriap.ChatAppRealm", code: -2)
+		}
+		
+		try await login(email: email, password: password)
+	}
+	
+	public func logout() async throws {
+		shouldIndicateActivity = true
+		
+		do {
+			if let realm {
+				try realm.write {
+					user?.presenceState = .offLine
+				}
+			}
+			
+			try await app.currentUser?.logOut()
+			
+			try PersistenceManager.shared.updatePreferences(
+				preference: .init(isUserLoggedIn: false),
+				types: [.isUserLoggedIn]
+			)
+			
+			user = nil
+			shouldIndicateActivity = false
+		} catch {
+			shouldIndicateActivity = false
+			self.error = "Unable to open Realm write transaction"
+			throw error
+		}
+	}
+	
+	private func initializeUserRealm(
+		forUser user: RealmSwift.User
+	) async throws {
+		let config = user.flexibleSyncConfiguration { subs in
+			subs.append(QuerySubscription<User> {
+				$0._id == user.id
+			})
+		}
+		
+		realm = try await Realm(
+			configuration: config,
+			downloadBeforeOpen: .always
+		)
+		
+//		debugPrint("User Realm file location: \(userRealm.configuration.fileURL!.path)")
+		self.user = realm.objects(User.self).first
+		
+		try realm.write {
+			self.user?.presenceState = .onLine
+		}
+		
+		shouldIndicateActivity = false
+	}
+	
+	public func initializeChatsterRealm() async throws {
+		let subs = realm.subscriptions
+		
+		try await subs.update {
+			if let currentSubs = subs.first(named: "all-chatsters") {
+				currentSubs.updateQuery(toType: Chatster.self) {
+					$0.userName != ""
+				}
+			} else {
+				subs.append(QuerySubscription<Chatster>(name: "all-chatsters") {
+					$0.userName != ""
+				})
+			}
+		}
+		
+		chatsters = realm.objects(Chatster.self)
+	}
+	
+	public func getMessages(of conversation: Conversation) async throws -> Results<ChatMessage> {
+		let subs = realm.subscriptions
+		
+		try await subs.update {
+			if let currentSubs = subs.first(named: "conversation") {
+				currentSubs.updateQuery(toType: ChatMessage.self) {
+					$0.conversationID == conversation.id
+				}
+			} else {
+				subs.append(QuerySubscription<ChatMessage>(name: "conversation") {
+					$0.conversationID == conversation.id
+				})
+			}
+		}
+		
+		return realm
+			.objects(ChatMessage.self)
+			.sorted(
+				byKeyPath: "timestamp",
+				ascending: true
+			)
+	}
+	
+	func fetchUsers() async throws -> Results<User> {
+		let config = app.currentUser!.flexibleSyncConfiguration { subs in
+			subs.append(QuerySubscription<User> {
+				$0._id != ""
+			})
+		}
+		
+		let realm = try await Realm(
+			configuration: config,
+			downloadBeforeOpen: .always
+		)
+		
+		let users = realm.objects(User.self)
+		
+		return users
+	}
 }

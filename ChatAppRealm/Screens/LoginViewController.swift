@@ -20,7 +20,7 @@ class LoginViewController: UIViewController {
   
   lazy var checkboxButton: CAButton = {
     let button = CAButton()
-    button.setImage(SFSymbols.square, for: .normal)
+    button.setImage(.square, for: .normal)
     button.setTitle("Register New User", for: .normal)
     button.setTitleColor(.secondaryLabel, for: .normal)
     button.tintColor = .secondaryLabel
@@ -42,7 +42,7 @@ class LoginViewController: UIViewController {
   
   var newUser: Bool = false {
     didSet {
-      checkboxButton.setImage(newUser ? SFSymbols.checkbox : SFSymbols.square, for: .normal)
+      checkboxButton.setImage(newUser ? .checkbox : .square, for: .normal)
       checkboxButton.setTitleColor(newUser ? .label : .secondaryLabel, for: .normal)
       checkboxButton.tintColor = newUser ? .label : .secondaryLabel
     }
@@ -142,94 +142,101 @@ class LoginViewController: UIViewController {
       let email = emailField.text, !email.isEmpty,
       let password = passwordField.text, !password.isEmpty else {
       self.isLoggingIn = false
-      UIHelpers.autoDismissableSnackBar(title: "Provide a valid email and password",
-                                        image: SFSymbols.alertCircle,
-                                        backgroundColor: .systemYellow,
-                                        textColor: .black,
-                                        view: self.view)
+			UIHelpers.autoDismissableSnackBar(
+				title: "Provide a valid email and password",
+				image: .alertCircle,
+				backgroundColor: .systemYellow,
+				textColor: .black,
+				view: self.view
+			)
       state.shouldIndicateActivity = false
       return
     }
     
     state.error = nil
     self.isLoggingIn = true
-    showSnackBar(title: "Creating Account")
-    state.app.emailPasswordAuth.registerUser(email: email, password: password)
-      .receive(on: DispatchQueue.main)
-      .sink { completion in
-        self.state.shouldIndicateActivity = false
-        self.isLoggingIn = false
-        self.dismissSnackBar(title: "Creating Account")
-        switch completion {
-        case .failure(let error):
-          self.state.error = error.localizedDescription
-          self.isLoggingIn = false
-          UIHelpers.autoDismissableSnackBar(title: error.localizedDescription.capitalized,
-                                            image: SFSymbols.crossCircle,
-                                            backgroundColor: .systemRed,
-                                            view: self.view)
-        case .finished:
-          break
-        }
-      } receiveValue: { value in
-        self.state.error = nil
-        self.isLoggingIn = false
-        self.dismissSnackBar(title: "Creating Account")
-        self.login()
-      }
-      .store(in: &state.subscribers)
+    showSnackBar(title: "Creating Account...")
+		
+		Task {
+			do {
+				self.state.error = nil
+				self.isLoggingIn = false
+				self.dismissSnackBar(title: "Creating Account...")
+				
+				try await state.app.emailPasswordAuth.registerUser(
+					email: email,
+					password: password
+				)
+				self.login()
+			}	catch {
+				self.state.error = error.localizedDescription
+				self.isLoggingIn = false
+				UIHelpers.autoDismissableSnackBar(
+					title: error.localizedDescription.capitalized,
+					image: .crossCircle,
+					backgroundColor: .systemRed,
+					view: self.view
+				)
+			}
+		}
   }
   
   @objc private func login() {
-    guard
-      let email = emailField.text, !email.isEmpty,
-      let password = passwordField.text, !password.isEmpty else {
-        self.isLoggingIn = false
-      UIHelpers.autoDismissableSnackBar(title: "Provide a valid email and password",
-                                        image: SFSymbols.alertCircle,
-                                        backgroundColor: .systemYellow,
-                                        textColor: .black,
-                                        view: self.view)
-      state.shouldIndicateActivity = false
-      return
-    }
+		guard
+			let email = emailField.text, !email.isEmpty,
+			let password = passwordField.text, !password.isEmpty else {
+			isLoggingIn = false
+			dismissSnackBar(title: "Logging in")
+			UIHelpers.autoDismissableSnackBar(
+				title: "Provide a valid email and password",
+				image: .alertCircle,
+				backgroundColor: .systemYellow,
+				textColor: .black,
+				view: view
+			)
+			state.shouldIndicateActivity = false
+			return
+		}
     
     state.error = nil
-    self.isLoggingIn = true
+    isLoggingIn = true
     showSnackBar(title: "Logging in")
-    state.app.login(credentials: .emailPassword(email: email, password: password))
-      .receive(on: DispatchQueue.main)
-      .sink { completion in
-        self.state.shouldIndicateActivity = false
-        self.isLoggingIn = false
-        self.dismissSnackBar(title: "Logging in")
-        switch completion {
-        case .failure(let error):
-          self.state.error = error.localizedDescription
-          self.isLoggingIn = false
-          UIHelpers.autoDismissableSnackBar(title: error.localizedDescription.capitalized,
-                                            image: SFSymbols.crossCircle,
-                                            backgroundColor: .systemRed,
-                                            view: self.view)
-        case .finished:
-          break
-        }
-      } receiveValue: { user in
-        self.state.error = nil
-        self.isLoggingIn = false
-        self.dismissSnackBar(title: "Logging in")
-        self.state.loginPublisher.send(user)
-        self.savePreferences()
-      }
-      .store(in: &state.subscribers)
+		
+		Task {
+			do {
+				try await state.login(
+					email: email,
+					password: password
+				)
+				
+				state.error = nil
+				isLoggingIn = false
+				dismissSnackBar(title: "Logging in")
+				savePreferences()
+			} catch {
+				print(error.localizedDescription)
+				dismissSnackBar(title: "Logging in")
+				state.error = error.localizedDescription
+				isLoggingIn = false
+				UIHelpers.autoDismissableSnackBar(
+					title: error.localizedDescription.capitalized,
+					image: .crossCircle,
+					backgroundColor: .systemRed,
+					view: view
+				)
+			}
+		}
   }
   
-  func pushProfileScreen() {
+  func showProfileScreen() {
     self.dismiss(animated: true)
   }
   
   private func createKeyboardAppearanceNotification() {
-    let notifications = [UIResponder.keyboardWillChangeFrameNotification, UIResponder.keyboardWillHideNotification]
+    let notifications = [
+			UIResponder.keyboardWillChangeFrameNotification,
+			UIResponder.keyboardWillHideNotification
+		]
     notifications.forEach { NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: $0, object: nil) }
   }
   
@@ -265,15 +272,20 @@ class LoginViewController: UIViewController {
   
   private func savePreferences() {
     let preference = Preferences(isUserLoggedIn: true)
-    PersistenceManager.shared.updatePreferences(preference: preference,
-                                                types: [.isuserLoggedIn]) { error in
-      if let error = error {
-        print(error.rawValue)
-      } else {
-        AppDelegate.isUserLoggedIn = true
-        self.pushProfileScreen()
-      }
-    }
+		
+		do {
+			try PersistenceManager.shared.updatePreferences(
+				preference: preference,
+				types: [.isUserLoggedIn]
+			)
+			showProfileScreen()
+			NotificationCenter.default.post(
+				name: .updateUserProfile,
+				object: state.realm
+			)
+		} catch {
+			print(error.localizedDescription)
+		}
   }
 }
 

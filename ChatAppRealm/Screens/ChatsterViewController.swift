@@ -70,7 +70,7 @@ class ChatsterViewController: UIViewController {
         if let imageData = chatster.avatarImage?.picture {
           configuration.image = UIImage(data: imageData)
         } else {
-          configuration.image = SFSymbols.personCircle
+          configuration.image = .personCircle
           configuration.imageProperties.preferredSymbolConfiguration = .init(pointSize: 100)
         }
         

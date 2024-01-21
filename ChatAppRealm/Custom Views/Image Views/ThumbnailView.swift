@@ -35,11 +35,13 @@ class ThumbnailView: CAImageView {
     if
       let photo = photo,
       let imageData = photo.picture {
-      image = UIImage(data: imageData)
+			image = .init(data: imageData)
     } else {
-      let configuration = UIImage.SymbolConfiguration(pointSize: 150)
-      image = UIImage(systemName: "person.crop.circle",
-                      withConfiguration: configuration)
+			let configuration = UIImage.SymbolConfiguration(pointSize: cornerRadius == 50 ? 150 : 30)
+			image = .init(
+				systemName: "person.crop.circle",
+				withConfiguration: configuration
+			)
     }
     layer.cornerRadius = cornerRadius
   }

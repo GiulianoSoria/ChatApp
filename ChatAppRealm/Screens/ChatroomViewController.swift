@@ -69,20 +69,24 @@ class ChatroomViewController: UIViewController {
   }
   
   private func configureCollectionView() {
-    collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+		collectionView = .init(frame: .zero, collectionViewLayout: createLayout())
     view.addSubview(collectionView)
     collectionView.pinToEdges(of: view)
     collectionView.backgroundColor = .systemBackground
     collectionView.keyboardDismissMode = .onDrag
     
-    collectionView.contentInset = UIEdgeInsets(top: 0,
-                                               left: 0,
-                                               bottom: tabBarHeight,
-                                               right: 0)
-    collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0,
-                                                        left: 0,
-                                                        bottom: tabBarHeight,
-                                                        right: 0)
+		collectionView.contentInset = .init(
+			top: 0,
+			left: 0,
+			bottom: tabBarHeight,
+			right: 0
+		)
+		collectionView.scrollIndicatorInsets = .init(
+			top: 0,
+			left: 0,
+			bottom: tabBarHeight,
+			right: 0
+		)
     
     collectionView.register(MessageCell.self, forCellWithReuseIdentifier: MessageCell.reuseID)
   }
@@ -105,15 +109,19 @@ class ChatroomViewController: UIViewController {
   }
   
   private func configureDataSource() {
-    dataSource = UICollectionViewDiffableDataSource<Section, ChatMessage>(collectionView: collectionView) { [weak self] collectionView, indexPath, message in
+    dataSource = UICollectionViewDiffableDataSource<Section, ChatMessage>(
+			collectionView: collectionView
+		) { [weak self] collectionView, indexPath, message in
       guard let self = self else { return nil }
       guard
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MessageCell.reuseID,
                                                       for: indexPath) as? MessageCell else { return nil }
-      cell.set(chatster: self.chatsters.first(where: { $0.userName == message.author }),
-               message: message,
-               isMyMessage: message.author == self.state.user?.userName,
-               isMediaShown: message.image != nil || !message.location.isEmpty ? true : false)
+      cell.set(
+				chatster: self.chatsters.first(where: { $0.userName == message.author }),
+				message: message,
+				isMyMessage: message.author == self.state.user?.userName,
+				isMediaShown: message.image != nil || !message.location.isEmpty ? true : false
+			)
       return cell
     }
   }
@@ -143,37 +151,54 @@ class ChatroomViewController: UIViewController {
   }
   
   private func scrollToBottom(animated: Bool) {
-    collectionView.scrollToItem(at: IndexPath(item: messages.count - 1,
-                                              section: 0),
-                                at: .bottom,
-                                animated: animated)
+		collectionView.scrollToItem(
+			at: .init(
+				item: messages.count - 1,
+				section: 0
+			),
+			at: .bottom,
+			animated: animated
+		)
   }
   
   private func fetchConversation(conversation: Conversation) {
-    let config = state.app.currentUser!.configuration(partitionValue: "conversation=\(conversation.id)")
-    Realm.asyncOpen(configuration: config)
-      .sink { completion in
-        switch completion {
-        case .failure(let error):
-          print(error.localizedDescription)
-        case .finished:
-          break
-        }
-      } receiveValue: { [weak self] realm in
-        guard let self = self else { return }
-        self.conversationRealm = realm
-        self.messages = realm.objects(ChatMessage.self).sorted(byKeyPath: "timestamp",
-                                                               ascending: true)
-        self.configureMessageComposerView()
-        self.applySnapshot()
-        self.scrollToBottom(animated: false)
-        self.createObserver()
-      }
-      .store(in: &state.subscribers)
+		Task {
+			do {
+				messages = try await state.getMessages(of: conversation)
+				conversationRealm = state.realm
+				
+				configureMessageComposerView()
+				applySnapshot()
+				scrollToBottom(animated: false)
+				createObserver()
+			} catch {
+				print(error.localizedDescription)
+			}
+		}
+		
+//		let config = state.app.currentUser!.flexibleSyncConfiguration() //configuration(partitionValue: "conversation=\(conversation.id)")
+//    Realm.asyncOpen(configuration: config)
+//      .sink { completion in
+//        switch completion {
+//        case .failure(let error):
+//          print(error.localizedDescription)
+//        case .finished:
+//          break
+//        }
+//      } receiveValue: { [weak self] realm in
+//        guard let self = self else { return }
+//        self.conversationRealm = realm
+//        self.messages = realm.objects(ChatMessage.self).sorted(byKeyPath: "timestamp",
+//                                                               ascending: true)
+//
+//      }
+//      .store(in: &state.subscribers)
   }
   
   private func createObserver() {
-    realmChatNotificationToken = messages.thaw()?.observe { [weak self] changes in
+    realmChatNotificationToken = messages
+			.thaw()?
+			.observe { [weak self] changes in
       guard let self = self else { return }
       switch changes {
       case .error(let error):

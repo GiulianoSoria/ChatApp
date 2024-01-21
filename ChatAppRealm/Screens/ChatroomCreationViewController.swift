@@ -14,7 +14,7 @@ class ChatroomCreationViewController: UIViewController {
   private var userRealm: Realm!
   private var conversationRealm: Realm!
   public var conversation: Conversation!
-  private var chatsters: Results<Chatster>!
+//  private var chatsters: Results<Chatster>!
   
   private enum Section { case title, selected, all }
   
@@ -45,10 +45,14 @@ class ChatroomCreationViewController: UIViewController {
   
   public var isUpdating: Bool = false
   
-  init(state: AppState, chatsters: Results<Chatster>, userRealm: Realm) {
+  init(
+		state: AppState,
+//		chatsters: Results<Chatster>,
+		userRealm: Realm
+	) {
     super.init(nibName: nil, bundle: nil)
     self.state = state
-    self.chatsters = chatsters
+//    self.chatsters = chatsters
     self.userRealm = userRealm
   }
   
@@ -267,7 +271,8 @@ class ChatroomCreationViewController: UIViewController {
   }
   
   private func fetchChatsters() {
-    let config = state.app.currentUser!.configuration(partitionValue: "all-users=all-the-users")
+		#warning("Update config")
+    let config = state.app.currentUser!.flexibleSyncConfiguration() //configuration(partitionValue: "all-users=all-the-users")
     Realm.asyncOpen(configuration: config)
       .sink { completion in
         switch completion {
@@ -317,7 +322,7 @@ class ChatroomCreationViewController: UIViewController {
       return
     }
     UIHelpers.autoDismissableSnackBar(title: "\(conversation.displayName) created",
-                                      image: SFSymbols.checkmarkCircle,
+                                      image: .checkmarkCircle,
                                       backgroundColor: .systemBlue,
                                       textColor: .label,
                                       view: self.view)
@@ -351,7 +356,7 @@ class ChatroomCreationViewController: UIViewController {
                                    view: self.view)
             
             UIHelpers.autoDismissableSnackBar(title: error.localizedDescription,
-                                              image: SFSymbols.crossCircle,
+                                              image: .crossCircle,
                                               backgroundColor: .systemRed,
                                               textColor: .white,
                                               view: self.view)
@@ -379,7 +384,7 @@ class ChatroomCreationViewController: UIViewController {
                                    view: self.view)
             
             UIHelpers.autoDismissableSnackBar(title: "Error updating conversation title",
-                                              image: SFSymbols.crossCircle,
+                                              image: .crossCircle,
                                               backgroundColor: .systemRed,
                                               textColor: .white,
                                               view: self.view)
@@ -392,7 +397,8 @@ class ChatroomCreationViewController: UIViewController {
   }
   
   private func fetchConversationRealm(conversation: Conversation) {
-    let config = state.app.currentUser!.configuration(partitionValue: "conversation=\(conversation.id)")
+		#warning("Update config")
+    let config = state.app.currentUser!.flexibleSyncConfiguration() //configuration(partitionValue: "conversation=\(conversation.id)")
     Realm.asyncOpen(configuration: config)
       .sink { completion in
         switch completion {

@@ -54,14 +54,19 @@ extension LocationHelper: CLLocationManagerDelegate {
       preference = Preferences(isUserLocationShared: false)
     }
     
-    PersistenceManager.shared.updatePreferences(preference: preference, types: [.isUserLocationShared]) { error in
-      if let error = error {
-        UIHelpers.autoDismissableSnackBar(title: error.rawValue,
-                                          image: SFSymbols.crossCircle,
-                                          backgroundColor: .systemRed,
-                                          textColor: .white,
-                                          view: UIApplication.shared.windows.first(where: { $0.isKeyWindow })!.rootViewController!.view)
-      }
-    }
+		do {
+			try PersistenceManager.shared.updatePreferences(
+				preference: preference,
+				types: [.isUserLocationShared]
+			)
+		} catch {
+			UIHelpers.autoDismissableSnackBar(
+				title: error.localizedDescription,
+				image: .crossCircle,
+				backgroundColor: .systemRed,
+				textColor: .white,
+				view: UIApplication.shared.windows.first(where: { $0.isKeyWindow })!.rootViewController!.view
+			)
+		}
   }
 }

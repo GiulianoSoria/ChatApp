@@ -51,24 +51,20 @@ class ConversationCell: UICollectionViewCell {
     fatalError("init(coder:) has not been implemented")
   }
   
-  public func set(state: AppState,
-                  conversation: Conversation,
-                  chatstersRealm: Realm,
-                  chatsters: Results<Chatster>,
-                  isCompact: Bool) {
+  public func set(
+		state: AppState,
+		conversation: Conversation,
+		isCompact: Bool
+	) {
     self.state = state
     self.conversation = conversation
-    self.chatstersRealm = chatstersRealm
+		self.chatstersRealm = state.realm
     self.unreadCount = conversation.unreadCount
     self.isCompact = isCompact
-    
-//    conversation.members.forEach {
-//      self.chatsters = chatsters.filter("userName = %@", $0.userName)
-//    }
 
     chatroomLabel.text = conversation.displayName
     
-    configureAvatarsView(chatsters: chatsters)
+		configureAvatarsView(chatsters: state.chatsters)
     
     if self.unreadCount > 0 {
       configureUnreadCountView()
@@ -80,9 +76,11 @@ class ConversationCell: UICollectionViewCell {
   }
   
   private func configureAvatarsView(chatsters: Results<Chatster>) {
-    avatarsView = AvatarsGridView(conversation: conversation,
-                                  chatsters: chatsters,
-                                  isCompact: self.isCompact)
+		avatarsView = .init(
+			conversation: conversation,
+			chatsters: chatsters,
+			isCompact: self.isCompact
+		)
     avatarsView.delegate = self
     contentView.addSubview(avatarsView)
     
@@ -131,7 +129,7 @@ class ConversationCell: UICollectionViewCell {
   private func configureDecorativeViews() {
     contentView.addSubviews(chevronView)
 
-    chevronView.image = SFSymbols.chevronRight
+    chevronView.image = .chevronRight
     chevronView.backgroundColor = .clear
     chevronView.tintColor = .systemGray3
     chevronView.layer.cornerRadius = 0

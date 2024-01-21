@@ -52,18 +52,18 @@ class MessageComposerView: UIView {
     
     messageTextView.delegate = self
     
-    moreButton.setBackgroundImage(SFSymbols.more, for: .normal)
+    moreButton.setBackgroundImage(.more, for: .normal)
     moreButton.tintColor = .systemBlue
     moreButton.menu = moreMenu()
     moreButton.showsMenuAsPrimaryAction = true
     
 //    cameraButton.setBackgroundImage(SFSymbols.camera, for: .normal)
 //    cameraButton.tintColor = .systemBlue
-    galleryButton.setBackgroundImage(SFSymbols.gallery, for: .normal)
+    galleryButton.setBackgroundImage(.gallery, for: .normal)
     galleryButton.tintColor = .systemBlue
     
     sendButton.layer.cornerRadius = sendButton.frame.size.height / 2
-    sendButton.setBackgroundImage(SFSymbols.sendMessage, for: .normal)
+    sendButton.setBackgroundImage(.sendMessage, for: .normal)
     
 //    cameraButton.addTarget(self, action: #selector(cameraButtonTapped), for: .touchUpInside)
     galleryButton.addTarget(self, action: #selector(galleryButtonTapped), for: .touchUpInside)
@@ -119,20 +119,25 @@ class MessageComposerView: UIView {
       messageTextView.text != "" ||
       photo != nil ||
       !location.isEmpty else {
-      UIHelpers.autoDismissableSnackBar(title: "Message is empty",
-                                        image: SFSymbols.alertCircle,
-                                        backgroundColor: .systemYellow,
-                                        textColor: .black,
-                                        view: self.superview ?? self)
+      UIHelpers.autoDismissableSnackBar(
+				title: "Message is empty",
+				image: .alertCircle,
+				backgroundColor: .systemYellow,
+				textColor: .black,
+				view: self.superview ?? self
+			)
       return
     }
     
     isSendButtonActive = true
-    let message = ChatMessage(author: state.user?.userName ?? "Unknown",
-                              text: messageTextView.text,
-                              image: photo,
-                              location: location)
-    message.conversationId = conversation.id
+    let message = ChatMessage(
+			author: state.user?.userName ?? "Unknown",
+			authorID: state.user!._id,
+			text: messageTextView.text,
+			image: photo,
+			location: location
+		)
+    message.conversationID = conversation.id
     
     do {
       try conversationRealm.write {
@@ -140,17 +145,19 @@ class MessageComposerView: UIView {
         messageTextView.text = ""
       }
     } catch {
-      UIHelpers.autoDismissableSnackBar(title: error.localizedDescription,
-                                        image: SFSymbols.crossCircle,
-                                        backgroundColor: .systemRed,
-                                        textColor: .label,
-                                        view: self.superview ?? self)
+      UIHelpers.autoDismissableSnackBar(
+				title: error.localizedDescription,
+				image: .crossCircle,
+				backgroundColor: .systemRed,
+				textColor: .label,
+				view: self.superview ?? self
+			)
       state.error = error.localizedDescription
     }
   }
   
   private func moreMenu() -> UIMenu {
-    let cameraAction = UIAction(title: "Camera", image: SFSymbols.camera) { [weak self] _ in
+    let cameraAction = UIAction(title: "Camera", image: .camera) { [weak self] _ in
       guard let self = self else { return }
       PhotoCaptureController.show(source: .camera) { [weak self] controller, photo in
         guard let self = self else { return }
@@ -161,14 +168,18 @@ class MessageComposerView: UIView {
       }
     }
     
-    let mapAction = UIAction(title: "Location", image: SFSymbols.map) { [weak self] _ in
+    let mapAction = UIAction(title: "Location", image: .map) { [weak self] _ in
       guard let self = self else { return }
       let destVC = MapViewController()
       self.chatroomViewController.navigationController?.pushViewController(destVC, animated: true)
       
     }
     
-    let menu = UIMenu(title: "More Options", options: .displayInline, children: [cameraAction, mapAction])
+    let menu = UIMenu(
+			title: "More Options",
+			options: .displayInline,
+			children: [cameraAction, mapAction]
+		)
     
     return menu
   }

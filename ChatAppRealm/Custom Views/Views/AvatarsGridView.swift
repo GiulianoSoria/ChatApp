@@ -27,7 +27,11 @@ class AvatarsGridView: UIView {
   
   private var isCompact: Bool = true
   
-  convenience init(conversation: Conversation, chatsters: Results<Chatster>, isCompact: Bool) {
+  convenience init(
+		conversation: Conversation,
+		chatsters: Results<Chatster>,
+		isCompact: Bool
+	) {
     self.init(frame: .zero)
     self.chatsters = chatsters
     self.conversation = conversation
@@ -74,15 +78,23 @@ class AvatarsGridView: UIView {
   }
   
   private func configureDataSource() {
-    dataSource = UICollectionViewDiffableDataSource<Section, Chatster>(collectionView: collectionView, cellProvider: { collectionView, indexPath, chatster in
+    dataSource = UICollectionViewDiffableDataSource<Section, Chatster>(
+			collectionView: collectionView
+		) { collectionView, indexPath, chatster in
       guard
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AvatarCell.reuseID,
-                                                      for: indexPath) as? AvatarCell else { return nil }
-      cell.set(chatster: chatster, cornerRadius: 20, online: chatster.presenceState == .onLine ? true : false)
+        let cell = collectionView.dequeueReusableCell(
+					withReuseIdentifier: AvatarCell.reuseID,
+					for: indexPath
+				) as? AvatarCell else { return nil }
+      cell.set(
+				chatster: chatster,
+				cornerRadius: 20,
+				online: chatster.presenceState == .onLine ? true : false
+			)
       cell.delegate = self
       
       return cell
-    })
+    }
   }
   
   private func applySnapshot() {
@@ -127,7 +139,9 @@ class AvatarsGridView: UIView {
   }
   
   private func observeChatstersRealm() {
-    chatstersRealmNotificationToken = chatsters.thaw()?.observe { [weak self] result in
+    chatstersRealmNotificationToken = chatsters
+			.thaw()?
+			.observe { [weak self] result in
       guard let self = self else { return }
       switch result {
       case .error(let error):
