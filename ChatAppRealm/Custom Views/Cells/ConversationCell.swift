@@ -16,11 +16,7 @@ class ConversationCell: UICollectionViewCell {
   public static let reuseID = "ConversationCell"
   
   private var state: AppState!
-  private var chatstersRealm: Realm!
-  private var chatstersRealmNotificationToken: NotificationToken!
   private var conversation: Conversation!
-  private var chatsters: Results<Chatster>!
-  private var chatstersArray: [Chatster] = []
   
   weak var delegate: ConversationCellDelegate!
   
@@ -33,7 +29,7 @@ class ConversationCell: UICollectionViewCell {
   private var chevronView = CAImageView(frame: .zero)
   
   private var isCompact: Bool = true
-  private let padding: CGFloat = 10
+  private let padding: CGFloat = 16
   
   private lazy var unreadCount = 0 {
     didSet {
@@ -58,7 +54,7 @@ class ConversationCell: UICollectionViewCell {
 	) {
     self.state = state
     self.conversation = conversation
-		self.chatstersRealm = state.realm
+//		self.chatstersRealm = state.realm
     self.unreadCount = conversation.unreadCount
     self.isCompact = isCompact
 
@@ -72,11 +68,12 @@ class ConversationCell: UICollectionViewCell {
       unreadCountView.removeFromSuperview()
     }
     
-    contentView.backgroundColor = self.isCompact ? .secondarySystemBackground : .systemBackground
+    contentView.backgroundColor = .secondarySystemBackground
   }
   
   private func configureAvatarsView(chatsters: Results<Chatster>) {
 		avatarsView = .init(
+			state: state,
 			conversation: conversation,
 			chatsters: chatsters,
 			isCompact: self.isCompact
@@ -86,12 +83,12 @@ class ConversationCell: UICollectionViewCell {
     
     NSLayoutConstraint.activate([
       avatarsView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-      avatarsView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 2*padding),
-      avatarsView.widthAnchor.constraint(equalToConstant: CGFloat(2 * 50)),
+      avatarsView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: padding),
+      avatarsView.widthAnchor.constraint(equalToConstant: 50),
       avatarsView.heightAnchor.constraint(equalToConstant: 40),
       
       chatroomLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: padding),
-      chatroomLabel.leadingAnchor.constraint(equalTo: avatarsView.trailingAnchor),
+      chatroomLabel.leadingAnchor.constraint(equalTo: avatarsView.trailingAnchor, constant: padding/2),
       chatroomLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
       chatroomLabel.heightAnchor.constraint(equalToConstant: 18)
     ])
@@ -100,22 +97,22 @@ class ConversationCell: UICollectionViewCell {
   private func configureUnreadCountView() {
     contentView.addSubview(unreadCountView)
     unreadCountView.translatesAutoresizingMaskIntoConstraints = false
-    unreadCountView.layer.cornerRadius = 15
+    unreadCountView.layer.cornerRadius = 16
     unreadCountView.layer.cornerCurve = .circular
-    unreadCountView.backgroundColor = .systemBlue
+    unreadCountView.backgroundColor = .tintColor
     
     unreadCountView.addSubview(unreadCountLabel)
     
     NSLayoutConstraint.activate([
       unreadCountLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-      unreadCountLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding*3),
+      unreadCountLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding),
       unreadCountLabel.widthAnchor.constraint(equalToConstant: 20),
       unreadCountLabel.heightAnchor.constraint(equalToConstant: 14),
       
       unreadCountView.centerXAnchor.constraint(equalTo: unreadCountLabel.centerXAnchor),
       unreadCountView.centerYAnchor.constraint(equalTo: unreadCountLabel.centerYAnchor),
-      unreadCountView.widthAnchor.constraint(equalTo: unreadCountLabel.widthAnchor, constant: padding),
-      unreadCountView.heightAnchor.constraint(equalToConstant: 30)
+      unreadCountView.widthAnchor.constraint(equalTo: unreadCountLabel.widthAnchor, constant: padding*2),
+			unreadCountView.heightAnchor.constraint(equalTo: unreadCountView.widthAnchor)
     ])
   }
   

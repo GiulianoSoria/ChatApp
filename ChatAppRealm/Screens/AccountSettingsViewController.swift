@@ -243,7 +243,7 @@ class AccountSettingsViewController: UIViewController {
 			placement: placement,
 			isHidden: false,
 			reservedLayoutWidth: width,
-			tintColor: .systemBlue,
+			tintColor: .tintColor,
 			maintainsFixedSize: false
 		)
     

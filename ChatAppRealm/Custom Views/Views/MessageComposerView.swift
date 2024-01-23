@@ -29,7 +29,7 @@ class MessageComposerView: UIView {
   private var isSendButtonActive: Bool = false {
     didSet {
       sendButton.isEnabled = isSendButtonActive
-      sendButton.tintColor = sendButton.isEnabled ? .systemBlue : .systemGray
+      sendButton.tintColor = sendButton.isEnabled ? .tintColor : .systemGray
     }
   }
   
@@ -53,14 +53,14 @@ class MessageComposerView: UIView {
     messageTextView.delegate = self
     
     moreButton.setBackgroundImage(.more, for: .normal)
-    moreButton.tintColor = .systemBlue
+    moreButton.tintColor = .tintColor
     moreButton.menu = moreMenu()
     moreButton.showsMenuAsPrimaryAction = true
     
 //    cameraButton.setBackgroundImage(SFSymbols.camera, for: .normal)
-//    cameraButton.tintColor = .systemBlue
+//    cameraButton.tintColor = .tintColor
     galleryButton.setBackgroundImage(.gallery, for: .normal)
-    galleryButton.tintColor = .systemBlue
+    galleryButton.tintColor = .tintColor
     
     sendButton.layer.cornerRadius = sendButton.frame.size.height / 2
     sendButton.setBackgroundImage(.sendMessage, for: .normal)

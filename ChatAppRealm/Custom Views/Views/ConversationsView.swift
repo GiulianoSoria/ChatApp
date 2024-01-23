@@ -56,7 +56,7 @@ class ConversationsView: UIView {
   }
   
   private func configureCollectionView() {
-    var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+		var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
     configuration.backgroundColor = .systemBackground
     configuration.leadingSwipeActionsConfigurationProvider = { indexPath -> UISwipeActionsConfiguration? in
       let editActionHandler: UIContextualAction.Handler = { [weak self] action, view, completed in
@@ -71,7 +71,7 @@ class ConversationsView: UIView {
       let editAction = UIContextualAction(style: .normal,
                                           title: "Edit",
                                           handler: editActionHandler)
-      editAction.backgroundColor = .systemBlue
+      editAction.backgroundColor = .tintColor
       editAction.image = .edit
       let configuration = UISwipeActionsConfiguration(actions: [editAction])
       

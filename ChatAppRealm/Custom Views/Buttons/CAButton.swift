@@ -50,11 +50,11 @@ class CAButton: UIButton {
       configuration.attributedTitle = AttributedString(title ?? "", attributes: container)
       
       self.configuration = configuration
-      self.configuration?.baseBackgroundColor = backgroundColor ?? .systemBlue
+      self.configuration?.baseBackgroundColor = backgroundColor ?? .tintColor
     } else {
       // Fallback on earlier versions
       titleLabel?.font = UIFont.rounded(ofSize: 16, weight: .semibold)
-      self.backgroundColor = backgroundColor ?? .systemBlue
+      self.backgroundColor = backgroundColor ?? .tintColor
     }
     layer.opacity = active ? Dimensions.activeOpacity : Dimensions.inactiveOpacity
   }
@@ -69,7 +69,7 @@ class CAButton: UIButton {
       
       layer.cornerRadius = 10
       layer.cornerCurve = .circular
-      backgroundColor = .systemBlue
+      backgroundColor = .tintColor
     }
   }
 }

@@ -127,13 +127,13 @@ class LoginViewController: UIViewController {
   
   private func showSnackBar(title: String) {
     UIHelpers.showSnackBar(title: title,
-                           backgroundColor: .systemBlue,
+                           backgroundColor: .tintColor,
                            view: self.view)
   }
   
   private func dismissSnackBar(title: String) {
     UIHelpers.hideSnackBar(title: title,
-                           backgroundColor: .systemBlue,
+                           backgroundColor: .tintColor,
                            view: self.view)
   }
   

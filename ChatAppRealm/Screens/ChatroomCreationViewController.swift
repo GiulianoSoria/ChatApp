@@ -208,7 +208,7 @@ class ChatroomCreationViewController: UIViewController {
                                                                 placement: placement,
                                                                 isHidden: false,
                                                                 reservedLayoutWidth: width,
-                                                                tintColor: .systemBlue,
+                                                                tintColor: .tintColor,
                                                                 maintainsFixedSize: true)
     
     return configuration
@@ -323,7 +323,7 @@ class ChatroomCreationViewController: UIViewController {
     }
     UIHelpers.autoDismissableSnackBar(title: "\(conversation.displayName) created",
                                       image: .checkmarkCircle,
-                                      backgroundColor: .systemBlue,
+                                      backgroundColor: .tintColor,
                                       textColor: .label,
                                       view: self.view)
     closeButtonTapped()
@@ -339,7 +339,7 @@ class ChatroomCreationViewController: UIViewController {
       state.shouldIndicateActivity = true
       
       UIHelpers.showSnackBar(title: "Updating Conversation",
-                             backgroundColor: .systemBlue,
+                             backgroundColor: .tintColor,
                              view: self.view)
       
       state.app.currentUser!.functions.chatNameChange([AnyBSON(stringLiteral: "update"),
@@ -352,7 +352,7 @@ class ChatroomCreationViewController: UIViewController {
           case .failure(let error):
             print(error.localizedDescription)
             UIHelpers.hideSnackBar(title: "Updating conversation",
-                                   backgroundColor: .systemBlue,
+                                   backgroundColor: .tintColor,
                                    view: self.view)
             
             UIHelpers.autoDismissableSnackBar(title: error.localizedDescription,
@@ -372,7 +372,7 @@ class ChatroomCreationViewController: UIViewController {
             let value = doc.values.first,
             let completed = value?.boolValue, completed {
             UIHelpers.hideSnackBar(title: "Updating conversation",
-                                   backgroundColor: .systemBlue,
+                                   backgroundColor: .tintColor,
                                    view: self.view)
             
             self.closeButtonTapped()
@@ -380,7 +380,7 @@ class ChatroomCreationViewController: UIViewController {
             self.doneButton.isEnabled = true
           } else {
             UIHelpers.hideSnackBar(title: "Updating conversation",
-                                   backgroundColor: .systemBlue,
+                                   backgroundColor: .tintColor,
                                    view: self.view)
             
             UIHelpers.autoDismissableSnackBar(title: "Error updating conversation title",

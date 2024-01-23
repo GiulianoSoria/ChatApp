@@ -25,7 +25,7 @@ class MessageCell: UICollectionViewCell {
   
   private var isMyMessage: Bool = false {
     didSet {
-      containerView.backgroundColor = isMyMessage ? .systemBlue : .secondarySystemBackground
+      containerView.backgroundColor = isMyMessage ? .tintColor : .secondarySystemBackground
       containerViewLeadingAnchor.isActive = isMyMessage ? false : true
       containerViewTrailingAnchor.isActive = isMyMessage ? true : false
       yourTimeLabelTrailingAnchor.isActive = isMyMessage ? false : true

@@ -20,7 +20,7 @@ class CATextView: UITextView {
   
   func configure() {
     backgroundColor = .tertiarySystemBackground
-    tintColor = .systemBlue
+		tintColor = .tintColor
     layer.cornerRadius = 5
     
     autocorrectionType = .default

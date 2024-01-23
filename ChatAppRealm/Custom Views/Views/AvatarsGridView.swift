@@ -13,6 +13,7 @@ protocol AvatarsGridViewDelegate: AnyObject {
 }
 
 class AvatarsGridView: UIView {
+	private var state: AppState!
   private var chatstersRealmNotificationToken: NotificationToken!
   private var conversation: Conversation!
   private var chatsters: Results<Chatster>!
@@ -28,11 +29,13 @@ class AvatarsGridView: UIView {
   private var isCompact: Bool = true
   
   convenience init(
+		state: AppState,
 		conversation: Conversation,
 		chatsters: Results<Chatster>,
 		isCompact: Bool
 	) {
     self.init(frame: .zero)
+		self.state = state
     self.chatsters = chatsters
     self.conversation = conversation
     self.chatstersArray = getChatsters(chatsters)
@@ -54,7 +57,7 @@ class AvatarsGridView: UIView {
     collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
     addSubview(collectionView)
     collectionView.pinToEdges(of: self)
-    collectionView.backgroundColor = self.isCompact ? .secondarySystemBackground : .systemBackground
+    collectionView.backgroundColor = .secondarySystemBackground // : .systemBackground
     collectionView.showsHorizontalScrollIndicator = false
     
     collectionView.register(AvatarCell.self, forCellWithReuseIdentifier: AvatarCell.reuseID)
@@ -117,8 +120,10 @@ class AvatarsGridView: UIView {
   
   private func getChatsters(_ chatsters: Results<Chatster>) -> [Chatster] {
     var array = Array(chatsters)
-    let names = conversation.members.map({ $0.userName })
-    array.removeAll(where: { !names.contains($0.userName) })
+		let names = conversation.members.map({ $0.userName })
+		array.removeAll(where: { !names.contains($0.userName) })
+		array.removeAll(where: { $0.userName == state.user!.userName })
+		
     return array
   }
   
