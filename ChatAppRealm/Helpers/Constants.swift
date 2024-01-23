@@ -8,11 +8,13 @@
 import UIKit
 
 struct Keys {
-  static let appKey             = "chatapprealm-xqbxd" // "chatapp-jfsse"
+  static let appKey             = "chatapprealm-xqbxd"
+	static let keychainService		= "com.gcsoriap.ChatAppRealm"
+	static let keychainGroup			= "group.com.gcsoriap.ChatAppRealm"
 }
 
 struct NotificationKeys {
-  static let updateUserProfile  = "com.gcsoriap.ChatAppRealm.updateUserProfile"
+	static let updateUserProfile  = "\(Keys.keychainService).updateUserProfile"
 }
 
 enum ScreenSize {

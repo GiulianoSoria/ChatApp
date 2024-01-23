@@ -127,17 +127,17 @@ class AccountSettingsViewController: UIViewController {
           let image = self.photo {
 					imageView = .init(
 						photo: image,
-						cornerRadius: 50
+						cornerRadius: DeviceType.isiPad || DeviceType.isMac ? 100 : 50
 					)
         } else {
-					imageView = .init(cornerRadius: 50)
+					imageView = .init(cornerRadius: DeviceType.isiPad || DeviceType.isMac ? 100 : 50)
         }
         imageView.delegate = self
         
         configuration.image = imageView.image
-        let width = DeviceType.isiPad ? 200 : 100
+				let width = DeviceType.isiPad || DeviceType.isMac ? 200 : 100
 				configuration.imageProperties.maximumSize = .init(width: width, height: width)
-        configuration.imageProperties.cornerRadius = 50
+				configuration.imageProperties.cornerRadius = DeviceType.isiPad || DeviceType.isMac ? 100 : 50
 				configuration.directionalLayoutMargins = .init(
 					top: 20,
 					leading: self.view.frame.width/2 - 70,

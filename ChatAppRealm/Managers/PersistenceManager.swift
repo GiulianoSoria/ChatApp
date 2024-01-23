@@ -12,12 +12,12 @@ class PersistenceManager {
   
   private var defaults = UserDefaults.standard
   
-  enum Keys { static let preferences = "preferences" }
+  enum PreferenceKeys { static let preferences = "preferences" }
   
 	private init() {}
 	
 	public func retreiveUserPreferences() throws -> Preferences {
-		guard let data = defaults.object(forKey: Keys.preferences) as? Data else {
+		guard let data = defaults.object(forKey: PreferenceKeys.preferences) as? Data else {
 			return .init(
 				isUserLoggedIn: false,
 				isUserLocationShared: false,
@@ -35,8 +35,8 @@ class PersistenceManager {
 	}
 	
 	public func retrieveUserPreference(ofType type: PersistenceActionType) throws -> Any {
-		guard let data = defaults.object(forKey: Keys.preferences) as? Data else {
-			throw NSError(domain: "com.gcsoriap.ChatAppRealm", code: -1)
+		guard let data = defaults.object(forKey: PreferenceKeys.preferences) as? Data else {
+			throw NSError(domain: Keys.keychainService, code: -1)
 		}
 		
 		do {
@@ -61,7 +61,7 @@ class PersistenceManager {
     do {
       let encoder = JSONEncoder()
       let encodedPreferences = try encoder.encode(preferences)
-      defaults.set(encodedPreferences, forKey: Keys.preferences)
+      defaults.set(encodedPreferences, forKey: PreferenceKeys.preferences)
       return nil
     } catch {
       throw error

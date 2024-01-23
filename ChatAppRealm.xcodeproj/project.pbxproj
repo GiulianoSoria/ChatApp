@@ -69,6 +69,7 @@
 		F2363A5B2673D0DA00331312 /* ChatsterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsterViewController.swift; sourceTree = "<group>"; };
 		F24C8E442694AEC500E09F3B /* CAMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAMapView.swift; sourceTree = "<group>"; };
 		F24C8E472695358900E09F3B /* CASplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CASplitViewController.swift; sourceTree = "<group>"; };
+		F260106C2B60443A0073E2A2 /* ChatAppRealm.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ChatAppRealm.entitlements; sourceTree = "<group>"; };
 		F275A67F267BBFDA004FB406 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		F285C319266944CA00362C37 /* ChatAppRealm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatAppRealm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F285C31C266944CA00362C37 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -158,6 +159,7 @@
 		F285C31B266944CA00362C37 /* ChatAppRealm */ = {
 			isa = PBXGroup;
 			children = (
+				F260106C2B60443A0073E2A2 /* ChatAppRealm.entitlements */,
 				F285C3F1266B3C9B00362C37 /* Helpers */,
 				F285C3EF266B3A0A00362C37 /* Managers */,
 				F285C3F6266B3CC400362C37 /* Extensions */,
@@ -616,9 +618,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ChatAppRealm/ChatAppRealm.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = A4DT85R32D;
 				INFOPLIST_FILE = ChatAppRealm/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -626,6 +630,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.soriagc.ChatAppRealm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -636,9 +643,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ChatAppRealm/ChatAppRealm.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = A4DT85R32D;
 				INFOPLIST_FILE = ChatAppRealm/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -646,6 +655,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.soriagc.ChatAppRealm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

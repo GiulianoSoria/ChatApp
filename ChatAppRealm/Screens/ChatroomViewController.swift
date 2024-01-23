@@ -114,8 +114,10 @@ class ChatroomViewController: UIViewController {
 		) { [weak self] collectionView, indexPath, message in
       guard let self = self else { return nil }
       guard
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MessageCell.reuseID,
-                                                      for: indexPath) as? MessageCell else { return nil }
+        let cell = collectionView.dequeueReusableCell(
+					withReuseIdentifier: MessageCell.reuseID,
+					for: indexPath
+				) as? MessageCell else { return nil }
       cell.set(
 				chatster: self.chatsters.first(where: { $0.userName == message.author }),
 				message: message,
@@ -135,9 +137,11 @@ class ChatroomViewController: UIViewController {
   }
   
   private func configureMessageComposerView() {
-    composerView = MessageComposerView(state: state,
-                                       conversationRealm: conversationRealm,
-                                       conversation: conversation)
+		composerView = .init(
+			state: state,
+			conversationRealm: conversationRealm,
+			conversation: conversation
+		)
     composerView.chatroomViewController = self
     view.addSubview(composerView)
     view.bringSubviewToFront(composerView)

@@ -24,7 +24,7 @@ class ConversationCell: UICollectionViewCell {
   private var avatarsView: AvatarsGridView!
   
   private var unreadCountView = UIView()
-  private var unreadCountLabel = CALabel(textAlignment: .center, fontSize: 12, weight: .semibold, textColor: .label)
+  private var unreadCountLabel = CALabel(textAlignment: .center, fontSize: 12, weight: .regular, textColor: .label)
   
   private var chevronView = CAImageView(frame: .zero)
   
@@ -89,7 +89,7 @@ class ConversationCell: UICollectionViewCell {
       
       chatroomLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: padding),
       chatroomLabel.leadingAnchor.constraint(equalTo: avatarsView.trailingAnchor, constant: padding/2),
-      chatroomLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+      chatroomLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding*2),
       chatroomLabel.heightAnchor.constraint(equalToConstant: 18)
     ])
   }
@@ -97,7 +97,7 @@ class ConversationCell: UICollectionViewCell {
   private func configureUnreadCountView() {
     contentView.addSubview(unreadCountView)
     unreadCountView.translatesAutoresizingMaskIntoConstraints = false
-    unreadCountView.layer.cornerRadius = 16
+    unreadCountView.layer.cornerRadius = 12
     unreadCountView.layer.cornerCurve = .circular
     unreadCountView.backgroundColor = .tintColor
     
@@ -105,14 +105,14 @@ class ConversationCell: UICollectionViewCell {
     
     NSLayoutConstraint.activate([
       unreadCountLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-      unreadCountLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding),
+      unreadCountLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding*2),
       unreadCountLabel.widthAnchor.constraint(equalToConstant: 20),
       unreadCountLabel.heightAnchor.constraint(equalToConstant: 14),
       
       unreadCountView.centerXAnchor.constraint(equalTo: unreadCountLabel.centerXAnchor),
       unreadCountView.centerYAnchor.constraint(equalTo: unreadCountLabel.centerYAnchor),
-      unreadCountView.widthAnchor.constraint(equalTo: unreadCountLabel.widthAnchor, constant: padding*2),
-			unreadCountView.heightAnchor.constraint(equalTo: unreadCountView.widthAnchor)
+      unreadCountView.widthAnchor.constraint(equalTo: unreadCountLabel.widthAnchor, constant: padding/4),
+			unreadCountView.heightAnchor.constraint(equalTo: unreadCountView.widthAnchor),
     ])
   }
   

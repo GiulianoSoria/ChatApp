@@ -68,10 +68,12 @@ class ConversationsView: UIView {
 				)
         completed(true)
       }
-      let editAction = UIContextualAction(style: .normal,
-                                          title: "Edit",
-                                          handler: editActionHandler)
-      editAction.backgroundColor = .tintColor
+      let editAction = UIContextualAction(
+				style: .normal,
+				title: "Edit",
+				handler: editActionHandler
+			)
+			editAction.backgroundColor = .systemGreen
       editAction.image = .edit
       let configuration = UISwipeActionsConfiguration(actions: [editAction])
       
@@ -82,14 +84,18 @@ class ConversationsView: UIView {
       let leaveActionHandler: UIContextualAction.Handler = { [weak self] action, view, completed in
         guard let self = self else { return }
         let conversation = self.conversations[indexPath.item]
-        self.leaveConversation(conversation,
-                               indexPath: indexPath)
+        self.leaveConversation(
+					conversation,
+					indexPath: indexPath
+				)
         completed(true)
       }
       
-      let leaveAction = UIContextualAction(style: .destructive,
-                                           title: "Leave",
-                                           handler: leaveActionHandler)
+      let leaveAction = UIContextualAction(
+				style: .destructive,
+				title: "Leave",
+				handler: leaveActionHandler
+			)
       leaveAction.image = .leave
       let configuration = UISwipeActionsConfiguration(actions: [leaveAction])
       

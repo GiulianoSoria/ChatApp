@@ -9,7 +9,10 @@ import Foundation
 import KeychainAccess
 
 class KeychainManager {
-	private let keychain = Keychain(service: "com.gcsoriap.ChatAppRealm")
+	private let keychain = Keychain(
+		service: Keys.keychainService,
+		accessGroup: Keys.keychainGroup
+	)
 	
 	enum KeychainKeys: String { case email, password }
 	

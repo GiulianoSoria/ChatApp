@@ -12,7 +12,7 @@ import RealmSwift
 @MainActor
 class AppState {
   public static let shared = AppState()
-  public let app = RealmSwift.App(id: "chatapprealm-xqbxd")
+	public let app = RealmSwift.App(id: Keys.appKey)
 	
 	private let keychain = KeychainManager()
   
@@ -22,10 +22,7 @@ class AppState {
   var user: User?
 	var realm: Realm!
 	var chatsters: Results<Chatster>!
-  
-//  var loginPublisher = PassthroughSubject<RealmSwift.User, Error>()
-//  var logoutPublisher = PassthroughSubject<Void, Error>()
-//  var userRealmPublisher = PassthroughSubject<Realm, Error>()
+
   var subscribers = Set<AnyCancellable>()
   
   var shouldIndicateActivity: Bool {
@@ -90,7 +87,7 @@ class AppState {
 	public func automaticLogin() async throws {
 		guard let email = try keychain.getItem(withKey: .email),
 					let password = try keychain.getItem(withKey: .password) else {
-			throw NSError(domain: "com.gcsoriap.ChatAppRealm", code: -2)
+			throw NSError(domain: Keys.keychainService, code: -2)
 		}
 		
 		try await login(email: email, password: password)

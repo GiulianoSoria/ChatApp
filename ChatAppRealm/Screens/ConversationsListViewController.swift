@@ -51,7 +51,7 @@ class ConversationsListViewController: UIViewController {
   }
   
   private func configureViewController() {
-    title = "ChatAppRealm"
+    title = "Chats"
     view.backgroundColor = .systemBackground
   }
   

@@ -45,6 +45,7 @@ class LoginViewController: UIViewController {
       checkboxButton.setImage(newUser ? .checkbox : .square, for: .normal)
       checkboxButton.setTitleColor(newUser ? .label : .secondaryLabel, for: .normal)
       checkboxButton.tintColor = newUser ? .label : .secondaryLabel
+			title = newUser ? "Sign Up" : "Log In"
     }
   }
   
@@ -66,7 +67,7 @@ class LoginViewController: UIViewController {
   }
   
   private func configureViewController() {
-    title = "ChatAppRealm"
+		title = newUser ? "Sign Up" : "Log In"
     view.backgroundColor = .systemBackground
   }
   
